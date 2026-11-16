@@ -130,6 +130,10 @@ def fetch_checkpoints(existing):
     except Exception as e:
         print(f"Checkpoints fetch failed ({e}); keeping last-known", file=sys.stderr)
         return existing.get("checkpoints")
+    print(f"Checkpoints: fetched {len(links)} speed-band links")
+    if links:
+        roads = sorted({(l.get("RoadName") or "").upper() for l in links})
+        print(f"Checkpoints: sample roads: {roads[:6]}")
     incident = None
     try:
         inc = get_json(LTA_INCIDENTS, headers={"AccountKey": key})
@@ -148,7 +152,7 @@ def fetch_checkpoints(existing):
         pinned = CHECKPOINT_LINKS.get(name)
         cands = []
         for link in links:
-            road = link.get("RoadName") or ""
+            road = (link.get("RoadName") or "").upper()
             if not any(r in road for r in road_names):
                 continue
             if pinned and str(link.get("LinkID")) != str(pinned):
