@@ -131,7 +131,7 @@ def fetch_speed_band_links(key):
     seen_ids = set()
     seen_urls = set()
     url = LTA_SPEED_BANDS
-    for _ in range(30):  # up to ~15000 links
+    for _ in range(100):  # up to ~50000 links
         if url in seen_urls:
             break
         seen_urls.add(url)
