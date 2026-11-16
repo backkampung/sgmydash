@@ -213,7 +213,7 @@
         </div>
         <div class="cp-dir" data-cp="woodlands_jb_sg">
           <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">BKE from Woodlands</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">66 km/h</span><small class="cp-band">Band 8 of 8</small></div>
+          <div class="cp-speed"><span class="cp-speed-num">70+ km/h</span><small class="cp-band">Band 8 of 8</small></div>
           <span class="status st-smooth"><i></i><span class="status-label">Smooth</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i></div>
         </div>
@@ -555,7 +555,7 @@
       speed = Number(speed);
       var band = d.band || bandForSpeed(speed);
       var st = d.status ? {label:d.status, cls:'st-'+String(d.status).toLowerCase(), bar:'on-'+String(d.status).toLowerCase()} : statusForSpeed(speed);
-      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = speed + ' km/h';
+      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = (Number(band) === 8) ? '70+ km/h' : speed + ' km/h';
       var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = 'Band ' + band + ' of 8';
       var statusEl = el.querySelector('.status');
       if(statusEl){ statusEl.className = 'status ' + st.cls; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = st.label; }
