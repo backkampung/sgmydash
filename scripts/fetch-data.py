@@ -87,6 +87,10 @@ CHECKPOINTS = {
 # the first verified run if the nearest-link heuristic picks wrong.
 CHECKPOINT_LINKS = {}
 
+# Diagnostic info written into data.json as a top-level "debug" field
+# (the page ignores it). Used to find which LTA pages hold BKE/AYE.
+DEBUG_INFO = {}
+
 
 def now_iso():
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -126,15 +130,20 @@ def fetch_speed_band_links(key):
     """Fetch all TrafficSpeedBands pages. v4 pages at 500 records and
     the BKE/AYE approach links sit beyond the first page, so follow
     @odata.nextLink (falling back to $skip) until a page adds nothing
-    new. Links are deduplicated by LinkID."""
+    new. Links are deduplicated by LinkID. Returns (links, page_of)
+    where page_of maps LinkID -> 1-based page number the link was
+    first seen on (diagnostic: tells us which pages hold BKE/AYE)."""
     links = []
     seen_ids = set()
     seen_urls = set()
+    page_of = {}
     url = LTA_SPEED_BANDS
+    page_no = 0
     for _ in range(100):  # up to ~50000 links
         if url in seen_urls:
             break
         seen_urls.add(url)
+        page_no += 1
         data = get_json(url, headers={"AccountKey": key})
         page = data.get("value", [])
         new = 0
@@ -144,6 +153,7 @@ def fetch_speed_band_links(key):
                 continue
             seen_ids.add(lid)
             links.append(link)
+            page_of[lid] = page_no
             new += 1
         if new == 0:
             break
@@ -156,7 +166,7 @@ def fetch_speed_band_links(key):
             url = f"{LTA_SPEED_BANDS}{sep}$skip={len(links)}"
             continue
         break
-    return links
+    return links, page_of
 
 
 def fetch_checkpoints(existing):
@@ -165,7 +175,7 @@ def fetch_checkpoints(existing):
         print("Checkpoints: no LTA_API_KEY, keeping last-known", file=sys.stderr)
         return existing.get("checkpoints")
     try:
-        links = fetch_speed_band_links(key)
+        links, page_of = fetch_speed_band_links(key)
     except Exception as e:
         print(f"Checkpoints fetch failed ({e}); keeping last-known", file=sys.stderr)
         return existing.get("checkpoints")
@@ -176,6 +186,21 @@ def fetch_checkpoints(existing):
                        if any(n in (l.get("RoadName") or "").upper() for n in names))
         print(f"Checkpoints: BKE links: {_count('BUKIT TIMAH EXPRESSWAY', 'BKE')}, "
               f"AYE links: {_count('AYER RAJAH EXPRESSWAY', 'AYE')}")
+        # Diagnostic: which pages hold the BKE/AYE approach links.
+        # The Cloudflare Worker paginates with a cap, so it needs to
+        # know how far in the BKE links sit. Recorded into data.json
+        # as a top-level "debug" field (the page ignores it).
+        bke_pages = sorted({page_of[l.get("LinkID")] for l in links
+                            if "BUKIT TIMAH EXPRESSWAY" in (l.get("RoadName") or "").upper()
+                            and page_of.get(l.get("LinkID")) is not None})
+        aye_pages = sorted({page_of[l.get("LinkID")] for l in links
+                            if "AYER RAJAH EXPRESSWAY" in (l.get("RoadName") or "").upper()
+                            and page_of.get(l.get("LinkID")) is not None})
+        total_pages = max(page_of.values()) if page_of else 0
+        DEBUG_INFO["lta"] = {"totalLinks": len(links), "totalPages": total_pages,
+                             "bkePages": bke_pages, "ayePages": aye_pages}
+        print(f"Checkpoints: BKE pages: {bke_pages}, AYE pages: {aye_pages}, "
+              f"total pages: {total_pages}")
         expy = sorted({(l.get("RoadName") or "").upper() for l in links
                        if "EXPRESSWAY" in (l.get("RoadName") or "").upper()})
         print(f"Checkpoints: expressway roads ({len(expy)}): {expy[:12]}")
@@ -518,6 +543,8 @@ def main():
         "holidays": fetch_holidays(existing),
     }
     out = {k: v for k, v in out.items() if v is not None}
+    if DEBUG_INFO:
+        out["debug"] = DEBUG_INFO
     with open(OUT, "w") as f:
         json.dump(out, f, indent=2, ensure_ascii=False)
         f.write("\n")
