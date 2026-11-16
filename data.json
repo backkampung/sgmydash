@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T02:02:50.521580Z",
+  "generatedAt": "2026-11-16T02:13:38.296862Z",
   "checkpoints": {
     "directions": {
       "woodlands_sg_jb": {
@@ -17,28 +17,28 @@
         "incident": "(16/11)08:07 Heavy Traffic on PIE (towards Tuas) at KPE(ECP) Exit."
       }
     },
-    "updatedAt": "2026-11-16T02:02:57.119453Z"
+    "updatedAt": "2026-11-16T02:13:42.659641Z"
   },
   "weather": {
     "sg": {
-      "temp": "28°",
+      "temp": "30°",
       "cond": "Broken clouds",
-      "feels": "Feels like 33° · H 29° / L 28°",
+      "feels": "Feels like 36° · H 31° / L 29°",
       "advice": "Cloudy — warm and humid.",
       "rain": "6%",
-      "hum": "81%",
-      "wind": "6 km/h",
+      "hum": "74%",
+      "wind": "7 km/h",
       "rainLabel": "6% — unlikely",
       "bar": "6%"
     },
     "jb": {
       "temp": "29°",
       "cond": "Broken clouds",
-      "feels": "Feels like 35° · H 29° / L 28°",
+      "feels": "Feels like 35° · H 31° / L 29°",
       "advice": "Cloudy — warm and humid.",
       "rain": "28%",
-      "hum": "84%",
-      "wind": "4 km/h",
+      "hum": "81%",
+      "wind": "7 km/h",
       "rainLabel": "28% — unlikely",
       "bar": "28%"
     },
@@ -53,7 +53,7 @@
       "rainLabel": "99% — likely",
       "bar": "99%"
     },
-    "updatedAt": "2026-11-16T02:02:57.836872Z"
+    "updatedAt": "2026-11-16T02:13:43.106385Z"
   },
   "psi": {
     "regions": {
@@ -66,7 +66,7 @@
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T02:02:58.475452Z"
+    "updatedAt": "2026-11-16T02:13:43.665786Z"
   },
   "holidays": {
     "all": [
@@ -553,7 +553,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T02:02:58.750025Z",
+    "updatedAt": "2026-11-16T02:13:43.876289Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
