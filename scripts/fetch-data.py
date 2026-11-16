@@ -258,8 +258,10 @@ def fetch_checkpoints(existing):
             lo = float(link["MinimumSpeed"])
             hi = float(link["MaximumSpeed"])
             # Band 8 is open-ended (70+); LTA reports its max as 999,
-            # which averages to an absurd 534 km/h. Cap it at 80.
-            speed = (lo + min(hi, 80.0)) / 2
+            # which averages to an absurd 534 km/h. Cap it at 100:
+            # the expressway limit is 90, but not everyone follows it,
+            # so free-flow traffic realistically runs up to ~100.
+            speed = (lo + min(hi, 100.0)) / 2
         except (KeyError, TypeError, ValueError):
             continue
         entry = {"speedKmh": speed, "band": band, "status": status_for(speed),
