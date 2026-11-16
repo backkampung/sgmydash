@@ -9,13 +9,12 @@ Singapore / Johor Bahru / Muar, Singapore PSI by region, and SG + Malaysia
 
 ## How it stays fresh
 
-- **FX rates** — fetched live on every page open from a small serverless
-  proxy, which reads Wise and CIMB server-side. If the proxy is down,
-  the rates show N/A — there is no fallback rate.
-- **Checkpoints, weather, PSI, holidays** — fetched live from the same
-  Cloudflare Worker (`/data`), on every page open and every 30 minutes
-  while open; holidays re-checked at midnight. If the Worker is down,
-  the affected cards show N/A — there is no baked snapshot.
+- **FX rates** — fetched live on every page open from Wise and CIMB. If
+  the rate cannot be read, the rates show N/A — there is no fallback rate.
+- **Checkpoints, weather, PSI, holidays** — fetched live on every page
+  open and every 30 minutes while open; holidays re-checked at midnight.
+  If the data cannot be read, the affected cards show N/A — there is no
+  baked snapshot.
 - **Refresh button** — on the Send card, dim and disabled while the rate is
   fresh, lit and clickable once it is over 5 minutes old. FX never
   auto-refreshes.
@@ -46,16 +45,10 @@ data/johor-holidays.json          Johor state holidays, curated
 data/sg-replacements.json         Singapore observed-day holidays, curated
 ```
 
-All live data (FX + checkpoints + weather + PSI + holidays) comes from
-the Cloudflare Worker at
-`https://sgmy-fx-rates.alien-lim528.workers.dev/` — no GitHub Action,
-no generated data file. The Worker reads the curated holiday files above
-from this site at request time.
-
 ## Notes
 
 - No secrets or keys anywhere in this repo.
-- CIMB's rate is read from its public page by the serverless proxy: if
-  CIMB changes the layout, the CIMB rate shows N/A.
+- CIMB's rate is read from its public page: if CIMB changes the layout,
+  the CIMB rate shows N/A.
 - Holiday dates marked as provisional are subject to official announcement
   (moon sighting).
