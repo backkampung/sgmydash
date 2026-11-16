@@ -1,37 +1,35 @@
 {
-  "generatedAt": "2026-11-16T02:19:41.417032Z",
+  "generatedAt": "2026-11-16T02:25:39.356370Z",
   "checkpoints": {
     "directions": {
       "woodlands_sg_jb": {
-        "speedKmh": 24.5,
-        "band": 3,
-        "status": "Busy",
-        "road": "BUKIT TIMAH ROAD",
-        "incident": "(16/11)08:07 Heavy Traffic on PIE (towards Tuas) at KPE(ECP) Exit."
+        "speedKmh": 54.5,
+        "band": 6,
+        "status": "Moderate",
+        "road": "BUKIT TIMAH EXPRESSWAY"
       },
       "woodlands_jb_sg": {
-        "speedKmh": 14.5,
-        "band": 2,
-        "status": "Jammed",
-        "road": "BUKIT TIMAH ROAD",
-        "incident": "(16/11)08:07 Heavy Traffic on PIE (towards Tuas) at KPE(ECP) Exit."
+        "speedKmh": 534.5,
+        "band": 8,
+        "status": "Smooth",
+        "road": "BUKIT TIMAH EXPRESSWAY"
       },
       "tuas_sg_jb": {
-        "speedKmh": 24.5,
-        "band": 3,
-        "status": "Busy",
+        "speedKmh": 534.5,
+        "band": 8,
+        "status": "Smooth",
         "road": "AYER RAJAH EXPRESSWAY",
         "incident": "(16/11)07:52 Heavy Traffic on AYE (towards Tuas) at Normanton Park Exit."
       },
       "tuas_jb_sg": {
-        "speedKmh": 54.5,
-        "band": 6,
-        "status": "Moderate",
+        "speedKmh": 534.5,
+        "band": 8,
+        "status": "Smooth",
         "road": "AYER RAJAH EXPRESSWAY",
         "incident": "(16/11)07:52 Heavy Traffic on AYE (towards Tuas) at Normanton Park Exit."
       }
     },
-    "updatedAt": "2026-11-16T02:19:54.244291Z"
+    "updatedAt": "2026-11-16T02:26:23.652190Z"
   },
   "weather": {
     "sg": {
@@ -40,7 +38,7 @@
       "feels": "Feels like 36° · H 31° / L 29°",
       "advice": "Cloudy — warm and humid.",
       "rain": "6%",
-      "hum": "74%",
+      "hum": "73%",
       "wind": "7 km/h",
       "rainLabel": "6% — unlikely",
       "bar": "6%"
@@ -48,7 +46,7 @@
     "jb": {
       "temp": "29°",
       "cond": "Broken clouds",
-      "feels": "Feels like 35° · H 31° / L 29°",
+      "feels": "Feels like 36° · H 30° / L 28°",
       "advice": "Cloudy — warm and humid.",
       "rain": "28%",
       "hum": "81%",
@@ -62,12 +60,12 @@
       "feels": "Feels like 34° · H 28° / L 28°",
       "advice": "Rain expected — bring an umbrella.",
       "rain": "99%",
-      "hum": "86%",
+      "hum": "85%",
       "wind": "6 km/h",
       "rainLabel": "99% — likely",
       "bar": "99%"
     },
-    "updatedAt": "2026-11-16T02:19:54.928944Z"
+    "updatedAt": "2026-11-16T02:26:24.349466Z"
   },
   "psi": {
     "regions": {
@@ -80,7 +78,7 @@
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T02:19:55.543043Z"
+    "updatedAt": "2026-11-16T02:26:25.024230Z"
   },
   "holidays": {
     "all": [
@@ -567,7 +565,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T02:19:55.796952Z",
+    "updatedAt": "2026-11-16T02:26:25.315752Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
