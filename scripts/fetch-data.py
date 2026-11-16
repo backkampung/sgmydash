@@ -119,21 +119,60 @@ def status_for(speed):
     return "Smooth"
 
 
+def fetch_speed_band_links(key):
+    """Fetch all TrafficSpeedBands pages. v4 pages at 500 records and
+    the BKE/AYE approach links sit beyond the first page, so follow
+    @odata.nextLink (falling back to $skip) until a page adds nothing
+    new. Links are deduplicated by LinkID."""
+    links = []
+    seen_ids = set()
+    seen_urls = set()
+    url = LTA_SPEED_BANDS
+    for _ in range(12):  # up to ~6000 links
+        if url in seen_urls:
+            break
+        seen_urls.add(url)
+        data = get_json(url, headers={"AccountKey": key})
+        page = data.get("value", [])
+        new = 0
+        for link in page:
+            lid = link.get("LinkID")
+            if lid is None or lid in seen_ids:
+                continue
+            seen_ids.add(lid)
+            links.append(link)
+            new += 1
+        if new == 0:
+            break
+        nxt = data.get("@odata.nextLink") or data.get("nextLink")
+        if nxt:
+            url = nxt if nxt.startswith("http") else "https://datamall2.mytransport.sg" + nxt
+            continue
+        if len(page) == 500:
+            sep = "&" if "?" in LTA_SPEED_BANDS else "?"
+            url = f"{LTA_SPEED_BANDS}{sep}$skip={len(links)}"
+            continue
+        break
+    return links
+
+
 def fetch_checkpoints(existing):
     key = os.environ.get("LTA_API_KEY")
     if not key:
         print("Checkpoints: no LTA_API_KEY, keeping last-known", file=sys.stderr)
         return existing.get("checkpoints")
     try:
-        data = get_json(LTA_SPEED_BANDS, headers={"AccountKey": key})
-        links = data.get("value", [])
+        links = fetch_speed_band_links(key)
     except Exception as e:
         print(f"Checkpoints fetch failed ({e}); keeping last-known", file=sys.stderr)
         return existing.get("checkpoints")
     print(f"Checkpoints: fetched {len(links)} speed-band links")
     if links:
-        roads = sorted({(l.get("RoadName") or "").upper() for l in links})
-        print(f"Checkpoints: sample roads: {roads[:6]}")
+        def _count(*names):
+            return sum(1 for l in links
+                       if any(n in (l.get("RoadName") or "").upper() for n in names))
+        print(f"Checkpoints: BKE links: {_count('BUKIT TIMAH', 'BKE')}, "
+              f"AYE links: {_count('AYER RAJAH', 'AYE')}")
     incident = None
     try:
         inc = get_json(LTA_INCIDENTS, headers={"AccountKey": key})
@@ -168,8 +207,11 @@ def fetch_checkpoints(existing):
                 continue
             cands.append((dist(mid, point), link))
         if not cands:
-            print(f"Checkpoints: no link for {name}; keeping last-known",
-                  file=sys.stderr)
+            road_hits = sum(1 for link in links
+                            if any(r in (link.get("RoadName") or "").upper()
+                                   for r in road_names))
+            print(f"Checkpoints: no link for {name} (road matches: {road_hits}); "
+                  "keeping last-known", file=sys.stderr)
             prev = (existing.get("checkpoints") or {}).get("directions", {}).get(name)
             if prev:
                 out[name] = prev
