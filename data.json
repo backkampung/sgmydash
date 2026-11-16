@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T01:44:27.955418Z",
+  "generatedAt": "2026-11-16T01:50:37.281449Z",
   "weather": {
     "sg": {
       "temp": "28°",
@@ -18,7 +18,7 @@
       "feels": "Feels like 34° · H 29° / L 28°",
       "advice": "Cloudy — warm and humid.",
       "rain": "28%",
-      "hum": "85%",
+      "hum": "84%",
       "wind": "4 km/h",
       "rainLabel": "28% — unlikely",
       "bar": "28%"
@@ -29,12 +29,12 @@
       "feels": "Feels like 33° · H 28° / L 28°",
       "advice": "Rain expected — bring an umbrella.",
       "rain": "99%",
-      "hum": "87%",
+      "hum": "86%",
       "wind": "6 km/h",
       "rainLabel": "99% — likely",
       "bar": "99%"
     },
-    "updatedAt": "2026-11-16T01:44:29.241589Z"
+    "updatedAt": "2026-11-16T01:50:39.707612Z"
   },
   "psi": {
     "regions": {
@@ -47,7 +47,7 @@
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T01:44:30.019197Z"
+    "updatedAt": "2026-11-16T01:50:40.397070Z"
   },
   "holidays": {
     "all": [
@@ -534,7 +534,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T01:44:30.237598Z",
+    "updatedAt": "2026-11-16T01:50:40.602307Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
