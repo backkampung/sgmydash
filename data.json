@@ -1,86 +1,84 @@
 {
-  "generatedAt": "2026-11-16T10:02:55.694960Z",
+  "generatedAt": "2026-11-16T14:24:52.224049Z",
   "checkpoints": {
     "directions": {
       "woodlands_sg_jb": {
-        "speedKmh": 34.5,
-        "band": 4,
-        "status": "Busy",
+        "speedKmh": 54.5,
+        "band": 6,
+        "status": "Moderate",
         "road": "BUKIT TIMAH EXPRESSWAY",
-        "incident": "(16/11)17:54 Heavy Traffic on PIE (towards Tuas) between BKE and Thomson Rd."
+        "incident": "(16/11)15:56 Heavy Traffic on BKE (towards W'lands) at Woodlands Rd Exit."
       },
       "woodlands_jb_sg": {
-        "speedKmh": 64.5,
-        "band": 7,
-        "status": "Smooth",
+        "speedKmh": 54.5,
+        "band": 6,
+        "status": "Moderate",
         "road": "BUKIT TIMAH EXPRESSWAY",
-        "incident": "(16/11)17:54 Heavy Traffic on PIE (towards Tuas) between BKE and Thomson Rd."
+        "incident": "(16/11)15:56 Heavy Traffic on BKE (towards W'lands) at Woodlands Rd Exit."
       },
       "tuas_sg_jb": {
         "speedKmh": 85.0,
         "band": 8,
         "status": "Smooth",
-        "road": "AYER RAJAH EXPRESSWAY",
-        "incident": "(16/11)17:56 Heavy Traffic on AYE (towards MCE) at Jurong Town Hall Rd Exit."
+        "road": "AYER RAJAH EXPRESSWAY"
       },
       "tuas_jb_sg": {
         "speedKmh": 85.0,
         "band": 8,
         "status": "Smooth",
-        "road": "AYER RAJAH EXPRESSWAY",
-        "incident": "(16/11)17:56 Heavy Traffic on AYE (towards MCE) at Jurong Town Hall Rd Exit."
+        "road": "AYER RAJAH EXPRESSWAY"
       }
     },
-    "updatedAt": "2026-11-16T10:03:48.362943Z"
+    "updatedAt": "2026-11-16T14:25:52.793806Z"
   },
   "weather": {
     "sg": {
       "temp": "26°",
-      "cond": "Thunderstorm with rain",
-      "feels": "Feels like 27° · H 26° / L 25°",
-      "advice": "Thunderstorms — stay indoors if you can.",
-      "rain": "100%",
-      "hum": "98%",
-      "wind": "9 km/h",
-      "rainLabel": "100% — likely",
-      "bar": "100%"
+      "cond": "Broken clouds",
+      "feels": "Feels like 27° · H 26° / L 26°",
+      "advice": "Cloudy — warm and humid.",
+      "rain": "56%",
+      "hum": "96%",
+      "wind": "6 km/h",
+      "rainLabel": "56% — likely",
+      "bar": "56%"
     },
     "jb": {
-      "temp": "26°",
-      "cond": "Moderate rain",
-      "feels": "Feels like 27° · H 26° / L 25°",
-      "advice": "Rain expected — bring an umbrella.",
-      "rain": "100%",
-      "hum": "93%",
-      "wind": "9 km/h",
-      "rainLabel": "100% — likely",
-      "bar": "100%"
+      "temp": "25°",
+      "cond": "Broken clouds",
+      "feels": "Feels like 26° · H 26° / L 24°",
+      "advice": "Cloudy — warm and humid.",
+      "rain": "13%",
+      "hum": "100%",
+      "wind": "4 km/h",
+      "rainLabel": "13% — unlikely",
+      "bar": "13%"
     },
     "muar": {
-      "temp": "28°",
-      "cond": "Heavy intensity rain",
-      "feels": "Feels like 34° · H 28° / L 28°",
+      "temp": "27°",
+      "cond": "Moderate rain",
+      "feels": "Feels like 31° · H 27° / L 27°",
       "advice": "Rain expected — bring an umbrella.",
-      "rain": "100%",
-      "hum": "84%",
-      "wind": "5 km/h",
-      "rainLabel": "100% — likely",
-      "bar": "100%"
+      "rain": "1%",
+      "hum": "91%",
+      "wind": "6 km/h",
+      "rainLabel": "1% — unlikely",
+      "bar": "1%"
     },
-    "updatedAt": "2026-11-16T10:03:48.586299Z"
+    "updatedAt": "2026-11-16T14:25:53.644131Z"
   },
   "psi": {
     "regions": {
-      "central": 53,
-      "east": 42,
-      "north": 48,
-      "south": 47,
-      "west": 54
+      "central": 51,
+      "east": 37,
+      "north": 44,
+      "south": 42,
+      "west": 50
     },
-    "overall": 54,
+    "overall": 51,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T10:03:49.277744Z"
+    "updatedAt": "2026-11-16T14:25:54.365797Z"
   },
   "holidays": {
     "all": [
@@ -567,10 +565,44 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T10:03:49.443532Z",
+    "updatedAt": "2026-11-16T14:25:54.661854Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
+    }
+  },
+  "debug": {
+    "lta": {
+      "totalLinks": 50000,
+      "totalPages": 100,
+      "bkePages": [
+        63,
+        64,
+        65,
+        67,
+        68
+      ],
+      "ayePages": [
+        15,
+        16,
+        34,
+        36,
+        37,
+        38,
+        40,
+        64,
+        66,
+        67,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        80
+      ]
     }
   }
 }
