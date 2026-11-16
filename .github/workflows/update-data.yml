@@ -1,7 +1,7 @@
 name: Update dashboard data
 on:
   schedule:
-    - cron: '0 * * * *'  # hourly
+    - cron: '*/30 * * * *'  # hourly
   workflow_dispatch:
 permissions:
   contents: write
