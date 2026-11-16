@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T09:53:51.778400Z",
+  "generatedAt": "2026-11-16T10:02:55.694960Z",
   "checkpoints": {
     "directions": {
       "woodlands_sg_jb": {
@@ -7,31 +7,31 @@
         "band": 4,
         "status": "Busy",
         "road": "BUKIT TIMAH EXPRESSWAY",
-        "incident": "(16/11)17:30 Heavy Traffic on BKE (towards PIE) at SLE Exit."
+        "incident": "(16/11)17:54 Heavy Traffic on PIE (towards Tuas) between BKE and Thomson Rd."
       },
       "woodlands_jb_sg": {
         "speedKmh": 64.5,
         "band": 7,
         "status": "Smooth",
         "road": "BUKIT TIMAH EXPRESSWAY",
-        "incident": "(16/11)17:30 Heavy Traffic on BKE (towards PIE) at SLE Exit."
+        "incident": "(16/11)17:54 Heavy Traffic on PIE (towards Tuas) between BKE and Thomson Rd."
       },
       "tuas_sg_jb": {
         "speedKmh": 85.0,
         "band": 8,
         "status": "Smooth",
         "road": "AYER RAJAH EXPRESSWAY",
-        "incident": "(16/11)17:44 Heavy Traffic on AYE (towards Tuas) between Tuas Checkpoint and Tuas West Rd."
+        "incident": "(16/11)17:56 Heavy Traffic on AYE (towards MCE) at Jurong Town Hall Rd Exit."
       },
       "tuas_jb_sg": {
         "speedKmh": 85.0,
         "band": 8,
         "status": "Smooth",
         "road": "AYER RAJAH EXPRESSWAY",
-        "incident": "(16/11)17:44 Heavy Traffic on AYE (towards Tuas) between Tuas Checkpoint and Tuas West Rd."
+        "incident": "(16/11)17:56 Heavy Traffic on AYE (towards MCE) at Jurong Town Hall Rd Exit."
       }
     },
-    "updatedAt": "2026-11-16T09:54:41.352571Z"
+    "updatedAt": "2026-11-16T10:03:48.362943Z"
   },
   "weather": {
     "sg": {
@@ -40,14 +40,14 @@
       "feels": "Feels like 27° · H 26° / L 25°",
       "advice": "Thunderstorms — stay indoors if you can.",
       "rain": "100%",
-      "hum": "97%",
+      "hum": "98%",
       "wind": "9 km/h",
       "rainLabel": "100% — likely",
       "bar": "100%"
     },
     "jb": {
       "temp": "26°",
-      "cond": "Light rain",
+      "cond": "Moderate rain",
       "feels": "Feels like 27° · H 26° / L 25°",
       "advice": "Rain expected — bring an umbrella.",
       "rain": "100%",
@@ -67,20 +67,20 @@
       "rainLabel": "100% — likely",
       "bar": "100%"
     },
-    "updatedAt": "2026-11-16T09:54:42.115207Z"
+    "updatedAt": "2026-11-16T10:03:48.586299Z"
   },
   "psi": {
     "regions": {
       "central": 53,
       "east": 42,
       "north": 48,
-      "south": 48,
+      "south": 47,
       "west": 54
     },
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T09:54:42.927845Z"
+    "updatedAt": "2026-11-16T10:03:49.277744Z"
   },
   "holidays": {
     "all": [
@@ -567,7 +567,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T09:54:43.134891Z",
+    "updatedAt": "2026-11-16T10:03:49.443532Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
