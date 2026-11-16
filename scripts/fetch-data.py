@@ -131,7 +131,7 @@ def fetch_speed_band_links(key):
     seen_ids = set()
     seen_urls = set()
     url = LTA_SPEED_BANDS
-    for _ in range(12):  # up to ~6000 links
+    for _ in range(30):  # up to ~15000 links
         if url in seen_urls:
             break
         seen_urls.add(url)
@@ -181,6 +181,27 @@ def fetch_checkpoints(existing):
         print(f"Checkpoints: expressway roads ({len(expy)}): {expy[:12]}")
         cats = sorted({str(l.get("RoadCategory")) for l in links})
         print(f"Checkpoints: road categories: {cats}")
+        # Diagnostic: the nearest links to each checkpoint, whatever
+        # their name — this shows what the approach roads are actually
+        # called in LTA's data.
+        for label, point in (("woodlands", (1.447, 103.786)),
+                             ("tuas", (1.321, 103.635))):
+            near = []
+            for link in links:
+                try:
+                    sp = (float(link["StartLat"]), float(link["StartLon"]))
+                    ep = (float(link["EndLat"]), float(link["EndLon"]))
+                except (KeyError, TypeError, ValueError):
+                    continue
+                mid = ((sp[0] + ep[0]) / 2, (sp[1] + ep[1]) / 2)
+                near.append((dist(mid, point), link))
+            near.sort(key=lambda c: c[0])
+            print(f"Checkpoints: nearest to {label}:")
+            for d, link in near[:5]:
+                print(f"  {d * 111:.2f} km LinkID={link.get('LinkID')} "
+                      f"road={link.get('RoadName')!r} cat={link.get('RoadCategory')} "
+                      f"band={link.get('SpeedBand')} "
+                      f"speed={link.get('MinimumSpeed')}-{link.get('MaximumSpeed')}")
     incidents = {"woodlands": None, "tuas": None}
     try:
         inc = get_json(LTA_INCIDENTS, headers={"AccountKey": key})
@@ -200,6 +221,7 @@ def fetch_checkpoints(existing):
     except Exception as e:
         print(f"Checkpoints incidents failed ({e})", file=sys.stderr)
     out = {}
+    fresh_any = False
     for name, (road_names, point, direction) in CHECKPOINTS.items():
         pinned = CHECKPOINT_LINKS.get(name)
         cands = []
@@ -242,8 +264,9 @@ def fetch_checkpoints(existing):
         if incidents[road_key]:
             entry["incident"] = incidents[road_key]
         out[name] = entry
+        fresh_any = True
         print(f"Checkpoints {name}: {speed} km/h ({entry['status']})")
-    if not out:
+    if not out or not fresh_any:
         return existing.get("checkpoints")
     return {"directions": out, "updatedAt": now_iso()}
 
