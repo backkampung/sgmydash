@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T02:13:38.296862Z",
+  "generatedAt": "2026-11-16T02:19:41.417032Z",
   "checkpoints": {
     "directions": {
       "woodlands_sg_jb": {
@@ -15,9 +15,23 @@
         "status": "Jammed",
         "road": "BUKIT TIMAH ROAD",
         "incident": "(16/11)08:07 Heavy Traffic on PIE (towards Tuas) at KPE(ECP) Exit."
+      },
+      "tuas_sg_jb": {
+        "speedKmh": 24.5,
+        "band": 3,
+        "status": "Busy",
+        "road": "AYER RAJAH EXPRESSWAY",
+        "incident": "(16/11)07:52 Heavy Traffic on AYE (towards Tuas) at Normanton Park Exit."
+      },
+      "tuas_jb_sg": {
+        "speedKmh": 54.5,
+        "band": 6,
+        "status": "Moderate",
+        "road": "AYER RAJAH EXPRESSWAY",
+        "incident": "(16/11)07:52 Heavy Traffic on AYE (towards Tuas) at Normanton Park Exit."
       }
     },
-    "updatedAt": "2026-11-16T02:13:42.659641Z"
+    "updatedAt": "2026-11-16T02:19:54.244291Z"
   },
   "weather": {
     "sg": {
@@ -53,7 +67,7 @@
       "rainLabel": "99% — likely",
       "bar": "99%"
     },
-    "updatedAt": "2026-11-16T02:13:43.106385Z"
+    "updatedAt": "2026-11-16T02:19:54.928944Z"
   },
   "psi": {
     "regions": {
@@ -66,7 +80,7 @@
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T02:13:43.665786Z"
+    "updatedAt": "2026-11-16T02:19:55.543043Z"
   },
   "holidays": {
     "all": [
@@ -553,7 +567,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T02:13:43.876289Z",
+    "updatedAt": "2026-11-16T02:19:55.796952Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
