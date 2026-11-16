@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<link rel="icon" href="data:," />
+<title>SG–MY Cross-Border Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2ee; --surface:#ffffff; --surface-2:#f3f6f3; --ink:#13211d; --muted:#5b6b66; --line:#dde5de;
+    --teal:#0e6b5e; --teal-dark:#0a2e29; --teal-soft:#e2f0eb; --amber-soft:#fdf3d7;
+    --shadow:0 1px 2px rgba(16,40,32,.06),0 8px 22px rgba(16,40,32,.06);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b100e; --surface:#151c19; --surface-2:#1a2420; --ink:#edf3ef; --muted:#9db0a7; --line:#26332e; --teal:#2dd4bf; --teal-soft:#17332d; --amber-soft:#2e2410; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px rgba(0,0,0,.25); }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+  button,input{min-height:2.25rem}
+  a{color:var(--teal)}
+  .wrap{max-width:640px;margin:0 auto;padding:0 14px 28px}
+  p{overflow-wrap:break-word}
+  .topbar{background:var(--teal-dark);color:#eafff8;margin:0 -14px;padding:16px 18px;border-radius:0 0 18px 18px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:space-between}
+  .topbar h1{font-size:19px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
+  .topbar h1 span{color:#facc15}
+  .date-line{font-size:12px;color:#a9c8be;margin-top:3px}
+  .meta{font-size:11px;color:#a9c8be;text-align:right;line-height:1.4}
+  .meta strong{display:block;color:#fff;font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600}
+  .live-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px;font-size:11px;color:#a9c8be}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex:0 0 auto;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;min-width:0}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .card-title{display:flex;gap:10px;align-items:center;min-width:0}
+  .icon{width:36px;height:36px;border-radius:10px;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center;flex:0 0 auto}
+  .icon svg{width:19px;height:19px}
+  .card-title h2{font-size:15.5px;margin:0;letter-spacing:-.01em}
+  .card-title p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  .source{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;padding-top:5px;text-decoration:none}
+  .source:hover{color:var(--teal);text-decoration:underline}
+  .src-foot{margin:12px 0 0;font-size:11.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:9px;line-height:1.55}
+  .src-foot a{font-weight:600}
+  .hero{border:2px solid var(--teal)}
+  .cp{border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:14px}
+  .cp + .cp{margin-top:10px}
+  .cp h3{margin:0 0 2px;font-size:16px}
+  .cp-dir{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px dashed var(--line);flex-wrap:wrap}
+  .cp-dir:first-of-type{border-top:0}
+  .cp-dir-main{flex:1 1 auto;min-width:100px}
+  .cp-dir-name{font-weight:700;font-size:14px}
+  .cp-dir-road{font-size:12px;color:var(--muted);margin-top:1px}
+  .cp-speed{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:21px;white-space:nowrap;text-align:right}
+  .cp-speed small{display:block;font-family:"Plus Jakarta Sans",sans-serif;font-size:10px;font-weight:600;color:var(--muted)}
+  .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+  .status i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:0 0 auto}
+  .st-smooth{background:#e6f4ea;color:#137333;border-color:#bfe3cc}
+  .st-moderate{background:#fef7e0;color:#b06000;border-color:#f2dd9a}
+  .st-busy{background:#feefe3;color:#b54708;border-color:#f5cf9f}
+  .st-jammed{background:#fdecea;color:#b42318;border-color:#f5b5ae}
+  @media(prefers-color-scheme:dark){
+    .st-smooth{background:#12291c;color:#7bc98d;border-color:#1f4630}
+    .st-moderate{background:#2e2410;color:#e3b341;border-color:#5a4718}
+    .st-busy{background:#2e1c0d;color:#f0a35e;border-color:#5f3a17}
+    .st-jammed{background:#2a1512;color:#f97066;border-color:#5a2a22}
+  }
+  .bandbar{display:flex;gap:3px;flex-basis:100%}
+  .bandbar i{height:6px;flex:1;border-radius:99px;background:var(--line)}
+  .bandbar i.on-jammed{background:#d92d20}.bandbar i.on-busy{background:#dc6803}.bandbar i.on-moderate{background:#d9930d}.bandbar i.on-smooth{background:#12805c}
+  .incident{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:#fdecea;border:1px solid #f5b5ae;border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:#7a271a}
+  @media(prefers-color-scheme:dark){.incident{background:#2a1512;border-color:#5a2a22;color:#fda29b}}
+  .incident svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
+  .legend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:12px;font-size:11.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:8px;height:8px;border-radius:50%}
+  .updated{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+  .updated strong{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .fresh{font-size:11px;color:var(--muted)}
+  .cimb-banner{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .cimb-rate{font-family:"IBM Plex Mono",monospace;font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+  .cimb-rate small{font-size:.45em;font-weight:500;color:var(--muted)}
+  .cimb-name{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b42318;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .cimb-name .fresh{text-transform:none;letter-spacing:0;font-weight:600}
+  @media(prefers-color-scheme:dark){.cimb-name{color:#f97066}}
+  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--teal-soft);color:var(--teal);border:1px solid var(--line)}
+  .cimb-when{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+  .calc{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .calc h3{margin:0 0 10px;font-size:14px}
+  label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+  .field{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:4px 12px}
+  .field:focus-within{border-color:var(--teal)}
+  .field span{font-weight:800;font-size:13px;color:var(--teal)}
+  .field input{border:0;outline:0;background:transparent;width:100%;font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600;color:var(--ink);padding:8px 0;min-width:0}
+  .fee-formula{margin-top:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.6}
+  .fee-formula code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+  .fee-formula p{margin:5px 0 0;color:var(--muted);font-size:12px}
+  .cmp-results{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+  .cmp-box{border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--surface-2)}
+  .cmp-box.best{border-color:var(--teal);background:var(--teal-soft)}
+  .cmp-box h4{margin:0 0 8px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .cmp-box dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+  .cmp-box dt{color:var(--muted)} .cmp-box dd{margin:0;text-align:right;font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .cmp-box .recv{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px}
+  .cmp-box .recv b{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600}
+  .best-tag{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:var(--teal);color:#fff;padding:4px 8px;border-radius:999px}
+  .verdict{margin-top:12px;font-size:13px;line-height:1.55;background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:10px 12px}
+  @media(prefers-color-scheme:dark){.verdict{border-color:#5a4718}}
+  .rate-refresh-row{margin-top:12px}
+  .rate-refresh-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--surface-2);color:var(--muted);border:1.5px solid var(--line);border-radius:12px;padding:12px;font:800 15px "Plus Jakarta Sans",sans-serif;cursor:pointer;min-height:48px;opacity:.72;transition:opacity .3s ease,background .3s ease,color .3s ease,border-color .3s ease}
+  .rate-refresh-btn svg{width:18px;height:18px;flex:0 0 auto}
+  .rate-refresh-btn.stale{background:var(--teal);color:#fff;border-color:var(--teal);opacity:1;animation:btnpulse 1.6s ease-in-out infinite}
+  .rate-refresh-btn:disabled{opacity:.65;cursor:not-allowed;animation:none}
+  .rate-refresh-btn.busy:disabled{cursor:wait}
+  @keyframes btnpulse{0%,100%{box-shadow:0 0 0 0 rgba(14,107,94,.45)}50%{box-shadow:0 0 0 7px rgba(14,107,94,0)}}
+  .tabs{display:flex;gap:8px;margin-bottom:14px}
+  .tabs button{flex:1;border:1.5px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 6px;cursor:pointer;font:700 13px "Plus Jakarta Sans",sans-serif;color:var(--muted);min-height:44px}
+  .tabs button[aria-selected="true"]{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark)}
+  .wx-main{display:flex;gap:14px;align-items:center}
+  .wx-temp{font-family:"IBM Plex Mono",monospace;font-size:50px;font-weight:600;letter-spacing:-.05em;line-height:1}
+  .wx-cond{font-weight:700;font-size:15.5px}
+  .wx-feels{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+  .wx-cell{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px}
+  .wx-cell b{display:block;font-size:15px;margin-top:2px}
+  .wx-cell span{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .rainbar{height:6px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden}
+  .rainbar i{display:block;height:100%;background:#0284c7;border-radius:99px;transition:width .4s ease}
+  .rain-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+  .psi-hero{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .psi-num{font-family:"IBM Plex Mono",monospace;font-size:42px;font-weight:600;line-height:1}
+  .band{font-weight:800;font-size:12.5px;padding:6px 10px;border-radius:999px;background:var(--amber-soft);color:#b54708;border:1px solid #f5d48b}
+  .psi-row{display:grid;grid-template-columns:58px 1fr 32px;gap:10px;align-items:center;padding:8px 0;border-top:1px dashed var(--line);font-size:13px}
+  .psi-row:first-of-type{border-top:0}
+  .bar{height:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:99px}
+  .psi-val{font-family:"IBM Plex Mono",monospace;font-weight:600;text-align:right}
+  .note{font-size:12.5px;color:var(--muted);line-height:1.55;margin:10px 0 0}
+  .longweekend{display:flex;gap:11px;background:var(--amber-soft);border:1px solid #ecd28a;border-radius:14px;padding:12px 13px;margin-bottom:14px}
+  @media(prefers-color-scheme:dark){.longweekend{border-color:#5a4718}}
+  .longweekend strong{font-size:13.5px}
+  .longweekend p{margin:3px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .hol-cols h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 6px;display:flex;align-items:center;gap:8px}
+  .hol-cols h3:first-child{margin-top:0}
+  .flag{width:22px;height:15px;border-radius:3px;overflow:hidden;display:inline-block;flex:0 0 auto;border:1px solid var(--line)}
+  .hol{list-style:none;margin:0;padding:0}
+  .hol li{display:flex;gap:10px;padding:8px 0;border-top:1px dashed var(--line);font-size:13px;align-items:baseline}
+  .hol li:first-child{border-top:0}
+  .hol time{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--teal);white-space:nowrap;min-width:84px}
+  .hol .dow{color:var(--muted);font-size:12px;margin-left:auto;white-space:nowrap}
+  .johor-box{margin-top:14px;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:12px 13px}
+  .johor-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
+  .johor-head h4{margin:0;font-size:13.5px}
+  .johor-head span{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);background:var(--teal-soft);border:1px solid var(--line);padding:4px 8px;border-radius:999px;white-space:nowrap}
+  .johor-note{font-size:12px;color:var(--muted);line-height:1.55;margin:6px 0 4px}
+  .hol-johor li{align-items:flex-start}
+  .hol-johor .hol-main{flex:1;min-width:0;line-height:1.4}
+  .hol-johor .hol-sub{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+  .tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.02em;padding:2px 7px;border-radius:999px;vertical-align:1px;margin-left:6px;white-space:nowrap}
+  .tag-only{background:#0e6b5e;color:#fff}
+  .tag-shared{background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+  .tag-replace{background:var(--amber-soft);color:#92400e;border:1px solid #ecd28a}
+  .tag-sg{background:#fdecea;color:#b42318;border:1px solid #f5b5ae}
+  .tag-my{background:#e8effc;color:#175cd3;border:1px solid #b8cdf5}
+  @media(prefers-color-scheme:dark){.tag-replace{color:#fbbf24;border-color:#5a4718}.tag-only{background:#0f766e}.tag-sg{background:#2a1512;color:#f97066;border-color:#5a2a22}.tag-my{background:#14213d;color:#84adff;border-color:#2f4a7a}}
+  .hol-merged li{align-items:flex-start}
+  .hol-merged .hol-main{flex:1;min-width:0;line-height:1.4}
+  .hol-merged .hol-sub{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+  .hol li.hol-year{border-top:0;padding:14px 0 3px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);align-items:center}
+  .hol li.hol-year:first-child{padding-top:2px}
+  .hol li.hol-year::after{content:"";flex:1;border-top:2px solid var(--teal-soft)}
+  .hol li.hol-empty{border-top:0;color:var(--muted);font-size:12.5px;line-height:1.5}
+  footer{margin-top:14px;font-size:11.5px;color:var(--muted);line-height:1.7}
+  footer a{text-decoration:underline}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <div>
+      <h1>SG ⇄ MY <span>Dashboard</span></h1>
+      <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
+    </div>
+    <div class="meta">Singapore time<strong id="clock">--:--:--</strong></div>
+  </header>
+
+  <main class="stack">
+
+    <!-- 1 · Checkpoints — data.json, auto-updates every 30 min -->
+    <section class="card hero" aria-labelledby="cp-h">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17a6 6 0 0 1 12 0M12 11V7M12 7l3-2M9 21h6"/></svg></div>
+          <div><h2 id="cp-h">Causeway checkpoints</h2><p>Jam or smooth — road speeds, no cameras</p></div>
+        </div>
+        <a class="source" href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall ↗</a>
+      </div>
+      <p class="updated">Updated <strong id="cpUpdated">15 Nov 2026, 11:45 pm</strong></p>
+      <div class="cp">
+        <h3>Woodlands</h3>
+        <div class="cp-dir" data-cp="woodlands_sg_jb">
+          <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">BKE towards Woodlands</div></div>
+          <div class="cp-speed"><span class="cp-speed-num">14 km/h</span><small class="cp-band">Band 2 of 8</small></div>
+          <span class="status st-jammed"><i></i><span class="status-label">Jammed</span></span>
+          <div class="bandbar" aria-hidden="true"><i class="on-jammed"></i><i class="on-jammed"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="cp-dir" data-cp="woodlands_jb_sg">
+          <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">BKE from Woodlands</div></div>
+          <div class="cp-speed"><span class="cp-speed-num">66 km/h</span><small class="cp-band">Band 8 of 8</small></div>
+          <span class="status st-smooth"><i></i><span class="status-label">Smooth</span></span>
+          <div class="bandbar" aria-hidden="true"><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i></div>
+        </div>
+        <div class="incident" id="cpIncident"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentText"><strong>LTA advisory:</strong> Heavy Traffic on BKE towards Woodlands Checkpoint.</span></div>
+      </div>
+      <div class="cp">
+        <h3>Tuas · Second Link</h3>
+        <div class="cp-dir" data-cp="tuas_sg_jb">
+          <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">AYE towards Tuas</div></div>
+          <div class="cp-speed"><span class="cp-speed-num">48 km/h</span><small class="cp-band">Band 6 of 8</small></div>
+          <span class="status st-moderate"><i></i><span class="status-label">Moderate</span></span>
+          <div class="bandbar" aria-hidden="true"><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i></i><i></i></div>
+        </div>
+        <div class="cp-dir" data-cp="tuas_jb_sg">
+          <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">AYE from Tuas</div></div>
+          <div class="cp-speed"><span class="cp-speed-num">31 km/h</span><small class="cp-band">Band 4 of 8</small></div>
+          <span class="status st-busy"><i></i><span class="status-label">Busy</span></span>
+          <div class="bandbar" aria-hidden="true"><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="legend" aria-label="How the status is decided">
+        <span><i style="background:#d92d20"></i>Jammed &lt;20</span>
+        <span><i style="background:#dc6803"></i>Busy 20–39</span>
+        <span><i style="background:#d9930d"></i>Moderate 40–59</span>
+        <span><i style="background:#12805c"></i>Smooth 60+ km/h</span>
+      </div>
+      <p class="src-foot">Singapore-side approach speeds only — not immigration clearance time. Source: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a></p>
+    </section>
+
+    <!-- 2 · CIMB vs Wise — rates via Cloudflare Worker first (server-side Wise + CIMB fetch, no CORS), then rates.json, then the baked snapshot; latest rate pulled once on page open and never auto-refreshed after that — the refresh button (dim + disabled while fresh, lit + clickable once the rate is over 5 min old) is the only way to update it -->
+    <section class="card" aria-labelledby="cmp-h">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13M17 7l-3-3M17 7l-3 3M20 17H7m0 0 3 3M7 17l3-3"/></svg></div>
+          <div><h2 id="cmp-h">Send SGD → MYR</h2><p>CIMB vs Wise — what the recipient gets</p></div>
+        </div>
+        <a class="source" href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB SG ↗</a>
+      </div>
+
+      <div class="cimb-banner">
+        <div class="cimb-name"><span>CIMB Singapore</span></div>
+        <div class="cimb-rate">1 SGD = <span id="cimbRateDisplay">3.1522</span> <small>MYR</small></div>
+        <div style="margin-top:8px"><span class="pill">Zero fees</span></div>
+        <div class="cimb-when">As of <span id="cimbWhen">15 Nov 2026, 11:41 pm</span> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">Live rate at CIMB Clicks SG →</a></div>
+      </div>
+
+      <div class="calc">
+        <h3>Compare on your amount</h3>
+        <div><label for="sendAmt">You send (SGD)</label><div class="field"><span>SGD</span><input id="sendAmt" type="number" inputmode="decimal" value="1000" min="0" step="any"></div></div>
+        <div class="fee-formula" aria-label="Wise fee formula">
+          <strong>Wise fee — fixed formula, not editable</strong><br>
+          <code>Our fee = (0.54 + 0.25% × amount) ÷ 1.0025</code> · VAT = 8% of fee
+          <p>Fitted from five Wise app screenshots, 15–16 Nov 2026 — verify in the Wise app before sending.</p>
+        </div>
+        <div class="cmp-results">
+          <div class="cmp-box" id="cimbBox">
+            <h4>CIMB Singapore <span class="best-tag" id="cimbBest" hidden>Best</span></h4>
+            <dl><dt>Rate</dt><dd id="cimbRateVal">3.1522</dd><dt>Fee</dt><dd>SGD 0.00</dd></dl>
+            <div class="recv"><span>Recipient gets</span><b id="cimbRecv">MYR 3,152.20</b></div>
+          </div>
+          <div class="cmp-box" id="wiseBox">
+            <h4>Wise <span class="best-tag" id="wiseBest" hidden>Best</span></h4>
+            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">3.17263</dd><dt>Our fee</dt><dd id="wiseOurFee">SGD 3.03</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">SGD 0.24</dd><dt>Total fee</dt><dd id="wiseFeeOut">SGD 3.27</dd><dt>Converted</dt><dd id="wiseNet">SGD 996.73</dd></dl>
+            <div class="recv"><span>Recipient gets</span><b id="wiseRecv">MYR 3,162.23</b></div>
+          </div>
+        </div>
+        <p class="verdict" id="verdict"></p>
+        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">15 Nov 2026, 11:41 pm</span></p>
+        <div class="rate-refresh-row">
+          <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
+        </div>
+      </div>
+      <p class="src-foot">Wise rate <span id="wiseRateFoot">3.17263</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a></p>
+    </section>
+
+    <!-- 3 · Weather — data.json, auto-updates every 30 min -->
+    <section class="card" aria-labelledby="wx-h">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.5A4 4 0 0 0 7 19h10.5Z"/></svg></div>
+          <div><h2 id="wx-h">Weather</h2><p>Singapore · JB · Muar</p></div>
+        </div>
+        <a class="source" href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather ↗</a>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Choose city">
+        <button type="button" role="tab" aria-selected="true" data-city="sg">Singapore</button>
+        <button type="button" role="tab" aria-selected="false" data-city="jb">Johor Bahru</button>
+        <button type="button" role="tab" aria-selected="false" data-city="muar">Muar</button>
+      </div>
+      <div class="wx-main">
+        <div class="wx-temp" id="wxTemp">31°</div>
+        <div>
+          <div class="wx-cond" id="wxCond">Thundery showers</div>
+          <div class="wx-feels" id="wxFeels">Feels like 36° · H 32° / L 26°</div>
+          <div class="wx-feels" id="wxAdvice">Pack an umbrella — heaviest rain mid-afternoon.</div>
+        </div>
+      </div>
+      <div class="wx-grid">
+        <div class="wx-cell"><span>Rain chance</span><b id="wxRain">70%</b></div>
+        <div class="wx-cell"><span>Humidity</span><b id="wxHum">79%</b></div>
+        <div class="wx-cell"><span>Wind</span><b id="wxWind">12 km/h</b></div>
+      </div>
+      <div class="rainbar" aria-hidden="true"><i id="rainBar" style="width:70%"></i></div>
+      <div class="rain-label"><span>Chance of rain today</span><span id="rainLabel">70% — likely</span></div>
+      <p class="src-foot">Updated <span id="wxUpdated">15 Nov 2026</span> · Source: <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a></p>
+    </section>
+
+    <!-- 4 · PSI — data.json, auto-updates every 30 min -->
+    <section class="card" aria-labelledby="psi-h">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18M6 11c1.5-4 4-6 6-6s4.5 2 6 6M12 15v6M8 21h8"/></svg></div>
+          <div><h2 id="psi-h">Air quality — PSI</h2><p>Singapore, 24-hour by region</p></div>
+        </div>
+        <a class="source" href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg ↗</a>
+      </div>
+      <div class="psi-hero">
+        <div class="psi-num" id="psiOverall">52</div>
+        <div><span class="band" id="psiBand">MODERATE</span><p id="psiAdvice" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">Normal activities fine.</p></div>
+      </div>
+      <div id="psiList">
+        <div class="psi-row" data-region="central"><span>Central</span><div class="bar"><i style="width:52%;background:#d9930d"></i></div><span class="psi-val">52</span></div>
+        <div class="psi-row" data-region="west"><span>West</span><div class="bar"><i style="width:55%;background:#d9930d"></i></div><span class="psi-val">55</span></div>
+        <div class="psi-row" data-region="south"><span>South</span><div class="bar"><i style="width:51%;background:#d9930d"></i></div><span class="psi-val">51</span></div>
+        <div class="psi-row" data-region="east"><span>East</span><div class="bar"><i style="width:48%;background:#12805c"></i></div><span class="psi-val">48</span></div>
+        <div class="psi-row" data-region="north"><span>North</span><div class="bar"><i style="width:44%;background:#12805c"></i></div><span class="psi-val">44</span></div>
+      </div>
+      <p class="note" id="psiNote">0–50 Good · 51–100 Moderate · 101–200 Unhealthy · East (Bedok): 48, Good</p>
+      <p class="src-foot">Updated <span id="psiUpdated">15 Nov 2026</span> · Source: <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg</a> · <a href="https://www.nea.gov.sg/" target="_blank" rel="noopener">NEA</a></p>
+    </section>
+
+    <!-- 5 · Holidays — data.json, fresh on every load, re-checked daily at 12am -->
+    <section class="card" aria-labelledby="hol-h">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></div>
+          <div><h2 id="hol-h">Holidays &amp; long weekends</h2><p>Singapore · Malaysia · Johor — upcoming only, in date order</p></div>
+        </div>
+        <a class="source" href="https://date.nager.at/" target="_blank" rel="noopener">Nager.Date ↗</a>
+      </div>
+      <div class="longweekend">
+        <div style="font-size:20px;line-height:1" aria-hidden="true">★</div>
+        <div><strong id="lwTitle">Next long weekend: Christmas — Fri 25 to Sun 27 Dec 2026</strong><p id="lwDetail">Both countries off Fri 25 Dec. Add Mon 28 Dec leave for 4 days.</p></div>
+      </div>
+      <div class="hol-cols">
+        <p class="note" style="margin:0 0 4px">Weekend is <strong>Sat–Sun</strong> in Singapore and Johor (Johor since 1 Jan 2025), so a holiday falling on Sunday gets a replacement day — usually the Monday, unless that day is already a holiday. Lunar-based dates are subject to official announcement.</p>
+        <ul class="hol hol-merged" id="holAll">
+          <li><time>1 Feb 2026</time><span class="hol-main">Thaipusam<span class="tag tag-my">MY</span><span class="hol-sub">Observed in Johor and other Malaysian states · fell on Sunday</span></span><span class="dow">Sun</span></li>
+          <li><time>2 Feb 2026</time><span class="hol-main">Thaipusam<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 1 Feb — Malaysia &amp; Johor</span></span><span class="dow">Mon</span></li>
+          <li><time>18 Feb 2026</time><span class="hol-main">Chinese New Year — Day 2<span class="tag tag-my">MY</span><span class="hol-sub">Malaysia nationwide, including Johor</span></span><span class="dow">Wed</span></li>
+          <li><time>19 Feb 2026</time><span class="hol-main">Awal Ramadan<span class="tag tag-my">MY</span><span class="hol-sub">Johor &amp; Kedah · Lunar-based — subject to official announcement</span></span><span class="dow">Thu</span></li>
+          <li><time>23 Mar 2026</time><span class="hol-main">Sultan of Johor's Birthday<span class="tag tag-only">Johor only</span></span><span class="dow">Mon</span></li>
+          <li><time>24 Mar 2026</time><span class="hol-main">Hari Raya Aidilfitri<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Johor replacement day — Mon 23 Mar is the Sultan of Johor's Birthday · Lunar-based — subject to official announcement</span></span><span class="dow">Tue</span></li>
+          <li><time>31 May 2026</time><span class="hol-main">Vesak Day / Wesak Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Same festival — Vesak in Singapore, Wesak in Malaysia · fell on Sunday</span></span><span class="dow">Sun</span></li>
+          <li><time>1 Jun 2026</time><span class="hol-main">Vesak Day<span class="tag tag-sg">SG</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Singapore replacement for Sun 31 May</span></span><span class="dow">Mon</span></li>
+          <li><time>2 Jun 2026</time><span class="hol-main">Wesak Day<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Malaysia replacement for Sun 31 May — Mon 1 Jun is already the Agong's Birthday</span></span><span class="dow">Tue</span></li>
+          <li><time>21 Jul 2026</time><span class="hol-main">Hari Hol Almarhum Sultan Iskandar<span class="tag tag-only">Johor only</span></span><span class="dow">Tue</span></li>
+          <li><time>9 Aug 2026</time><span class="hol-main">National Day<span class="tag tag-sg">SG</span><span class="hol-sub">Fell on Sunday</span></span><span class="dow">Sun</span></li>
+          <li><time>10 Aug 2026</time><span class="hol-main">National Day<span class="tag tag-sg">SG</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 9 Aug</span></span><span class="dow">Mon</span></li>
+          <li><time>8 Nov 2026</time><span class="hol-main">Deepavali<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Also observed in Johor · fell on Sunday</span></span><span class="dow">Sun</span></li>
+          <li><time>9 Nov 2026</time><span class="hol-main">Deepavali<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 8 Nov — Singapore, Malaysia &amp; Johor</span></span><span class="dow">Mon</span></li>
+          <li><time>25 Dec 2026</time><span class="hol-main">Christmas Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Fri</span></li>
+          <li><time>1 Jan 2027</time><span class="hol-main">New Year's Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Malaysia — not observed in Johor</span></span><span class="dow">Fri</span></li>
+          <li><time>22 Jan 2027</time><span class="hol-main">Thaipusam<span class="tag tag-my">MY</span><span class="hol-sub">Observed in Johor and other Malaysian states</span></span><span class="dow">Fri</span></li>
+          <li><time>6 Feb 2027</time><span class="hol-main">Chinese New Year<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Sat</span></li>
+          <li><time>7 Feb 2027</time><span class="hol-main">Chinese New Year — Day 2<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Falls on Sunday — replacements follow below</span></span><span class="dow">Sun</span></li>
+          <li><time>8 Feb 2027</time><span class="hol-main">Chinese New Year — Day 2<span class="tag tag-sg">SG</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Singapore replacement for Sun 7 Feb</span></span><span class="dow">Mon</span></li>
+          <li><time>8 Feb 2027</time><span class="hol-main">Chinese New Year in lieu<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Malaysia replacement for Sun 7 Feb — not observed in Johor</span></span><span class="dow">Mon</span></li>
+          <li><time>8 Feb 2027</time><span class="hol-main">Awal Ramadan<span class="tag tag-my">MY</span><span class="hol-sub">Johor &amp; Kedah · Lunar-based — subject to official announcement</span></span><span class="dow">Mon</span></li>
+          <li><time>9 Feb 2027</time><span class="hol-main">Chinese New Year in lieu<span class="tag tag-only">Johor only</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Johor replacement for Sun 7 Feb — Mon 8 Feb is already Awal Ramadan, so it moves to Tuesday</span></span><span class="dow">Tue</span></li>
+          <li><time>24 Feb 2027</time><span class="hol-main">Nuzul Al-Quran<span class="tag tag-my">MY</span><span class="hol-sub">Not observed in Johor · Lunar-based — subject to official announcement</span></span><span class="dow">Wed</span></li>
+          <li><time>10 Mar 2027</time><span class="hol-main">Hari Raya Puasa / Aidilfitri<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Hari Raya Puasa in Singapore, Hari Raya Aidilfitri in Malaysia · Lunar-based — subject to official announcement (moon-sighting)</span></span><span class="dow">Wed</span></li>
+          <li><time>11 Mar 2027</time><span class="hol-main">Hari Raya Aidilfitri — Day 2<span class="tag tag-my">MY</span><span class="hol-sub">Lunar-based — subject to official announcement</span></span><span class="dow">Thu</span></li>
+          <li><time>23 Mar 2027</time><span class="hol-main">Sultan of Johor's Birthday<span class="tag tag-only">Johor only</span></span><span class="dow">Tue</span></li>
+          <li><time>26 Mar 2027</time><span class="hol-main">Good Friday<span class="tag tag-sg">SG</span></span><span class="dow">Fri</span></li>
+          <li><time>1 May 2027</time><span class="hol-main">Labour Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Sat</span></li>
+          <li><time>17 May 2027</time><span class="hol-main">Hari Raya Haji<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Lunar-based — subject to official announcement (moon-sighting)</span></span><span class="dow">Mon</span></li>
+          <li><time>20 May 2027</time><span class="hol-main">Vesak Day / Wesak Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Same festival — Vesak in Singapore, Wesak in Malaysia</span></span><span class="dow">Thu</span></li>
+          <li><time>6 Jun 2027</time><span class="hol-main">Awal Muharram<span class="tag tag-my">MY</span><span class="hol-sub">Falls on Sunday · Lunar-based — subject to official announcement (moon-sighting)</span></span><span class="dow">Sun</span></li>
+          <li><time>7 Jun 2027</time><span class="hol-main">Agong's Birthday<span class="tag tag-my">MY</span></span><span class="dow">Mon</span></li>
+          <li><time>8 Jun 2027</time><span class="hol-main">Awal Muharram<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 6 Jun — Mon 7 Jun is already the Agong's Birthday</span></span><span class="dow">Tue</span></li>
+          <li><time>11 Jul 2027</time><span class="hol-main">Hari Hol Almarhum Sultan Iskandar<span class="tag tag-only">Johor only</span><span class="hol-sub">Falls on Sunday</span></span><span class="dow">Sun</span></li>
+          <li><time>12 Jul 2027</time><span class="hol-main">Hari Hol Almarhum Sultan Iskandar<span class="tag tag-only">Johor only</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 11 Jul</span></span><span class="dow">Mon</span></li>
+          <li><time>9 Aug 2027</time><span class="hol-main">National Day<span class="tag tag-sg">SG</span></span><span class="dow">Mon</span></li>
+          <li><time>15 Aug 2027</time><span class="hol-main">Prophet Muhammad's Birthday<span class="tag tag-my">MY</span><span class="hol-sub">Falls on Sunday</span></span><span class="dow">Sun</span></li>
+          <li><time>16 Aug 2027</time><span class="hol-main">Prophet Muhammad's Birthday<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 15 Aug</span></span><span class="dow">Mon</span></li>
+          <li><time>31 Aug 2027</time><span class="hol-main">National Day<span class="tag tag-my">MY</span></span><span class="dow">Tue</span></li>
+          <li><time>16 Sep 2027</time><span class="hol-main">Malaysia Day<span class="tag tag-my">MY</span></span><span class="dow">Thu</span></li>
+          <li><time>28 Oct 2027</time><span class="hol-main">Deepavali<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Malaysia — not observed in Sarawak</span></span><span class="dow">Thu</span></li>
+          <li><time>25 Dec 2027</time><span class="hol-main">Christmas Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Sat</span></li>
+        </ul>
+      </div>
+      <p class="src-foot">Singapore: MOM gazetted public holidays (press release 18 Jun 2026). Malaysia &amp; Johor: Cabinet list via FMM and <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a>, with Johor state holidays &amp; replacements cross-checked on <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info — Johor</a> and the official gazette at <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a>. Live national feed: <a href="https://date.nager.at/" target="_blank" rel="noopener">Nager.Date</a>.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span id="footerSnapshot">Snapshot: Sun 15 Nov 2026, Singapore time.</span><br>
+    Sources: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a> · <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg / NEA</a> · <a href="https://date.nager.at/" target="_blank" rel="noopener">Nager.Date</a> · <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a> (Johor state holidays)
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  function fmt(n){ return n.toLocaleString('en-SG',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function $(id){ return document.getElementById(id); }
+  function fmtTime(v){
+    if(!v) return null;
+    var d = (typeof v==='number') ? new Date(v) : new Date(v);
+    if(isNaN(d.getTime())) return String(v);
+    try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).format(d).replace(',',''); }catch(e){ return d.toLocaleString('en-SG'); }
+  }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+
+  /* ============ Refresh model ============
+     · Exchange rate: pulled once when the page opens — Cloudflare Worker first (it fetches
+       Wise and CIMB server-side, so there is no browser CORS block), then rates.json, then
+       the baked snapshot — after that it NEVER refreshes on its own; all further
+       refreshing is handed to the user. Its refresh button is dim AND disabled while the
+       rate is fresh; once the rate is over 5 minutes old it lights up AND becomes clickable,
+       and tapping it runs the refresh immediately and re-locks the button.
+     · Checkpoints / Weather / PSI: auto-update every 30 minutes from data.json.
+     · Holidays & long weekends: fresh on every page load, and re-checked at 12am (midnight,
+       Singapore time) if the page is left open. ============ */
+  var RATE_STALE_MS = 5 * 60 * 1000;        // 5 min — how old the rate must be before its refresh button lights up
+  var DATA_REFRESH_MS = 30 * 60 * 1000;     // 30 min — checkpoints / weather / PSI auto-update interval
+  var DATA_URL  = 'data.json';              // written by main GitHub cron (checkpoints / weather / PSI / holidays, + rates as fallback)
+  var RATES_URL = 'rates.json';             // written by the FX cron — fallback if the Worker is unset or down
+
+  /* Cloudflare Worker URL — paste your deployed Worker URL here (e.g. 'https://sgmy-rates.<you>.workers.dev/').
+     Leave it empty ('') to skip the Worker and use rates.json / the baked snapshot only.
+     The Worker fetches Wise + CIMB server-side (no CORS there) and returns one small JSON with
+     CORS open, in this shape (either rate may be omitted — the page falls back to rates.json for it):
+       { "wise": { "midRate": 3.17263 }, "cimb": { "rate": 3.1522 }, "updatedAt": 1760000000000 }
+     Minimal Worker (deploy on Cloudflare; no secrets or API keys needed):
+       export default { async fetch() {
+         const w = await (await fetch('https://wise.com/rates/live?source=SGD&target=MYR')).json().catch(function(){ return null; });
+         const html = await (await fetch('https://www.cimbclicks.com.sg/sgd-to-myr')).text().catch(function(){ return ''; });
+         const m = html.match(/rateList[^>]*value="([^"]+)"/);
+         const body = { wise: { midRate: Array.isArray(w) ? (w[0] && w[0].rate) : (w && w.rate) },
+                        cimb: { rate: m ? Number(m[1]) : null }, updatedAt: Date.now() };
+         return new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' } });
+       } }
+     Note: the CIMB page layout can change — if the Worker's CIMB scrape ever returns null, the
+     page automatically falls back to rates.json for CIMB, so nothing goes blank. */
+  var WORKER_URL = 'https://sgmy-fx-rates.alien-lim528.workers.dev/';
+
+  /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
+  var CIMB_RATE = 3.1522, MID_RATE = 3.17263;
+  var WISE_FIXED = 0.54, WISE_PCT = 0.0025, WISE_VAT = 0.08;
+  var lastDataHash = '';
+  var currentCity = 'sg';
+
+  var WX = {
+    sg:  {temp:'31°', cond:'Thundery showers', feels:'Feels like 36° · H 32° / L 26°', advice:'Pack an umbrella — heaviest rain mid-afternoon.', rain:'70%', hum:'79%', wind:'12 km/h', rainLabel:'70% — likely', bar:'70%'},
+    jb:  {temp:'30°', cond:'Light rain, clearing later', feels:'Feels like 35° · H 31° / L 25°', advice:'Showers ease by evening — okay for the drive across.', rain:'60%', hum:'81%', wind:'10 km/h', rainLabel:'60% — likely', bar:'60%'},
+    muar:{temp:'30°', cond:'Partly cloudy, warm', feels:'Feels like 34° · H 31° / L 24°', advice:'Driest of the three today — good evening for Jalan Haji Abu.', rain:'30%', hum:'78%', wind:'9 km/h', rainLabel:'30% — possible', bar:'30%'}
+  };
+
+  /* ============ Calculator ============ */
+  var sendAmt = $('sendAmt');
+  function wiseFee(amt){
+    var ourFee = Math.round(((WISE_FIXED + WISE_PCT * amt) / 1.0025) * 100) / 100;
+    var vat = Math.round(ourFee * WISE_VAT * 100) / 100;
+    var total = Math.round((ourFee + vat) * 100) / 100;
+    return { ourFee: ourFee, vat: vat, total: total };
+  }
+  function calcCmp(){
+    if(!sendAmt) return;
+    var amt = parseFloat(sendAmt.value);
+    var cimbRecvEl = $('cimbRecv'), wiseRecvEl = $('wiseRecv'), verdict = $('verdict');
+    if(isNaN(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent='Type an amount to compare CIMB and Wise.'; return; }
+    var wf = wiseFee(amt);
+    var fee = Math.min(wf.total, amt);
+    var net = amt - fee;
+    var cimbOut = amt * CIMB_RATE;
+    var wiseOut = net * MID_RATE;
+    cimbRecvEl.textContent = 'MYR ' + fmt(cimbOut);
+    wiseRecvEl.textContent = 'MYR ' + fmt(wiseOut);
+    $('wiseOurFee').textContent = 'SGD ' + fmt(wf.ourFee);
+    $('wiseVat').textContent = 'SGD ' + fmt(wf.vat);
+    $('wiseFeeOut').textContent = 'SGD ' + fmt(fee);
+    $('wiseNet').textContent = 'SGD ' + fmt(net);
+    var wiseWins = wiseOut >= cimbOut;
+    $('wiseBest').hidden = !wiseWins;
+    $('cimbBest').hidden = wiseWins;
+    $('wiseBox').classList.toggle('best', wiseWins);
+    $('cimbBox').classList.toggle('best', !wiseWins);
+    var diff = Math.abs(wiseOut - cimbOut);
+    var breakeven = amt - (cimbOut / MID_RATE);
+    if(wiseWins){
+      verdict.innerHTML = 'Wise nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Break-even fee: <strong>SGD ' + fmt(breakeven) + '</strong> — above that, CIMB wins.';
+    } else {
+      verdict.innerHTML = 'CIMB nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Wise would need a fee under <strong>SGD ' + fmt(breakeven) + '</strong> to win.';
+    }
+  }
+  if(sendAmt) sendAmt.addEventListener('input', calcCmp);
+
+  /* ============ Weather tabs ============ */
+  var tabs = document.querySelectorAll('.tabs button');
+  function setCity(key){
+    var d = WX[key]; if(!d) return;
+    currentCity = key;
+    $('wxTemp').textContent = d.temp;
+    $('wxCond').textContent = d.cond;
+    $('wxFeels').textContent = d.feels;
+    $('wxAdvice').textContent = d.advice;
+    $('wxRain').textContent = d.rain;
+    $('wxHum').textContent = d.hum;
+    $('wxWind').textContent = d.wind;
+    $('rainLabel').textContent = d.rainLabel;
+    $('rainBar').style.width = d.bar;
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', t.getAttribute('data-city')===key ? 'true':'false'); });
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setCity(t.getAttribute('data-city')); }); });
+
+  /* ============ Apply helpers — update DOM in place, no reload ============ */
+  function statusForSpeed(s){
+    if(s < 20) return {label:'Jammed', cls:'st-jammed', bar:'on-jammed'};
+    if(s < 40) return {label:'Busy', cls:'st-busy', bar:'on-busy'};
+    if(s < 60) return {label:'Moderate', cls:'st-moderate', bar:'on-moderate'};
+    return {label:'Smooth', cls:'st-smooth', bar:'on-smooth'};
+  }
+  function bandForSpeed(s){
+    // LTA-style 8 bands, ~10 km/h each, capped at 8
+    return Math.max(1, Math.min(8, Math.ceil(s / 10) || 1));
+  }
+  function applyCheckpoints(cp){
+    if(!cp) return;
+    var dirs = cp.directions || cp;
+    Object.keys(dirs).forEach(function(key){
+      var el = document.querySelector('[data-cp="'+key+'"]');
+      var d = dirs[key];
+      if(!el || !d) return;
+      var speed = (typeof d==='number') ? d : (d.speedKmh != null ? d.speedKmh : d.speed);
+      if(speed == null) return;
+      speed = Number(speed);
+      var band = d.band || bandForSpeed(speed);
+      var st = d.status ? {label:d.status, cls:'st-'+String(d.status).toLowerCase(), bar:'on-'+String(d.status).toLowerCase()} : statusForSpeed(speed);
+      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = speed + ' km/h';
+      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = 'Band ' + band + ' of 8';
+      var statusEl = el.querySelector('.status');
+      if(statusEl){ statusEl.className = 'status ' + st.cls; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = st.label; }
+      var roadEl = el.querySelector('.cp-dir-road'); if(roadEl && d.road) roadEl.textContent = d.road;
+      var barEl = el.querySelector('.bandbar');
+      if(barEl){
+        var bars = barEl.querySelectorAll('i');
+        bars.forEach(function(b,i){ b.className = (i < band) ? st.bar : ''; });
+      }
+    });
+    var inc = cp.incident != null ? cp.incident : cp.advisory;
+    var incWrap = $('cpIncident'), incText = $('cpIncidentText');
+    if(incWrap && incText){
+      if(inc){ incWrap.style.display=''; incText.innerHTML = '<strong>LTA advisory:</strong> ' + esc(inc); }
+      else if(inc === ''){ incWrap.style.display='none'; }
+    }
+    var t = fmtTime(cp.updatedAt || cp.snapshotAt);
+    if(t) $('cpUpdated').textContent = t;
+  }
+  function psiColor(v){ return v <= 50 ? '#12805c' : (v <= 100 ? '#d9930d' : '#d92d20'); }
+  function psiBandLabel(v){ return v <= 50 ? 'GOOD' : (v <= 100 ? 'MODERATE' : (v <= 200 ? 'UNHEALTHY' : 'VERY UNHEALTHY')); }
+  function applyPsi(psi){
+    if(!psi) return;
+    var regions = psi.regions || psi;
+    var max = 0;
+    Object.keys(regions).forEach(function(r){
+      var v = regions[r]; if(typeof v !== 'number') v = v && v.value;
+      if(v == null) return;
+      if(v > max) max = v;
+      var row = document.querySelector('[data-region="'+r+'"]');
+      if(!row) return;
+      var bar = row.querySelector('.bar i'); if(bar){ bar.style.width = Math.min(100,v) + '%'; bar.style.background = psiColor(v); }
+      var val = row.querySelector('.psi-val'); if(val) val.textContent = v;
+    });
+    var overall = psi.overall != null ? psi.overall : (max || null);
+    if(overall != null){
+      $('psiOverall').textContent = overall;
+      $('psiBand').textContent = psi.band || psiBandLabel(overall);
+      if(psi.advice) $('psiAdvice').textContent = psi.advice;
+      var east = regions.east != null ? (typeof regions.east==='number'?regions.east:regions.east.value) : null;
+      if(east != null) $('psiNote').textContent = '0–50 Good · 51–100 Moderate · 101–200 Unhealthy · East (Bedok): ' + east + ', ' + (east<=50?'Good':east<=100?'Moderate':'Unhealthy');
+    }
+    var t = fmtTime(psi.updatedAt); if(t) $('psiUpdated').textContent = t;
+  }
+  function applyWeather(w){
+    if(!w) return;
+    ['sg','jb','muar'].forEach(function(k){
+      if(w[k]) WX[k] = Object.assign({}, WX[k], w[k]);
+    });
+    if(w.updatedAt){ var t = fmtTime(w.updatedAt); if(t) $('wxUpdated').textContent = t; }
+    setCity(currentCity);
+  }
+  /* ============ Holidays — upcoming only, split by year, rolls over on its own ============
+     Fetcher contract (GitHub cron → data.json): always request the CURRENT year and the NEXT
+     year from Nager.Date, for SG and for MY, and read the curated Johor list per-year the same
+     way. Years are derived from the run date — never hard-coded — so when a year ends the feed
+     automatically carries the next pair (2026+2027 → 2027+2028) with no manual change. A
+     missing next-year Johor list is fine: that year is simply skipped. This page filters out
+     past dates and inserts a year separator, for the live feed and the baked snapshot alike. */
+  var MONTHS = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  function todaySgISO(){
+    try{
+      var parts = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+      var o = {}; parts.forEach(function(p){ o[p.type] = p.value; });
+      if(o.year && o.month && o.day) return o.year + '-' + o.month + '-' + o.day;
+    }catch(e){}
+    var d = new Date();
+    function p2(n){ return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+  }
+  function isoOf(h){
+    var v = h.iso || h.dateISO || h.dateIso || '';
+    if(/^\d{4}-\d{2}-\d{2}/.test(String(v))) return String(v).slice(0,10);
+    var raw = String(h.date || '');
+    if(/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0,10);
+    var m = raw.match(/(\d{1,2})\s+([A-Za-z]{3})/);   // display date, e.g. "1 Feb 2026"
+    var y = raw.match(/(\d{4})/);
+    if(m && y && MONTHS[m[2]]) return y[1] + '-' + ('0' + MONTHS[m[2]]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
+    return '';
+  }
+  function fmtHolDate(iso){
+    try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric'}).format(new Date(iso + 'T12:00:00+08:00')); }catch(e){ return iso; }
+  }
+  function dowOf(iso){
+    try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',weekday:'short'}).format(new Date(iso + 'T12:00:00+08:00')); }catch(e){ return ''; }
+  }
+  function yearSepHtml(year, curYear){
+    return '<li class="hol-year"><span>' + year + (year === curYear ? ' · remaining' : '') + '</span></li>';
+  }
+  function flattenYearly(x){
+    // Plain array, or per-year map {2026:[...], 2027:[...]} — years not present are just skipped
+    if(!x) return [];
+    if(Array.isArray(x)) return x.slice();
+    var out = [];
+    Object.keys(x).forEach(function(k){ if(Array.isArray(x[k])) out = out.concat(x[k]); });
+    return out;
+  }
+  function renderMergedList(ul, items){
+    if(!ul) return;
+    var today = todaySgISO(), curYear = today.slice(0,4);
+    var list = flattenYearly(items).map(function(h){ return {h:h, iso:isoOf(h)}; })
+      .filter(function(x){ return !x.iso || x.iso >= today; });   // upcoming only — past dates hidden
+    list.sort(function(a,b){
+      if(a.iso && b.iso) return a.iso < b.iso ? -1 : (a.iso > b.iso ? 1 : 0);
+      if(a.iso) return -1;
+      if(b.iso) return 1;
+      return 0;
+    });
+    if(!list.length){
+      ul.innerHTML = '<li class="hol-empty">No upcoming holidays to show yet.</li>';
+      return;
+    }
+    var html = '', lastYear = '';
+    list.forEach(function(x){
+      var h = x.h;
+      var yr = x.iso ? x.iso.slice(0,4) : '';
+      if(yr && yr !== lastYear){ html += yearSepHtml(yr, curYear); lastYear = yr; }
+      var tags = '';
+      var scopes = h.scopes || (h.scope ? [h.scope] : []);
+      scopes.forEach(function(s){
+        var k = String(s).toLowerCase();
+        if(k === 'sg' || k === 'singapore') tags += '<span class="tag tag-sg">SG</span>';
+        else if(k === 'my' || k === 'malaysia') tags += '<span class="tag tag-my">MY</span>';
+        else if(k === 'johor-only' || k === 'johor only') tags += '<span class="tag tag-only">Johor only</span>';
+      });
+      if(h.johorOnly && tags.indexOf('Johor only') === -1) tags += '<span class="tag tag-only">Johor only</span>';
+      if(h.replacement) tags += '<span class="tag tag-replace">Replacement</span>';
+      var sub = h.sub || h.note || (h.replacementFor ? 'Replacement for ' + h.replacementFor : '');
+      var subHtml = sub ? '<span class="hol-sub">'+esc(sub)+'</span>' : '';
+      var dateLabel = h.date || '';
+      if(!dateLabel || /^\d{4}-\d{2}-\d{2}/.test(String(dateLabel))) dateLabel = x.iso ? fmtHolDate(x.iso) : dateLabel;
+      var dow = h.dow || (x.iso ? dowOf(x.iso) : '');
+      html += '<li><time>'+esc(dateLabel)+'</time><span class="hol-main">'+esc(h.name||h.label)+tags+subHtml+'</span><span class="dow">'+esc(dow)+'</span></li>';
+    });
+    ul.innerHTML = html;
+  }
+  function applyHolidays(h){
+    if(!h) return;
+    if(h.nextLongWeekend){
+      if(h.nextLongWeekend.title) $('lwTitle').textContent = h.nextLongWeekend.title;
+      if(h.nextLongWeekend.detail) $('lwDetail').textContent = h.nextLongWeekend.detail;
+    }
+    var merged = h.all || h.merged || h.combined;
+    if(merged && !Array.isArray(merged)) merged = flattenYearly(merged);
+    if(!merged || !merged.length){
+      // Fall back to merging separate SG / MY / Johor feeds (each may be per-year) into the one list
+      merged = [];
+      flattenYearly(h.sg || h.singapore).forEach(function(x){ merged.push(Object.assign({}, x, {scopes:['SG']})); });
+      flattenYearly(h.my || h.malaysia).forEach(function(x){ merged.push(Object.assign({}, x, {scopes:['MY']})); });
+      flattenYearly(h.johor || h.myJohor || (h.malaysiaState && h.malaysiaState.johor)).forEach(function(x){
+        var y = Object.assign({}, x);
+        if(y.scope === 'johor-only' || y.johorOnly){ y.johorOnly = true; y.scopes = []; }
+        else if(!y.scopes) y.scopes = ['MY'];
+        merged.push(y);
+      });
+    }
+    if(merged.length) renderMergedList($('holAll'), merged);
+  }
+  function pruneBakedHolidays(){
+    // Same upcoming-only + year-separator treatment for the baked snapshot list
+    var ul = $('holAll'); if(!ul) return;
+    var today = todaySgISO(), curYear = today.slice(0,4);
+    var items = [];
+    Array.prototype.forEach.call(ul.querySelectorAll('li'), function(li){
+      var t = li.querySelector('time'); if(!t) return;
+      var iso = isoOf({date:t.textContent});
+      if(iso && iso < today) return;   // already passed — drop from the snapshot too
+      items.push({iso:iso, html:li.outerHTML});
+    });
+    if(!items.length){
+      ul.innerHTML = '<li class="hol-empty">No upcoming holidays to show yet.</li>';
+      return;
+    }
+    var html = '', lastYear = '';
+    items.forEach(function(x){
+      var yr = x.iso ? x.iso.slice(0,4) : '';
+      if(yr && yr !== lastYear){ html += yearSepHtml(yr, curYear); lastYear = yr; }
+      html += x.html;
+    });
+    ul.innerHTML = html;
+  }
+  function applyRates(r){
+    if(!r) return;
+    var cimb = r.cimb || {};
+    var wise = r.wise || {};
+    var cimbRate = (typeof cimb==='number') ? cimb : (cimb.rate != null ? cimb.rate : r.cimbRate);
+    var midRate  = (typeof wise==='number') ? wise : (wise.midRate != null ? wise.midRate : (wise.rate != null ? wise.rate : r.midRate));
+    var changed = false;
+    if(cimbRate != null && Number(cimbRate) !== CIMB_RATE){ CIMB_RATE = Number(cimbRate); changed = true; }
+    if(midRate != null && Number(midRate) !== MID_RATE){ MID_RATE = Number(midRate); changed = true; }
+    // Always sync display (full precision, unrounded for Wise)
+    $('cimbRateDisplay').textContent = CIMB_RATE;
+    $('cimbRateVal').textContent = CIMB_RATE;
+    $('wiseRateVal').textContent = MID_RATE;
+    $('wiseRateFoot').textContent = MID_RATE;
+    var t = fmtTime(r.updatedAt || cimb.updatedAt || wise.updatedAt);
+    if(t){ $('cimbWhen').textContent = t; $('ratesUpdatedAt').textContent = t; }
+    if(changed || t) calcCmp();
+  }
+  function applyData(data){
+    if(!data) return;
+    if(data.checkpoints) applyCheckpoints(data.checkpoints);
+    if(data.weather) applyWeather(data.weather);
+    if(data.psi) applyPsi(data.psi);
+    if(data.holidays) applyHolidays(data.holidays);
+    if(data.rates) applyRates(data.rates);
+    if(data.generatedAt){
+      var t = fmtTime(data.generatedAt);
+      if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
+    }
+  }
+  function applyCoreData(data){
+    // Checkpoints / weather / PSI only — the 30-min auto-update leaves holidays and rates alone
+    if(!data) return;
+    if(data.checkpoints) applyCheckpoints(data.checkpoints);
+    if(data.weather) applyWeather(data.weather);
+    if(data.psi) applyPsi(data.psi);
+    if(data.generatedAt){
+      var t = fmtTime(data.generatedAt);
+      if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
+    }
+  }
+
+  /* ============ Fetching — conditional GETs: cache no-cache + ETag revalidation.
+     An unchanged file answers 304 (headers only) and the last body is reused — no timestamp cache-busting. ============ */
+  var etagCache = {};   // url -> { etag, body }
+  function fetchJson(url){
+    var entry = etagCache[url];
+    var headers = {};
+    if(entry && entry.etag) headers['If-None-Match'] = entry.etag;
+    return fetch(url, {cache:'no-cache', headers: headers}).then(function(res){
+      if(res.status === 304){
+        if(entry) return entry.body;   // not modified — reuse last body
+        throw new Error('HTTP 304 with no cached body');
+      }
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json().then(function(body){
+        etagCache[url] = { etag: res.headers.get('ETag'), body: body };
+        return body;
+      });
+    });
+  }
+  function loadData(){
+    return fetchJson(DATA_URL).then(function(data){
+      var hash = JSON.stringify(data);
+      if(hash !== lastDataHash){ lastDataHash = hash; applyData(data); }
+      return data;
+    }).catch(function(){ /* No data.json in preview / offline — keep baked snapshot */ });
+  }
+  function loadCoreData(){
+    // 30-min auto-update for checkpoints / weather / PSI
+    return fetchJson(DATA_URL).then(function(data){
+      var hash = JSON.stringify(data);
+      if(hash !== lastDataHash){ lastDataHash = hash; applyCoreData(data); }
+      return data;
+    }).catch(function(){ /* offline / no data.json — keep what's on screen */ });
+  }
+  function loadHolidaysOnly(){
+    // Midnight re-check: refresh just the holidays & long-weekend section
+    return fetchJson(DATA_URL).then(function(data){
+      if(data && data.holidays) applyHolidays(data.holidays);
+      pruneBakedHolidays();   // also drops any baked rows that have now passed
+      return data;
+    }).catch(function(){ pruneBakedHolidays(); });
+  }
+  function fetchWorkerRates(){
+    // Rates from the Cloudflare Worker — it fetches Wise and CIMB server-side (no CORS there)
+    // and serves one small JSON with CORS open. Resolves to { wiseRate, cimbRate, updatedAt }
+    // (either rate may be null) or null when WORKER_URL is unset / the Worker is down / it times out.
+    if(!WORKER_URL) return Promise.resolve(null);
+    var timeout = new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 8000); });
+    var attempt = fetch(WORKER_URL, {cache:'no-cache'}).then(function(res){
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function(j){
+      if(!j || typeof j !== 'object') return null;
+      var r = (j.rates && typeof j.rates === 'object') ? j.rates : j;
+      var wise = r.wise, cimb = r.cimb;
+      var wiseRate = (wise != null && typeof wise === 'object') ? (wise.midRate != null ? wise.midRate : wise.rate) : (typeof wise === 'number' ? wise : (r.midRate != null ? r.midRate : r.wiseRate));
+      var cimbRate = (cimb != null && typeof cimb === 'object') ? cimb.rate : (typeof cimb === 'number' ? cimb : r.cimbRate);
+      wiseRate = (wiseRate != null && !isNaN(Number(wiseRate))) ? Number(wiseRate) : null;
+      cimbRate = (cimbRate != null && !isNaN(Number(cimbRate))) ? Number(cimbRate) : null;
+      if(wiseRate == null && cimbRate == null) return null;
+      var t = r.updatedAt || (wise && wise.updatedAt) || (cimb && cimb.updatedAt) || Date.now();
+      if(typeof t === 'number' && t < 1e11) t = t * 1000;   // epoch seconds → ms
+      return { wiseRate: wiseRate, cimbRate: cimbRate, updatedAt: t };
+    }).catch(function(){ return null; });
+    return Promise.race([attempt, timeout]);
+  }
+  function loadRates(){
+    // Fallback chain: Worker -> rates.json (then data.json's rates) -> baked snapshot.
+    // The Worker wins for any rate it returns (Wise and CIMB); anything it omits — e.g. CIMB
+    // if its server-side scrape breaks — falls back to rates.json for that rate.
+    var worker = fetchWorkerRates();
+    var ratesFile = fetchJson(RATES_URL).then(function(r){ return (r && (r.rates || r)) || null; }).catch(function(){
+      return fetchJson(DATA_URL).then(function(data){ return (data && data.rates) || null; }).catch(function(){ return null; });
+    });
+    return Promise.all([worker, ratesFile]).then(function(res){
+      var wk = res[0], file = res[1];
+      if(!wk && !file) return false;   // both failed — keep last known / baked snapshot, rate stays stale
+      var merged = {};
+      if(file){
+        if(file.cimb != null) merged.cimb = file.cimb;
+        if(file.cimbRate != null) merged.cimbRate = file.cimbRate;
+        if(file.wise != null) merged.wise = file.wise;
+        if(file.midRate != null) merged.midRate = file.midRate;
+        merged.updatedAt = file.updatedAt;
+      }
+      if(wk){
+        if(wk.wiseRate != null) merged.wise = { midRate: wk.wiseRate };   // Worker value wins over the file's Wise rate
+        if(wk.cimbRate != null) merged.cimb = { rate: wk.cimbRate };      // Worker CIMB wins; an omitted CIMB keeps the file's value above
+        merged.updatedAt = wk.updatedAt;
+      }
+      applyRates(merged);
+      ratesFetchedAt = Date.now();   // rate is fresh again — restart the 5-min staleness clock
+      updateRateBtn();
+      return true;
+    });
+  }
+
+  /* ============ Rate staleness — the refresh button is always shown on the rate card.
+     While the rate is fresh it is dimmed AND disabled (cannot be clicked); once the rate is
+     over 5 minutes old it lights up AND becomes clickable, and tapping it runs the refresh
+     code immediately and re-locks the button. There is no FX timer — after the one pull on
+     page open, this button is the only way the rate updates. ============ */
+  var ratesFetchedAt = Date.now();
+  var rateRefreshInFlight = false;
+  function updateRateBtn(){
+    var btn = $('rateRefreshBtn'); if(!btn) return;
+    var stale = (Date.now() - ratesFetchedAt) >= RATE_STALE_MS;
+    btn.classList.toggle('stale', stale);
+    var locked = !stale || rateRefreshInFlight;   // dim = locked; lit up = clickable
+    btn.disabled = locked;
+    btn.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    var label = $('rateRefreshLabel');
+    if(label && !rateRefreshInFlight) label.textContent = stale ? 'Refresh rate now' : 'Refresh rate';
+  }
+  var refreshBtn = $('rateRefreshBtn');
+  if(refreshBtn) refreshBtn.addEventListener('click', function(){
+    if(refreshBtn.disabled || rateRefreshInFlight) return;   // dim = not clickable
+    var label = $('rateRefreshLabel');
+    rateRefreshInFlight = true;
+    refreshBtn.classList.add('busy');
+    refreshBtn.disabled = true;
+    refreshBtn.setAttribute('aria-disabled', 'true');
+    if(label) label.textContent = 'Refreshing…';
+    loadRates().then(function(){
+      rateRefreshInFlight = false;
+      refreshBtn.classList.remove('busy');
+      updateRateBtn();   // fresh again — back to dimmed and locked (or still lit if the fetch failed)
+    });
+  });
+  setInterval(updateRateBtn, 15000);
+
+  /* ============ Auto-refresh timers ============ */
+  // Exchange rate: NO timer — it is pulled once on page open (below) and afterwards only
+  // when the user taps the rate card's refresh button.
+  setInterval(loadCoreData, DATA_REFRESH_MS);   // checkpoints / weather / PSI — every 30 min
+  // Holidays — re-check at 12am (midnight, Singapore time) if the page is left open
+  var lastHolidayDay = todaySgISO();
+  setInterval(function(){
+    var today = todaySgISO();
+    if(today !== lastHolidayDay){ lastHolidayDay = today; loadHolidaysOnly(); }
+  }, 30000);
+  // When the user returns to the tab / comes back online: checkpoints / weather / PSI catch
+  // up, but the exchange rate is NOT fetched — it only lights up its refresh button if it is
+  // stale, leaving the refresh itself to the user.
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) return;
+    updateRateBtn();
+  });
+  window.addEventListener('online', function(){ updateRateBtn(); loadCoreData(); });
+
+  /* ============ Initial load — fetch everything fresh, once ============ */
+  loadData();
+  loadRates();
+
+  pruneBakedHolidays();
+  calcCmp();
+  setCity('sg');
+
+  /* ============ Clock + header date (live, Asia/Singapore) ============ */
+  var clock = $('clock');
+  function tick(){
+    try{
+      clock.textContent = new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false}).format(new Date()) + ' SGT';
+      $('headerDate').textContent = new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore', weekday:'short', day:'numeric', month:'short', year:'numeric'}).format(new Date()) + ' · Singapore / Malaysia (UTC+8)';
+    }catch(e){ clock.textContent = new Date().toLocaleTimeString('en-SG'); }
+  }
+  tick(); setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
