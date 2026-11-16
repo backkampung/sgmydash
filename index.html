@@ -193,7 +193,7 @@
 
   <main class="stack">
 
-    <!-- 1 · Checkpoints — data.json, auto-updates every 30 min -->
+    <!-- 1 · Checkpoints — Worker, auto-updates every 30 min -->
     <section class="card hero" aria-labelledby="cp-h">
       <div class="card-head">
         <div class="card-title">
@@ -290,7 +290,7 @@
       <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a></p>
     </section>
 
-    <!-- 3 · Weather — data.json, auto-updates every 30 min -->
+    <!-- 3 · Weather — Worker, auto-updates every 30 min -->
     <section class="card" aria-labelledby="wx-h">
       <div class="card-head">
         <div class="card-title">
@@ -322,7 +322,7 @@
       <p class="src-foot">Updated <span id="wxUpdated">15 Nov 2026</span> · Source: <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a></p>
     </section>
 
-    <!-- 4 · PSI — data.json, auto-updates every 30 min -->
+    <!-- 4 · PSI — Worker, auto-updates every 30 min -->
     <section class="card" aria-labelledby="psi-h">
       <div class="card-head">
         <div class="card-title">
@@ -346,7 +346,7 @@
       <p class="src-foot">Updated <span id="psiUpdated">15 Nov 2026</span> · Source: <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg</a> · <a href="https://www.nea.gov.sg/" target="_blank" rel="noopener">NEA</a></p>
     </section>
 
-    <!-- 5 · Holidays — data.json, fresh on every load, re-checked daily at 12am -->
+    <!-- 5 · Holidays — Worker, fresh on every load, re-checked daily at 12am -->
     <section class="card" aria-labelledby="hol-h">
       <div class="card-head">
         <div class="card-title">
@@ -438,12 +438,12 @@
        its own; all further refreshing is handed to the user. Its refresh button is dim AND
        disabled while the rate is fresh; once the rate is over 5 minutes old it lights up AND
        becomes clickable, and tapping it runs the refresh immediately and re-locks the button.
-     · Checkpoints / Weather / PSI: auto-update every 30 minutes from data.json.
+     · Checkpoints / Weather / PSI: auto-update every 30 minutes from the Worker.
      · Holidays & long weekends: fresh on every page load, and re-checked at 12am (midnight,
-       Singapore time) if the page is left open. ============ */
+       Singapore time) if the page is left open. If the Worker data fetch fails,
+       the affected cards show N/A — no stale fallback is shown. ============ */
   var RATE_STALE_MS = 5 * 60 * 1000;        // 5 min — how old the rate must be before its refresh button lights up
   var DATA_REFRESH_MS = 30 * 60 * 1000;     // 30 min — checkpoints / weather / PSI auto-update interval
-  var DATA_URL  = 'data.json';              // written by main GitHub cron (checkpoints / weather / PSI / holidays)
 
   /* Cloudflare Worker URL — paste your deployed Worker URL here (e.g. 'https://sgmy-rates.<you>.workers.dev/').
      FX rates come ONLY from this Worker. There is no rates.json fallback:
@@ -461,8 +461,13 @@
          return new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' } });
        } }
      Note: the CIMB page layout can change — if the Worker's CIMB scrape ever returns null,
-     the CIMB rate shows N/A (no fallback rate is shown). */
+     the CIMB rate shows N/A (no fallback rate is shown).
+     The same Worker also serves the dashboard data at <WORKER_URL>/data
+     (checkpoints, weather, PSI, holidays) — the page fetches that instead of
+     data.json. It needs two secrets set in the Worker dashboard:
+     LTA_API_KEY (checkpoints) and OPENWEATHER_API_KEY (weather). */
   var WORKER_URL = 'https://sgmy-fx-rates.alien-lim528.workers.dev/';
+  var WORKER_DATA_URL = WORKER_URL.replace(/\/$/, '') + '/data';   // Worker /data endpoint
 
   /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
   var CIMB_RATE = null, MID_RATE = null;  // set only by the live Worker — never a stale fallback rate
@@ -570,8 +575,9 @@
     return Math.max(1, Math.min(8, Math.ceil(s / 10) || 1));
   }
   function applyCheckpoints(cp){
-    if(!cp) return;
+    if(!cp){ showCheckpointsNA(); return; }
     var dirs = cp.directions || cp;
+    if(!dirs || !Object.keys(dirs).length){ showCheckpointsNA(); return; }
     Object.keys(dirs).forEach(function(key){
       var el = document.querySelector('[data-cp="'+key+'"]');
       var d = dirs[key];
@@ -613,8 +619,9 @@
   function psiColor(v){ return v <= 50 ? '#12805c' : (v <= 100 ? '#d9930d' : '#d92d20'); }
   function psiBandLabel(v){ return v <= 50 ? 'GOOD' : (v <= 100 ? 'MODERATE' : (v <= 200 ? 'UNHEALTHY' : 'VERY UNHEALTHY')); }
   function applyPsi(psi){
-    if(!psi) return;
+    if(!psi){ showPsiNA(); return; }
     var regions = psi.regions || psi;
+    if(!regions || !Object.keys(regions).length){ showPsiNA(); return; }
     var max = 0;
     Object.keys(regions).forEach(function(r){
       var v = regions[r]; if(typeof v !== 'number') v = v && v.value;
@@ -636,15 +643,18 @@
     var t = fmtTime(psi.updatedAt); if(t) $('psiUpdated').textContent = t;
   }
   function applyWeather(w){
-    if(!w) return;
+    if(!w){ showWeatherNA(); return; }
+    var na = {temp:'N/A', cond:'N/A', feels:'N/A', advice:'Weather unavailable.', rain:'N/A', hum:'N/A', wind:'N/A', rainLabel:'N/A', bar:'0%'};
     ['sg','jb','muar'].forEach(function(k){
       if(w[k]) WX[k] = Object.assign({}, WX[k], w[k]);
+      else WX[k] = Object.assign({}, na);   // city missing from the feed — N/A, not stale
     });
     if(w.updatedAt){ var t = fmtTime(w.updatedAt); if(t) $('wxUpdated').textContent = t; }
+    else { $('wxUpdated').textContent = 'N/A'; }
     setCity(currentCity);
   }
   /* ============ Holidays — upcoming only, split by year, rolls over on its own ============
-     Fetcher contract (GitHub cron → data.json): always request the CURRENT year and the NEXT
+     Fetcher contract (Worker /data endpoint): always request the CURRENT year and the NEXT
      year from Nager.Date, for SG and for MY, and read the curated Johor list per-year the same
      way. Years are derived from the run date — never hard-coded — so when a year ends the feed
      automatically carries the next pair (2026+2027 → 2027+2028) with no manual change. A
@@ -728,7 +738,7 @@
     ul.innerHTML = html;
   }
   function applyHolidays(h){
-    if(!h) return;
+    if(!h){ showHolidaysNA(); return; }
     if(h.nextLongWeekend){
       if(h.nextLongWeekend.title) $('lwTitle').textContent = h.nextLongWeekend.title;
       if(h.nextLongWeekend.detail) $('lwDetail').textContent = h.nextLongWeekend.detail;
@@ -803,11 +813,11 @@
     calcCmp();
   }
   function applyData(data){
-    if(!data) return;
-    if(data.checkpoints) applyCheckpoints(data.checkpoints);
-    if(data.weather) applyWeather(data.weather);
-    if(data.psi) applyPsi(data.psi);
-    if(data.holidays) applyHolidays(data.holidays);
+    if(!data){ showDataNA(); return; }
+    if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA();
+    if(data.weather) applyWeather(data.weather); else showWeatherNA();
+    if(data.psi) applyPsi(data.psi); else showPsiNA();
+    if(data.holidays) applyHolidays(data.holidays); else showHolidaysNA();
     if(data.generatedAt){
       var t = fmtTime(data.generatedAt);
       if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
@@ -815,57 +825,110 @@
   }
   function applyCoreData(data){
     // Checkpoints / weather / PSI only — the 30-min auto-update leaves holidays and rates alone
-    if(!data) return;
-    if(data.checkpoints) applyCheckpoints(data.checkpoints);
-    if(data.weather) applyWeather(data.weather);
-    if(data.psi) applyPsi(data.psi);
+    if(!data){ showCoreNA(); return; }
+    if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA();
+    if(data.weather) applyWeather(data.weather); else showWeatherNA();
+    if(data.psi) applyPsi(data.psi); else showPsiNA();
     if(data.generatedAt){
       var t = fmtTime(data.generatedAt);
       if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
     }
   }
 
-  /* ============ Fetching — conditional GETs: cache no-cache + ETag revalidation.
-     An unchanged file answers 304 (headers only) and the last body is reused — no timestamp cache-busting. ============ */
-  var etagCache = {};   // url -> { etag, body }
-  function fetchJson(url){
-    var entry = etagCache[url];
-    var headers = {};
-    if(entry && entry.etag) headers['If-None-Match'] = entry.etag;
-    return fetch(url, {cache:'no-cache', headers: headers}).then(function(res){
-      if(res.status === 304){
-        if(entry) return entry.body;   // not modified — reuse last body
-        throw new Error('HTTP 304 with no cached body');
-      }
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json().then(function(body){
-        etagCache[url] = { etag: res.headers.get('ETag'), body: body };
-        return body;
-      });
+  /* ============ Data N/A — when the Worker data fetch fails (or a section is
+     missing), show N/A / unavailable for the affected cards instead of silently
+     leaving the stale baked snapshot on screen. ============ */
+  function showCheckpointsNA(){
+    ['woodlands_sg_jb','woodlands_jb_sg','tuas_sg_jb','tuas_jb_sg'].forEach(function(key){
+      var el = document.querySelector('[data-cp="'+key+'"]');
+      if(!el) return;
+      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = 'N/A';
+      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = '—';
+      var statusEl = el.querySelector('.status');
+      if(statusEl){ statusEl.className = 'status'; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = 'Unavailable'; }
+      var barEl = el.querySelector('.bandbar');
+      if(barEl){ barEl.querySelectorAll('i').forEach(function(b){ b.className = ''; }); }
     });
+    var b1 = $('cpIncident'); if(b1) b1.style.display = 'none';
+    var b2 = $('cpIncidentTuas'); if(b2) b2.style.display = 'none';
+    $('cpUpdated').textContent = 'N/A';
+  }
+  function showWeatherNA(){
+    var na = {temp:'N/A', cond:'N/A', feels:'N/A', advice:'Weather unavailable.', rain:'N/A', hum:'N/A', wind:'N/A', rainLabel:'N/A', bar:'0%'};
+    ['sg','jb','muar'].forEach(function(k){ WX[k] = Object.assign({}, na); });
+    setCity(currentCity);
+    $('wxUpdated').textContent = 'N/A';
+  }
+  function showPsiNA(){
+    $('psiOverall').textContent = 'N/A';
+    $('psiBand').textContent = 'N/A';
+    $('psiAdvice').textContent = 'PSI data unavailable.';
+    $('psiNote').textContent = 'PSI unavailable.';
+    ['central','west','south','east','north'].forEach(function(r){
+      var row = document.querySelector('[data-region="'+r+'"]');
+      if(!row) return;
+      var bar = row.querySelector('.bar i'); if(bar) bar.style.width = '0%';
+      var val = row.querySelector('.psi-val'); if(val) val.textContent = 'N/A';
+    });
+    $('psiUpdated').textContent = 'N/A';
+  }
+  function showHolidaysNA(){
+    $('lwTitle').textContent = 'Holidays unavailable';
+    $('lwDetail').textContent = 'The live holiday data could not be loaded.';
+    var ul = $('holAll');
+    if(ul) ul.innerHTML = '<li class="hol-empty">Holidays unavailable.</li>';
+  }
+  function showDataNA(){
+    // Whole data fetch failed — every data card goes N/A.
+    showCheckpointsNA(); showWeatherNA(); showPsiNA(); showHolidaysNA();
+    $('footerSnapshot').textContent = 'Data unavailable — the live data could not be loaded.';
+  }
+  function showCoreNA(){
+    // 30-min refresh failed — checkpoints / weather / PSI go N/A, holidays untouched.
+    showCheckpointsNA(); showWeatherNA(); showPsiNA();
+  }
+
+  /* ============ Fetching — dashboard data comes from the Worker /data endpoint
+     (live on every call, 60s edge cache), never from data.json. ============ */
+  function fetchWorkerData(){
+    // Data from the Cloudflare Worker — it fetches LTA, OpenWeather, PSI and
+    // holidays server-side and serves one JSON with CORS open. Resolves to the
+    // data object or null when the Worker is down / it times out.
+    if(!WORKER_URL) return Promise.resolve(null);
+    var timeout = new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 10000); });
+    var attempt = fetch(WORKER_DATA_URL, {cache:'no-cache'}).then(function(res){
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function(d){
+      if(!d || typeof d !== 'object') return null;
+      return d;
+    }).catch(function(){ return null; });
+    return Promise.race([attempt, timeout]);
   }
   function loadData(){
-    return fetchJson(DATA_URL).then(function(data){
+    return fetchWorkerData().then(function(data){
+      if(!data){ showDataNA(); return null; }   // Worker failed — N/A, not the stale snapshot
       var hash = JSON.stringify(data);
       if(hash !== lastDataHash){ lastDataHash = hash; applyData(data); }
       return data;
-    }).catch(function(){ /* No data.json in preview / offline — keep baked snapshot */ });
+    }).catch(function(){ showDataNA(); return null; });
   }
   function loadCoreData(){
     // 30-min auto-update for checkpoints / weather / PSI
-    return fetchJson(DATA_URL).then(function(data){
+    return fetchWorkerData().then(function(data){
+      if(!data){ showCoreNA(); return null; }
       var hash = JSON.stringify(data);
       if(hash !== lastDataHash){ lastDataHash = hash; applyCoreData(data); }
       return data;
-    }).catch(function(){ /* offline / no data.json — keep what's on screen */ });
+    }).catch(function(){ showCoreNA(); return null; });
   }
   function loadHolidaysOnly(){
     // Midnight re-check: refresh just the holidays & long-weekend section
-    return fetchJson(DATA_URL).then(function(data){
-      if(data && data.holidays) applyHolidays(data.holidays);
-      pruneBakedHolidays();   // also drops any baked rows that have now passed
+    return fetchWorkerData().then(function(data){
+      if(data && data.holidays){ applyHolidays(data.holidays); pruneBakedHolidays(); }
+      else { showHolidaysNA(); }   // Worker failed — N/A, and do NOT re-render the baked list
       return data;
-    }).catch(function(){ pruneBakedHolidays(); });
+    }).catch(function(){ showHolidaysNA(); return null; });
   }
   function fetchWorkerRates(){
     // Rates from the Cloudflare Worker — it fetches Wise and CIMB server-side (no CORS there)
