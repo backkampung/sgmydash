@@ -244,7 +244,7 @@
       <p class="src-foot">Singapore-side approach speeds only — not immigration clearance time. Source: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a></p>
     </section>
 
-    <!-- 2 · CIMB vs Wise — rates via Cloudflare Worker first (server-side Wise + CIMB fetch, no CORS), then rates.json, then the baked snapshot; latest rate pulled once on page open and never auto-refreshed after that — the refresh button (dim + disabled while fresh, lit + clickable once the rate is over 5 min old) is the only way to update it -->
+    <!-- 2 · CIMB vs Wise — rates from the Cloudflare Worker only (server-side Wise + CIMB fetch, no CORS); if the Worker fails the rates show N/A. Latest rate pulled once on page open and never auto-refreshed after that — the refresh button (dim + disabled while fresh, lit + clickable once the rate is over 5 min old) is the only way to update it -->
     <section class="card" aria-labelledby="cmp-h">
       <div class="card-head">
         <div class="card-title">
@@ -256,9 +256,9 @@
 
       <div class="cimb-banner">
         <div class="cimb-name"><span>CIMB Singapore</span></div>
-        <div class="cimb-rate">1 SGD = <span id="cimbRateDisplay">3.1522</span> <small>MYR</small></div>
+        <div class="cimb-rate">1 SGD = <span id="cimbRateDisplay">N/A</span> <small>MYR</small></div>
         <div style="margin-top:8px"><span class="pill">Zero fees</span></div>
-        <div class="cimb-when">As of <span id="cimbWhen">15 Nov 2026, 11:41 pm</span> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">Live rate at CIMB Clicks SG →</a></div>
+        <div class="cimb-when">As of <span id="cimbWhen">N/A</span> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">Live rate at CIMB Clicks SG →</a></div>
       </div>
 
       <div class="calc">
@@ -272,22 +272,22 @@
         <div class="cmp-results">
           <div class="cmp-box" id="cimbBox">
             <h4>CIMB Singapore <span class="best-tag" id="cimbBest" hidden>Best</span></h4>
-            <dl><dt>Rate</dt><dd id="cimbRateVal">3.1522</dd><dt>Fee</dt><dd>SGD 0.00</dd></dl>
-            <div class="recv"><span>Recipient gets</span><b id="cimbRecv">MYR 3,152.20</b></div>
+            <dl><dt>Rate</dt><dd id="cimbRateVal">N/A</dd><dt>Fee</dt><dd>SGD 0.00</dd></dl>
+            <div class="recv"><span>Recipient gets</span><b id="cimbRecv">N/A</b></div>
           </div>
           <div class="cmp-box" id="wiseBox">
             <h4>Wise <span class="best-tag" id="wiseBest" hidden>Best</span></h4>
-            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">3.17263</dd><dt>Our fee</dt><dd id="wiseOurFee">SGD 3.03</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">SGD 0.24</dd><dt>Total fee</dt><dd id="wiseFeeOut">SGD 3.27</dd><dt>Converted</dt><dd id="wiseNet">SGD 996.73</dd></dl>
-            <div class="recv"><span>Recipient gets</span><b id="wiseRecv">MYR 3,162.23</b></div>
+            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">N/A</dd><dt>Our fee</dt><dd id="wiseOurFee">N/A</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">N/A</dd><dt>Total fee</dt><dd id="wiseFeeOut">N/A</dd><dt>Converted</dt><dd id="wiseNet">N/A</dd></dl>
+            <div class="recv"><span>Recipient gets</span><b id="wiseRecv">N/A</b></div>
           </div>
         </div>
         <p class="verdict" id="verdict"></p>
-        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">15 Nov 2026, 11:41 pm</span></p>
+        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">N/A</span></p>
         <div class="rate-refresh-row">
           <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
-      <p class="src-foot">Wise rate <span id="wiseRateFoot">3.17263</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a></p>
+      <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a></p>
     </section>
 
     <!-- 3 · Weather — data.json, auto-updates every 30 min -->
@@ -432,24 +432,24 @@
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 
   /* ============ Refresh model ============
-     · Exchange rate: pulled once when the page opens — Cloudflare Worker first (it fetches
-       Wise and CIMB server-side, so there is no browser CORS block), then rates.json, then
-       the baked snapshot — after that it NEVER refreshes on its own; all further
-       refreshing is handed to the user. Its refresh button is dim AND disabled while the
-       rate is fresh; once the rate is over 5 minutes old it lights up AND becomes clickable,
-       and tapping it runs the refresh immediately and re-locks the button.
+     · Exchange rate: pulled once when the page opens — Cloudflare Worker only (it fetches
+       Wise and CIMB server-side, so there is no browser CORS block). If the Worker fails,
+       the rates show N/A — no fallback rate is shown. After that it NEVER refreshes on
+       its own; all further refreshing is handed to the user. Its refresh button is dim AND
+       disabled while the rate is fresh; once the rate is over 5 minutes old it lights up AND
+       becomes clickable, and tapping it runs the refresh immediately and re-locks the button.
      · Checkpoints / Weather / PSI: auto-update every 30 minutes from data.json.
      · Holidays & long weekends: fresh on every page load, and re-checked at 12am (midnight,
        Singapore time) if the page is left open. ============ */
   var RATE_STALE_MS = 5 * 60 * 1000;        // 5 min — how old the rate must be before its refresh button lights up
   var DATA_REFRESH_MS = 30 * 60 * 1000;     // 30 min — checkpoints / weather / PSI auto-update interval
-  var DATA_URL  = 'data.json';              // written by main GitHub cron (checkpoints / weather / PSI / holidays, + rates as fallback)
-  var RATES_URL = 'rates.json';             // written by the FX cron — fallback if the Worker is unset or down
+  var DATA_URL  = 'data.json';              // written by main GitHub cron (checkpoints / weather / PSI / holidays)
 
   /* Cloudflare Worker URL — paste your deployed Worker URL here (e.g. 'https://sgmy-rates.<you>.workers.dev/').
-     Leave it empty ('') to skip the Worker and use rates.json / the baked snapshot only.
+     FX rates come ONLY from this Worker. There is no rates.json fallback:
+     if the Worker is down or a rate is missing, that rate shows N/A.
      The Worker fetches Wise + CIMB server-side (no CORS there) and returns one small JSON with
-     CORS open, in this shape (either rate may be omitted — the page falls back to rates.json for it):
+     CORS open, in this shape (either rate may be omitted — that rate shows N/A):
        { "wise": { "midRate": 3.17263 }, "cimb": { "rate": 3.1522 }, "updatedAt": 1760000000000 }
      Minimal Worker (deploy on Cloudflare; no secrets or API keys needed):
        export default { async fetch() {
@@ -460,12 +460,12 @@
                         cimb: { rate: m ? Number(m[1]) : null }, updatedAt: Date.now() };
          return new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' } });
        } }
-     Note: the CIMB page layout can change — if the Worker's CIMB scrape ever returns null, the
-     page automatically falls back to rates.json for CIMB, so nothing goes blank. */
+     Note: the CIMB page layout can change — if the Worker's CIMB scrape ever returns null,
+     the CIMB rate shows N/A (no fallback rate is shown). */
   var WORKER_URL = 'https://sgmy-fx-rates.alien-lim528.workers.dev/';
 
   /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
-  var CIMB_RATE = 3.1522, MID_RATE = 3.17263;
+  var CIMB_RATE = null, MID_RATE = null;  // set only by the live Worker — never a stale fallback rate
   var WISE_FIXED = 0.54, WISE_PCT = 0.0025, WISE_VAT = 0.08;
   var lastDataHash = '';
   var currentCity = 'sg';
@@ -489,6 +489,31 @@
     var amt = parseFloat(sendAmt.value);
     var cimbRecvEl = $('cimbRecv'), wiseRecvEl = $('wiseRecv'), verdict = $('verdict');
     if(isNaN(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent='Type an amount to compare CIMB and Wise.'; return; }
+    // No live rate (Worker failed) — show N/A, never a stale fallback rate.
+    var cimbOk = (CIMB_RATE != null && !isNaN(CIMB_RATE));
+    var wiseOk = (MID_RATE != null && !isNaN(MID_RATE));
+    if(!cimbOk || !wiseOk){
+      if(!cimbOk){
+        $('cimbRateVal').textContent = 'N/A';
+        $('cimbRateDisplay').textContent = 'N/A';
+        cimbRecvEl.textContent = 'N/A';
+      }
+      if(!wiseOk){
+        $('wiseRateVal').textContent = 'N/A';
+        $('wiseOurFee').textContent = 'N/A';
+        $('wiseVat').textContent = 'N/A';
+        $('wiseFeeOut').textContent = 'N/A';
+        $('wiseNet').textContent = 'N/A';
+        wiseRecvEl.textContent = 'N/A';
+        $('wiseRateFoot').textContent = 'N/A';
+      }
+      $('cimbBest').hidden = true;
+      $('wiseBest').hidden = true;
+      $('cimbBox').classList.remove('best');
+      $('wiseBox').classList.remove('best');
+      verdict.textContent = 'Rates unavailable — the live rate could not be loaded. Try refreshing.';
+      return;
+    }
     var wf = wiseFee(amt);
     var fee = Math.min(wf.total, amt);
     var net = amt - fee;
@@ -748,22 +773,34 @@
     ul.innerHTML = html;
   }
   function applyRates(r){
-    if(!r) return;
+    // Worker-only: r comes from fetchWorkerRates(). A missing rate is
+    // set to null (never keep a stale value) and displays as N/A.
+    if(!r) { applyRatesNA(); return; }
     var cimb = r.cimb || {};
     var wise = r.wise || {};
     var cimbRate = (typeof cimb==='number') ? cimb : (cimb.rate != null ? cimb.rate : r.cimbRate);
     var midRate  = (typeof wise==='number') ? wise : (wise.midRate != null ? wise.midRate : (wise.rate != null ? wise.rate : r.midRate));
-    var changed = false;
-    if(cimbRate != null && Number(cimbRate) !== CIMB_RATE){ CIMB_RATE = Number(cimbRate); changed = true; }
-    if(midRate != null && Number(midRate) !== MID_RATE){ MID_RATE = Number(midRate); changed = true; }
-    // Always sync display (full precision, unrounded for Wise)
-    $('cimbRateDisplay').textContent = CIMB_RATE;
-    $('cimbRateVal').textContent = CIMB_RATE;
-    $('wiseRateVal').textContent = MID_RATE;
-    $('wiseRateFoot').textContent = MID_RATE;
+    CIMB_RATE = (cimbRate != null && !isNaN(Number(cimbRate))) ? Number(cimbRate) : null;
+    MID_RATE = (midRate != null && !isNaN(Number(midRate))) ? Number(midRate) : null;
+    $('cimbRateDisplay').textContent = (CIMB_RATE != null) ? CIMB_RATE : 'N/A';
+    $('cimbRateVal').textContent = (CIMB_RATE != null) ? CIMB_RATE : 'N/A';
+    $('wiseRateVal').textContent = (MID_RATE != null) ? MID_RATE : 'N/A';
+    $('wiseRateFoot').textContent = (MID_RATE != null) ? MID_RATE : 'N/A';
     var t = fmtTime(r.updatedAt || cimb.updatedAt || wise.updatedAt);
     if(t){ $('cimbWhen').textContent = t; $('ratesUpdatedAt').textContent = t; }
-    if(changed || t) calcCmp();
+    else { $('cimbWhen').textContent = 'N/A'; $('ratesUpdatedAt').textContent = 'N/A'; }
+    calcCmp();
+  }
+  function applyRatesNA(){
+    // Worker failed — show N/A everywhere, no fallback rates.
+    CIMB_RATE = null; MID_RATE = null;
+    $('cimbRateDisplay').textContent = 'N/A';
+    $('cimbRateVal').textContent = 'N/A';
+    $('wiseRateVal').textContent = 'N/A';
+    $('wiseRateFoot').textContent = 'N/A';
+    $('cimbWhen').textContent = 'N/A';
+    $('ratesUpdatedAt').textContent = 'N/A';
+    calcCmp();
   }
   function applyData(data){
     if(!data) return;
@@ -771,7 +808,6 @@
     if(data.weather) applyWeather(data.weather);
     if(data.psi) applyPsi(data.psi);
     if(data.holidays) applyHolidays(data.holidays);
-    if(data.rates) applyRates(data.rates);
     if(data.generatedAt){
       var t = fmtTime(data.generatedAt);
       if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
@@ -856,34 +892,19 @@
     return Promise.race([attempt, timeout]);
   }
   function loadRates(){
-    // Fallback chain: Worker -> rates.json (then data.json's rates) -> baked snapshot.
-    // The Worker wins for any rate it returns (Wise and CIMB); anything it omits — e.g. CIMB
-    // if its server-side scrape breaks — falls back to rates.json for that rate.
-    var worker = fetchWorkerRates();
-    var ratesFile = fetchJson(RATES_URL).then(function(r){ return (r && (r.rates || r)) || null; }).catch(function(){
-      return fetchJson(DATA_URL).then(function(data){ return (data && data.rates) || null; }).catch(function(){ return null; });
-    });
-    return Promise.all([worker, ratesFile]).then(function(res){
-      var wk = res[0], file = res[1];
-      if(!wk && !file) return false;   // both failed — keep last known / baked snapshot, rate stays stale
-      var merged = {};
-      if(file){
-        if(file.cimb != null) merged.cimb = file.cimb;
-        if(file.cimbRate != null) merged.cimbRate = file.cimbRate;
-        if(file.wise != null) merged.wise = file.wise;
-        if(file.midRate != null) merged.midRate = file.midRate;
-        merged.updatedAt = file.updatedAt;
-      }
-      if(wk){
-        if(wk.wiseRate != null) merged.wise = { midRate: wk.wiseRate };   // Worker value wins over the file's Wise rate
-        if(wk.cimbRate != null) merged.cimb = { rate: wk.cimbRate };      // Worker CIMB wins; an omitted CIMB keeps the file's value above
-        merged.updatedAt = wk.updatedAt;
-      }
+    // Worker-only: FX rates come live from the Cloudflare Worker.
+    // No rates.json / data.json fallback — if the Worker fails,
+    // the rates show N/A instead of a stale fallback rate.
+    return fetchWorkerRates().then(function(wk){
+      if(!wk){ applyRatesNA(); ratesFetchedAt = Date.now(); updateRateBtn(); return false; }
+      var merged = { updatedAt: wk.updatedAt };
+      if(wk.wiseRate != null) merged.wise = { midRate: wk.wiseRate };
+      if(wk.cimbRate != null) merged.cimb = { rate: wk.cimbRate };
       applyRates(merged);
       ratesFetchedAt = Date.now();   // rate is fresh again — restart the 5-min staleness clock
       updateRateBtn();
       return true;
-    });
+    }).catch(function(){ applyRatesNA(); ratesFetchedAt = Date.now(); updateRateBtn(); return false; });
   }
 
   /* ============ Rate staleness — the refresh button is always shown on the rate card.
