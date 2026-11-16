@@ -210,11 +210,18 @@ def fetch_checkpoints(existing):
             low = msg.lower()
             if "heavy traffic" not in low:
                 continue
+            # Strip the "towards ..." direction first: a road merely
+            # mentioned as the direction (e.g. CTE "towards AYE")
+            # is not an incident on that road.
+            core = re.sub(r"\(towards[^)]*\)", "", low)
+            core = re.sub(r"\btowards\b[^.]*", "", core)
             if not incidents["woodlands"] and any(
-                    k in low for k in ("woodlands", "bke", "causeway", "checkpoint")):
+                    k in core for k in ("woodlands", "bke", "bukit timah",
+                                        "causeway")):
                 incidents["woodlands"] = msg
             if not incidents["tuas"] and any(
-                    k in low for k in ("tuas", "aye", "second link")):
+                    k in core for k in ("tuas", "aye", "ayer rajah",
+                                        "second link")):
                 incidents["tuas"] = msg
             if incidents["woodlands"] and incidents["tuas"]:
                 break
