@@ -1,5 +1,41 @@
 {
-  "generatedAt": "2026-11-16T01:03:18.552806Z",
+  "generatedAt": "2026-11-16T01:34:59.386639Z",
+  "weather": {
+    "sg": {
+      "temp": "28°",
+      "cond": "Broken clouds",
+      "feels": "Feels like 33° · H 29° / L 28°",
+      "advice": "Cloudy — warm and humid.",
+      "rain": "6%",
+      "hum": "81%",
+      "wind": "6 km/h",
+      "rainLabel": "6% — unlikely",
+      "bar": "6%"
+    },
+    "jb": {
+      "temp": "29°",
+      "cond": "Broken clouds",
+      "feels": "Feels like 34° · H 29° / L 28°",
+      "advice": "Cloudy — warm and humid.",
+      "rain": "28%",
+      "hum": "85%",
+      "wind": "4 km/h",
+      "rainLabel": "28% — unlikely",
+      "bar": "28%"
+    },
+    "muar": {
+      "temp": "28°",
+      "cond": "Light rain",
+      "feels": "Feels like 33° · H 28° / L 28°",
+      "advice": "Rain expected — bring an umbrella.",
+      "rain": "99%",
+      "hum": "87%",
+      "wind": "6 km/h",
+      "rainLabel": "99% — likely",
+      "bar": "99%"
+    },
+    "updatedAt": "2026-11-16T01:35:00.196751Z"
+  },
   "psi": {
     "regions": {
       "central": 52,
@@ -11,7 +47,7 @@
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T01:03:19.323381Z"
+    "updatedAt": "2026-11-16T01:35:00.855225Z"
   },
   "holidays": {
     "all": [
@@ -498,7 +534,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T01:03:19.857438Z",
+    "updatedAt": "2026-11-16T01:35:01.128834Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
