@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T02:42:58.844456Z",
+  "generatedAt": "2026-11-16T02:49:17.570900Z",
   "checkpoints": {
     "directions": {
       "woodlands_sg_jb": {
@@ -18,18 +18,16 @@
         "speedKmh": 85.0,
         "band": 8,
         "status": "Smooth",
-        "road": "AYER RAJAH EXPRESSWAY",
-        "incident": "(16/11)10:39 Heavy Traffic on CTE (towards AYE) at PIE(Changi) Exit."
+        "road": "AYER RAJAH EXPRESSWAY"
       },
       "tuas_jb_sg": {
         "speedKmh": 85.0,
         "band": 8,
         "status": "Smooth",
-        "road": "AYER RAJAH EXPRESSWAY",
-        "incident": "(16/11)10:39 Heavy Traffic on CTE (towards AYE) at PIE(Changi) Exit."
+        "road": "AYER RAJAH EXPRESSWAY"
       }
     },
-    "updatedAt": "2026-11-16T02:43:49.197650Z"
+    "updatedAt": "2026-11-16T02:50:10.164353Z"
   },
   "weather": {
     "sg": {
@@ -65,7 +63,7 @@
       "rainLabel": "99% — likely",
       "bar": "99%"
     },
-    "updatedAt": "2026-11-16T02:43:49.390586Z"
+    "updatedAt": "2026-11-16T02:50:10.673174Z"
   },
   "psi": {
     "regions": {
@@ -78,7 +76,7 @@
     "overall": 54,
     "band": "MODERATE",
     "advice": "Air quality is acceptable.",
-    "updatedAt": "2026-11-16T02:43:49.927657Z"
+    "updatedAt": "2026-11-16T02:50:11.551959Z"
   },
   "holidays": {
     "all": [
@@ -565,7 +563,7 @@
         "sub": "Falls on a Saturday; Saturdays are not replaced"
       }
     ],
-    "updatedAt": "2026-11-16T02:43:49.997455Z",
+    "updatedAt": "2026-11-16T02:50:11.774427Z",
     "nextLongWeekend": {
       "title": "Christmas Day long weekend",
       "detail": "Fri 25 Dec – Sun 27 Dec · 3 days"
