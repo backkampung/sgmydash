@@ -74,11 +74,14 @@ CITIES = {
 }
 # Checkpoint approach points. The link end nearer the checkpoint is
 # the end traffic is heading towards ("to"); the other end is "from".
+# Road names are expressway-only: plain "BUKIT TIMAH" also matches
+# Bukit Timah Road (a surface road), which is NOT the checkpoint
+# approach — the approach is the BKE / AYE expressway.
 CHECKPOINTS = {
-    "woodlands_sg_jb": (("BUKIT TIMAH", "BKE"), (1.447, 103.786), "to"),
-    "woodlands_jb_sg": (("BUKIT TIMAH", "BKE"), (1.447, 103.786), "from"),
-    "tuas_sg_jb":      (("AYER RAJAH", "AYE"), (1.321, 103.635), "to"),
-    "tuas_jb_sg":      (("AYER RAJAH", "AYE"), (1.321, 103.635), "from"),
+    "woodlands_sg_jb": (("BUKIT TIMAH EXPRESSWAY", "BKE"), (1.447, 103.786), "to"),
+    "woodlands_jb_sg": (("BUKIT TIMAH EXPRESSWAY", "BKE"), (1.447, 103.786), "from"),
+    "tuas_sg_jb":      (("AYER RAJAH EXPRESSWAY", "AYE"), (1.321, 103.635), "to"),
+    "tuas_jb_sg":      (("AYER RAJAH EXPRESSWAY", "AYE"), (1.321, 103.635), "from"),
 }
 # Optional pinning: {"woodlands_sg_jb": "LinkID", ...} — fill in after
 # the first verified run if the nearest-link heuristic picks wrong.
@@ -171,18 +174,28 @@ def fetch_checkpoints(existing):
         def _count(*names):
             return sum(1 for l in links
                        if any(n in (l.get("RoadName") or "").upper() for n in names))
-        print(f"Checkpoints: BKE links: {_count('BUKIT TIMAH', 'BKE')}, "
-              f"AYE links: {_count('AYER RAJAH', 'AYE')}")
-    incident = None
+        print(f"Checkpoints: BKE links: {_count('BUKIT TIMAH EXPRESSWAY', 'BKE')}, "
+              f"AYE links: {_count('AYER RAJAH EXPRESSWAY', 'AYE')}")
+        expy = sorted({(l.get("RoadName") or "").upper() for l in links
+                       if "EXPRESSWAY" in (l.get("RoadName") or "").upper()})
+        print(f"Checkpoints: expressway roads ({len(expy)}): {expy[:12]}")
+        cats = sorted({str(l.get("RoadCategory")) for l in links})
+        print(f"Checkpoints: road categories: {cats}")
+    incidents = {"woodlands": None, "tuas": None}
     try:
         inc = get_json(LTA_INCIDENTS, headers={"AccountKey": key})
         for item in inc.get("value", []):
             msg = item.get("Message") or ""
             low = msg.lower()
-            if "heavy traffic" in low and any(
-                    k in low for k in ("woodlands", "tuas", "checkpoint",
-                                      "causeway", "second link")):
-                incident = msg
+            if "heavy traffic" not in low:
+                continue
+            if not incidents["woodlands"] and any(
+                    k in low for k in ("woodlands", "bke", "causeway", "checkpoint")):
+                incidents["woodlands"] = msg
+            if not incidents["tuas"] and any(
+                    k in low for k in ("tuas", "aye", "second link")):
+                incidents["tuas"] = msg
+            if incidents["woodlands"] and incidents["tuas"]:
                 break
     except Exception as e:
         print(f"Checkpoints incidents failed ({e})", file=sys.stderr)
@@ -225,8 +238,9 @@ def fetch_checkpoints(existing):
             continue
         entry = {"speedKmh": speed, "band": band, "status": status_for(speed),
                  "road": link.get("RoadName")}
-        if incident:
-            entry["incident"] = incident
+        road_key = "woodlands" if name.startswith("woodlands") else "tuas"
+        if incidents[road_key]:
+            entry["incident"] = incidents[road_key]
         out[name] = entry
         print(f"Checkpoints {name}: {speed} km/h ({entry['status']})")
     if not out:
