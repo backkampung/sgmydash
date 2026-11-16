@@ -217,7 +217,7 @@
           <span class="status st-smooth"><i></i><span class="status-label">Smooth</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i></div>
         </div>
-        <div class="incident" id="cpIncident"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentText"><strong>LTA advisory:</strong> Heavy Traffic on BKE towards Woodlands Checkpoint.</span></div>
+        <div class="incident" id="cpIncident" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentText"></span></div>
       </div>
       <div class="cp">
         <h3>Tuas · Second Link</h3>
@@ -233,6 +233,7 @@
           <span class="status st-busy"><i></i><span class="status-label">Busy</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i></i><i></i><i></i><i></i></div>
         </div>
+        <div class="incident" id="cpIncidentTuas" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentTuasText"></span></div>
       </div>
       <div class="legend" aria-label="How the status is decided">
         <span><i style="background:#d92d20"></i>Jammed &lt;20</span>
@@ -566,12 +567,21 @@
         bars.forEach(function(b,i){ b.className = (i < band) ? st.bar : ''; });
       }
     });
-    var inc = cp.incident != null ? cp.incident : cp.advisory;
-    var incWrap = $('cpIncident'), incText = $('cpIncidentText');
-    if(incWrap && incText){
-      if(inc){ incWrap.style.display=''; incText.innerHTML = '<strong>LTA advisory:</strong> ' + esc(inc); }
-      else if(inc === ''){ incWrap.style.display='none'; }
+    // Per-card LTA advisories, from each card's own directions.
+    // A missing/null incident hides the box — the baked HTML must
+    // not leave a stale advisory on screen.
+    function dirIncident(d){ return (d && typeof d === 'object') ? (d.incident || null) : null; }
+    function setIncident(boxId, textId, msg){
+      var box = $(boxId), txt = $(textId);
+      if(!box || !txt) return;
+      if(msg){ box.style.display=''; txt.innerHTML = '<strong>LTA advisory:</strong> ' + esc(msg); }
+      else { box.style.display='none'; }
     }
+    setIncident('cpIncident', 'cpIncidentText',
+      dirIncident(dirs.woodlands_sg_jb) || dirIncident(dirs.woodlands_jb_sg) ||
+      (cp.incident != null ? cp.incident : cp.advisory));
+    setIncident('cpIncidentTuas', 'cpIncidentTuasText',
+      dirIncident(dirs.tuas_sg_jb) || dirIncident(dirs.tuas_jb_sg));
     var t = fmtTime(cp.updatedAt || cp.snapshotAt);
     if(t) $('cpUpdated').textContent = t;
   }
