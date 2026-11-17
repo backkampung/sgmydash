@@ -434,6 +434,7 @@
 (function(){
   'use strict';
   function fmt(n){ return n.toLocaleString('en-SG',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function degC(s){ return String(s).replace(/(\d)C/g, '$1°C'); }   // Worker sends "26C" — render as "26°C"
   function $(id){ return document.getElementById(id); }
   function fmtTime(v){
     if(!v) return null;
@@ -562,9 +563,9 @@
   function setCity(key){
     var d = WX[key]; if(!d) return;
     currentCity = key;
-    $('wxTemp').textContent = d.temp;
+    $('wxTemp').textContent = degC(d.temp);
     $('wxCond').textContent = d.cond;
-    $('wxFeels').textContent = d.feels;
+    $('wxFeels').textContent = degC(d.feels);
     $('wxAdvice').textContent = d.advice;
     $('wxRain').textContent = d.rain;
     $('wxHum').textContent = d.hum;
