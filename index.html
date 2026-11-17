@@ -54,8 +54,6 @@
   .cp-dir-main{flex:1 1 auto;min-width:100px}
   .cp-dir-name{font-weight:700;font-size:14px}
   .cp-dir-road{font-size:12px;color:var(--muted);margin-top:1px}
-  .cp-speed{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:21px;white-space:nowrap;text-align:right}
-  .cp-speed small{display:block;font-family:"Plus Jakarta Sans",sans-serif;font-size:10px;font-weight:600;color:var(--muted)}
   .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
   .status i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:0 0 auto}
   .st-smooth{background:#e6f4ea;color:#137333;border-color:#bfe3cc}
@@ -68,15 +66,9 @@
     .st-busy{background:#2e1c0d;color:#f0a35e;border-color:#5f3a17}
     .st-jammed{background:#2a1512;color:#f97066;border-color:#5a2a22}
   }
-  .bandbar{display:flex;gap:3px;flex-basis:100%}
-  .bandbar i{height:6px;flex:1;border-radius:99px;background:var(--line)}
-  .bandbar i.on-jammed{background:#d92d20}.bandbar i.on-busy{background:#dc6803}.bandbar i.on-moderate{background:#d9930d}.bandbar i.on-smooth{background:#12805c}
   .incident{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:#fdecea;border:1px solid #f5b5ae;border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:#7a271a}
   @media(prefers-color-scheme:dark){.incident{background:#2a1512;border-color:#5a2a22;color:#fda29b}}
   .incident svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
-  .legend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:12px;font-size:11.5px;color:var(--muted)}
-  .legend span{display:inline-flex;align-items:center;gap:5px}
-  .legend i{width:8px;height:8px;border-radius:50%}
   .updated{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.5}
   .updated strong{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-weight:600}
   .fresh{font-size:11px;color:var(--muted)}
@@ -204,24 +196,19 @@
       <div class="card-head">
         <div class="card-title">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17a6 6 0 0 1 12 0M12 11V7M12 7l3-2M9 21h6"/></svg></div>
-          <div><h2 id="cp-h">Causeway checkpoints</h2><p>Jam or smooth — road speeds, no cameras</p></div>
+          <div><h2 id="cp-h">Causeway checkpoints</h2><p>Jam or smooth</p></div>
         </div>
-        <a class="source" href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall ↗</a>
       </div>
       <p class="updated">Updated <strong id="cpUpdated">15 Nov 2026, 11:45 pm</strong></p>
       <div class="cp">
         <h3>Woodlands</h3>
         <div class="cp-dir" data-cp="woodlands_sg_jb">
           <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">BKE towards Woodlands</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">14 km/h</span><small class="cp-band">Band 2 of 8</small></div>
           <span class="status st-jammed"><i></i><span class="status-label">Jammed</span></span>
-          <div class="bandbar" aria-hidden="true"><i class="on-jammed"></i><i class="on-jammed"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         </div>
         <div class="cp-dir" data-cp="woodlands_jb_sg">
           <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">BKE from Woodlands</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">70+ km/h</span><small class="cp-band">Band 8 of 8</small></div>
           <span class="status st-smooth"><i></i><span class="status-label">Smooth</span></span>
-          <div class="bandbar" aria-hidden="true"><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i></div>
         </div>
         <div class="incident" id="cpIncident" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentText"></span></div>
       </div>
@@ -229,25 +216,15 @@
         <h3>Tuas · Second Link</h3>
         <div class="cp-dir" data-cp="tuas_sg_jb">
           <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">AYE towards Tuas</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">48 km/h</span><small class="cp-band">Band 6 of 8</small></div>
           <span class="status st-moderate"><i></i><span class="status-label">Moderate</span></span>
-          <div class="bandbar" aria-hidden="true"><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i></i><i></i></div>
         </div>
         <div class="cp-dir" data-cp="tuas_jb_sg">
           <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">AYE from Tuas</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">31 km/h</span><small class="cp-band">Band 4 of 8</small></div>
           <span class="status st-busy"><i></i><span class="status-label">Busy</span></span>
-          <div class="bandbar" aria-hidden="true"><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i></i><i></i><i></i><i></i></div>
         </div>
         <div class="incident" id="cpIncidentTuas" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentTuasText"></span></div>
       </div>
-      <div class="legend" aria-label="How the status is decided">
-        <span><i style="background:#d92d20"></i>Jammed &lt;20</span>
-        <span><i style="background:#dc6803"></i>Busy 20–39</span>
-        <span><i style="background:#d9930d"></i>Moderate 40–59</span>
-        <span><i style="background:#12805c"></i>Smooth 60+ km/h</span>
-      </div>
-      <p class="src-foot">Singapore-side approach speeds only — not immigration clearance time. Source: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a></p>
+      <p class="src-foot">Status only — not immigration clearance time.</p>
     </section>
 
     <!-- 2 · CIMB vs Wise — rates from the Cloudflare Worker only (server-side Wise + CIMB fetch, no CORS); if the Worker fails the rates show N/A. Latest rate pulled once on page open and never auto-refreshed after that — the refresh button (dim + disabled while fresh, lit + clickable once the rate is over 5 min old) is the only way to update it -->
@@ -567,14 +544,10 @@
 
   /* ============ Apply helpers — update DOM in place, no reload ============ */
   function statusForSpeed(s){
-    if(s < 20) return {label:'Jammed', cls:'st-jammed', bar:'on-jammed'};
-    if(s < 40) return {label:'Busy', cls:'st-busy', bar:'on-busy'};
-    if(s < 60) return {label:'Moderate', cls:'st-moderate', bar:'on-moderate'};
-    return {label:'Smooth', cls:'st-smooth', bar:'on-smooth'};
-  }
-  function bandForSpeed(s){
-    // LTA-style 8 bands, ~10 km/h each, capped at 8
-    return Math.max(1, Math.min(8, Math.ceil(s / 10) || 1));
+    if(s < 20) return {label:'Jammed', cls:'st-jammed'};
+    if(s < 40) return {label:'Busy', cls:'st-busy'};
+    if(s < 60) return {label:'Moderate', cls:'st-moderate'};
+    return {label:'Smooth', cls:'st-smooth'};
   }
   function applyCheckpoints(cp){
     if(!cp){ showCheckpointsNA(); return; }
@@ -587,18 +560,10 @@
       var speed = (typeof d==='number') ? d : (d.speedKmh != null ? d.speedKmh : d.speed);
       if(speed == null) return;
       speed = Number(speed);
-      var band = d.band || bandForSpeed(speed);
-      var st = d.status ? {label:d.status, cls:'st-'+String(d.status).toLowerCase(), bar:'on-'+String(d.status).toLowerCase()} : statusForSpeed(speed);
-      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = (Number(band) === 8) ? '70+ km/h' : speed + ' km/h';
-      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = 'Band ' + band + ' of 8';
+      var st = d.status ? {label:d.status, cls:'st-'+String(d.status).toLowerCase()} : statusForSpeed(speed);
       var statusEl = el.querySelector('.status');
       if(statusEl){ statusEl.className = 'status ' + st.cls; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = st.label; }
       var roadEl = el.querySelector('.cp-dir-road'); if(roadEl && d.road) roadEl.textContent = d.road;
-      var barEl = el.querySelector('.bandbar');
-      if(barEl){
-        var bars = barEl.querySelectorAll('i');
-        bars.forEach(function(b,i){ b.className = (i < band) ? st.bar : ''; });
-      }
     });
     // Per-card LTA advisories, from each card's own directions.
     // A missing/null incident hides the box — the baked HTML must
@@ -844,12 +809,8 @@
     ['woodlands_sg_jb','woodlands_jb_sg','tuas_sg_jb','tuas_jb_sg'].forEach(function(key){
       var el = document.querySelector('[data-cp="'+key+'"]');
       if(!el) return;
-      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = 'N/A';
-      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = '—';
       var statusEl = el.querySelector('.status');
       if(statusEl){ statusEl.className = 'status'; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = 'Unavailable'; }
-      var barEl = el.querySelector('.bandbar');
-      if(barEl){ barEl.querySelectorAll('i').forEach(function(b){ b.className = ''; }); }
     });
     var b1 = $('cpIncident'); if(b1) b1.style.display = 'none';
     var b2 = $('cpIncidentTuas'); if(b2) b2.style.display = 'none';
