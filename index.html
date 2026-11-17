@@ -48,14 +48,16 @@
   .cp{border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:16px}
   .cp + .cp{margin-top:10px}
   .cp h3{margin:0 0 2px;font-size:16px}
-  .cp-dir{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px dashed var(--line);flex-wrap:wrap}
+  .cp-dir{padding:12px 0;border-top:1px dashed var(--line)}
+  .cp-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .cp-dir:first-of-type{border-top:0}
-  .cp-dir-main{flex:1 1 auto;min-width:100px}
+  .cp-dir-main{flex:1 1 auto;min-width:0}
   .cp-dir-name{font-weight:700;font-size:14px}
   .cp-dir-road{font-size:12px;color:var(--muted);margin-top:1px}
-  .cp-speed{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:22px;white-space:nowrap;text-align:right}
+  .cp-speed{flex:0 0 auto;font-family:"JetBrains Mono",monospace;font-weight:600;font-size:22px;white-space:nowrap;text-align:right}
   .cp-speed small{display:block;font-family:"Manrope",sans-serif;font-size:10px;font-weight:600;color:var(--muted)}
   .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+  .cp-dir .status{margin-top:8px}
   .status i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:0 0 auto}
   .st-smooth{background:#e6f4ea;color:#137333;border-color:#bfe3cc}
   .st-moderate{background:#fef7e0;color:#b06000;border-color:#f2dd9a}
@@ -67,7 +69,7 @@
     .st-busy{background:#2e1c0d;color:#f0a35e;border-color:#5f3a17}
     .st-jammed{background:#2a1512;color:#f97066;border-color:#5a2a22}
   }
-  .bandbar{display:flex;gap:3px;flex-basis:100%}
+  .bandbar{display:flex;gap:3px;margin-top:8px}
   .bandbar i{height:6px;flex:1;border-radius:99px;background:var(--line)}
   .bandbar i.on-jammed{background:#d92d20}.bandbar i.on-busy{background:#dc6803}.bandbar i.on-moderate{background:#d9930d}.bandbar i.on-smooth{background:#12805c}
   .incident{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:#fdecea;border:1px solid #f5b5ae;border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:#7a271a}
@@ -203,14 +205,18 @@
       <div class="cp">
         <h3>Woodlands</h3>
         <div class="cp-dir" data-cp="woodlands_sg_jb">
-          <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">BKE towards Woodlands</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">14 km/h</span><small class="cp-band">Band 2 of 8</small></div>
+          <div class="cp-top">
+            <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">BKE towards Woodlands</div></div>
+            <div class="cp-speed"><span class="cp-speed-num">14 km/h</span><small class="cp-band">Band 2 of 8</small></div>
+          </div>
           <span class="status st-jammed"><i></i><span class="status-label">Jammed</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-jammed"></i><i class="on-jammed"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         </div>
         <div class="cp-dir" data-cp="woodlands_jb_sg">
-          <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">BKE from Woodlands</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">70+ km/h</span><small class="cp-band">Band 8 of 8</small></div>
+          <div class="cp-top">
+            <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">BKE from Woodlands</div></div>
+            <div class="cp-speed"><span class="cp-speed-num">70+ km/h</span><small class="cp-band">Band 8 of 8</small></div>
+          </div>
           <span class="status st-smooth"><i></i><span class="status-label">Smooth</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i><i class="on-smooth"></i></div>
         </div>
@@ -219,14 +225,18 @@
       <div class="cp">
         <h3>Tuas · Second Link</h3>
         <div class="cp-dir" data-cp="tuas_sg_jb">
-          <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">AYE towards Tuas</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">48 km/h</span><small class="cp-band">Band 6 of 8</small></div>
+          <div class="cp-top">
+            <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">AYE towards Tuas</div></div>
+            <div class="cp-speed"><span class="cp-speed-num">48 km/h</span><small class="cp-band">Band 6 of 8</small></div>
+          </div>
           <span class="status st-moderate"><i></i><span class="status-label">Moderate</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i class="on-moderate"></i><i></i><i></i></div>
         </div>
         <div class="cp-dir" data-cp="tuas_jb_sg">
-          <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">AYE from Tuas</div></div>
-          <div class="cp-speed"><span class="cp-speed-num">31 km/h</span><small class="cp-band">Band 4 of 8</small></div>
+          <div class="cp-top">
+            <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">AYE from Tuas</div></div>
+            <div class="cp-speed"><span class="cp-speed-num">31 km/h</span><small class="cp-band">Band 4 of 8</small></div>
+          </div>
           <span class="status st-busy"><i></i><span class="status-label">Busy</span></span>
           <div class="bandbar" aria-hidden="true"><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i class="on-busy"></i><i></i><i></i><i></i><i></i></div>
         </div>
