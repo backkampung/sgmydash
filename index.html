@@ -80,14 +80,6 @@
   .updated{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.5}
   .updated strong{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-weight:600}
   .fresh{font-size:11px;color:var(--muted)}
-  .cimb-banner{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:14px}
-  .cimb-rate{font-family:"IBM Plex Mono",monospace;font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
-  .cimb-rate small{font-size:.45em;font-weight:500;color:var(--muted)}
-  .cimb-name{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b42318;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px;align-items:center}
-  .cimb-name .fresh{text-transform:none;letter-spacing:0;font-weight:600}
-  @media(prefers-color-scheme:dark){.cimb-name{color:#f97066}}
-  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--teal-soft);color:var(--teal);border:1px solid var(--line)}
-  .cimb-when{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
   .calc{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:14px}
   .calc h3{margin:0 0 10px;font-size:14px}
   label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
@@ -259,13 +251,6 @@
         <a class="source" href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB SG ↗</a>
       </div>
 
-      <div class="cimb-banner">
-        <div class="cimb-name"><span>CIMB Singapore</span></div>
-        <div class="cimb-rate">1 SGD = <span id="cimbRateDisplay">N/A</span> <small>MYR</small></div>
-        <div style="margin-top:8px"><span class="pill">Zero fees</span></div>
-        <div class="cimb-when">As of <span id="cimbWhen">N/A</span> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">Live rate at CIMB Clicks SG →</a></div>
-      </div>
-
       <div class="calc">
         <h3>Compare on your amount</h3>
         <div><label for="sendAmt">You send (SGD)</label><div class="field"><span>SGD</span><input id="sendAmt" type="number" inputmode="decimal" value="1000" min="0" step="any"></div></div>
@@ -287,7 +272,7 @@
           <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
-      <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Wise fee fitted from five Wise app screenshots, 15–16 Nov 2026 — verify in the Wise app before sending.</p>
+      <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
     </section>
 
     <!-- 3 · Weather — Worker, auto-updates every 30 min -->
@@ -501,7 +486,6 @@
     if(!cimbOk || !wiseOk){
       if(!cimbOk){
         $('cimbRateVal').textContent = 'N/A';
-        $('cimbRateDisplay').textContent = 'N/A';
         cimbRecvEl.textContent = 'N/A';
       }
       if(!wiseOk){
@@ -793,23 +777,20 @@
     var midRate  = (typeof wise==='number') ? wise : (wise.midRate != null ? wise.midRate : (wise.rate != null ? wise.rate : r.midRate));
     CIMB_RATE = (cimbRate != null && !isNaN(Number(cimbRate))) ? Number(cimbRate) : null;
     MID_RATE = (midRate != null && !isNaN(Number(midRate))) ? Number(midRate) : null;
-    $('cimbRateDisplay').textContent = (CIMB_RATE != null) ? CIMB_RATE : 'N/A';
     $('cimbRateVal').textContent = (CIMB_RATE != null) ? CIMB_RATE : 'N/A';
     $('wiseRateVal').textContent = (MID_RATE != null) ? MID_RATE : 'N/A';
     $('wiseRateFoot').textContent = (MID_RATE != null) ? MID_RATE : 'N/A';
     var t = fmtTime(r.updatedAt || cimb.updatedAt || wise.updatedAt);
-    if(t){ $('cimbWhen').textContent = t; $('ratesUpdatedAt').textContent = t; }
-    else { $('cimbWhen').textContent = 'N/A'; $('ratesUpdatedAt').textContent = 'N/A'; }
+    if(t){ $('ratesUpdatedAt').textContent = t; }
+    else { $('ratesUpdatedAt').textContent = 'N/A'; }
     calcCmp();
   }
   function applyRatesNA(){
     // Worker failed — show N/A everywhere, no fallback rates.
     CIMB_RATE = null; MID_RATE = null;
-    $('cimbRateDisplay').textContent = 'N/A';
     $('cimbRateVal').textContent = 'N/A';
     $('wiseRateVal').textContent = 'N/A';
     $('wiseRateFoot').textContent = 'N/A';
-    $('cimbWhen').textContent = 'N/A';
     $('ratesUpdatedAt').textContent = 'N/A';
     calcCmp();
   }
