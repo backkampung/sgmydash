@@ -26,12 +26,10 @@
   a{color:var(--teal)}
   .wrap{max-width:640px;margin:0 auto;padding:0 14px 28px}
   p{overflow-wrap:break-word}
-  .topbar{background:var(--teal-dark);color:#eafff8;margin:0 -14px;padding:16px 18px;border-radius:0 0 18px 18px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:space-between}
+  .topbar{background:var(--teal-dark);color:#eafff8;margin:0 -14px;padding:16px 18px;border-radius:0 0 18px 18px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:center;text-align:center}
   .topbar h1{font-size:19px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
   .topbar h1 span{color:#facc15}
   .date-line{font-size:12px;color:#a9c8be;margin-top:3px}
-  .meta{font-size:11px;color:#a9c8be;text-align:right;line-height:1.4}
-  .meta strong{display:block;color:#fff;font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600}
   .live-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px;font-size:11px;color:#a9c8be}
   .live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex:0 0 auto;animation:pulse 2s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
@@ -97,9 +95,6 @@
   .field:focus-within{border-color:var(--teal)}
   .field span{font-weight:800;font-size:13px;color:var(--teal)}
   .field input{border:0;outline:0;background:transparent;width:100%;font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600;color:var(--ink);padding:8px 0;min-width:0}
-  .fee-formula{margin-top:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.6}
-  .fee-formula code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
-  .fee-formula p{margin:5px 0 0;color:var(--muted);font-size:12px}
   .cmp-results{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
   .cmp-box{border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--surface-2)}
   .cmp-box.best{border-color:var(--teal);background:var(--teal-soft)}
@@ -200,7 +195,6 @@
       <h1>SG ⇄ MY <span>Dashboard</span></h1>
       <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
     </div>
-    <div class="meta">Singapore time<strong id="clock">--:--:--</strong></div>
   </header>
 
   <main class="stack">
@@ -276,11 +270,6 @@
       <div class="calc">
         <h3>Compare on your amount</h3>
         <div><label for="sendAmt">You send (SGD)</label><div class="field"><span>SGD</span><input id="sendAmt" type="number" inputmode="decimal" value="1000" min="0" step="any"></div></div>
-        <div class="fee-formula" aria-label="Wise fee formula">
-          <strong>Wise fee — fixed formula, not editable</strong><br>
-          <code>Our fee = (0.54 + 0.25% × amount) ÷ 1.0025</code> · VAT = 8% of fee
-          <p>Fitted from five Wise app screenshots, 15–16 Nov 2026 — verify in the Wise app before sending.</p>
-        </div>
         <div class="cmp-results">
           <div class="cmp-box" id="cimbBox">
             <h4>CIMB Singapore <span class="best-tag" id="cimbBest" hidden>Best</span></h4>
@@ -299,7 +288,7 @@
           <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
-      <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a></p>
+      <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Wise fee fitted from five Wise app screenshots, 15–16 Nov 2026 — verify in the Wise app before sending.</p>
     </section>
 
     <!-- 3 · Weather — Worker, auto-updates every 30 min -->
@@ -1052,15 +1041,9 @@
   calcCmp();
   setCity('sg');
 
-  /* ============ Clock + header date (live, Asia/Singapore) ============ */
-  var clock = $('clock');
-  function tick(){
-    try{
-      clock.textContent = new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false}).format(new Date()) + ' SGT';
-      $('headerDate').textContent = new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore', weekday:'short', day:'numeric', month:'short', year:'numeric'}).format(new Date()) + ' · Singapore / Malaysia (UTC+8)';
-    }catch(e){ clock.textContent = new Date().toLocaleTimeString('en-SG'); }
-  }
-  tick(); setInterval(tick, 1000);
+  /* Header date (live, Asia/Singapore) — no live clock */
+  function setHeaderDate(){ try{ $('headerDate').textContent = new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore', weekday:'short', day:'numeric', month:'short', year:'numeric'}).format(new Date()) + ' · Singapore / Malaysia (UTC+8)'; }catch(e){} }
+  setHeaderDate(); setInterval(setHeaderDate, 30000);
 })();
 </script>
 </body>
