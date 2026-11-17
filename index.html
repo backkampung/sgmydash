@@ -87,13 +87,14 @@
   .field span{font-weight:800;font-size:13px;color:var(--accent)}
   .field input{border:0;outline:0;background:transparent;width:100%;font-family:"JetBrains Mono",monospace;font-size:19px;font-weight:600;color:var(--ink);padding:8px 0;min-width:0}
   .cmp-results{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
-  .cmp-box{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface-2)}
+  .cmp-box{border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--surface-2)}
   .cmp-box.best{border-color:var(--accent);background:var(--accent-soft)}
   .cmp-box h4{margin:0 0 8px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
   .cmp-box dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
   .cmp-box dt{color:var(--muted)} .cmp-box dd{margin:0;text-align:right;font-family:"JetBrains Mono",monospace;font-weight:600}
   .cmp-box .recv{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px}
-  .cmp-box .recv b{font-family:"JetBrains Mono",monospace;font-size:20px;font-weight:600}
+  .cmp-box .recv span,.cmp-box .recv b{white-space:nowrap}
+  .cmp-box .recv b{font-family:"JetBrains Mono",monospace;font-size:19px;font-weight:600}
   .best-tag{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:var(--accent);color:#fff;padding:4px 8px;border-radius:999px}
   .verdict{margin-top:12px;font-size:13.5px;line-height:1.6;background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:11px 13px}
   @media(prefers-color-scheme:dark){.verdict{border-color:#5a4718}}
