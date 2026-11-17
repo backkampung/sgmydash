@@ -550,7 +550,7 @@
     var diff = Math.abs(wiseOut - cimbOut);
     var breakeven = amt - (cimbOut / MID_RATE);
     if(wiseWins){
-      verdict.innerHTML = 'Wise nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Break-even fee: <strong>SGD ' + fmt(breakeven) + '</strong> — above that, CIMB wins.';
+      verdict.innerHTML = 'Wise nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Wise\'s fee is <strong>SGD ' + fmt(fee) + '</strong>, under the <strong>SGD ' + fmt(breakeven) + '</strong> break-even — so Wise wins.';
     } else {
       verdict.innerHTML = 'CIMB nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Wise would need a fee under <strong>SGD ' + fmt(breakeven) + '</strong> to win.';
     }
