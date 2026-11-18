@@ -4,12 +4,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
-<meta http-equiv="Cache-Control" content="no-cache" />
 <link rel="icon" href="data:," />
 <title>SG–MY Cross-Border Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#f2f4f7; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#101828; --muted:#667085; --line:#e4e7ec;
@@ -183,6 +182,7 @@
   <div class="loader-text">Loading live data…</div>
 </div>
 <div class="wrap">
+  <noscript><div style="background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:12px 13px;margin:14px 0 0;font-size:13px;line-height:1.5">Live data needs JavaScript — please enable it. The values below are from 15 Nov 2026.</div></noscript>
 
   <header class="topbar">
     <div>
@@ -251,7 +251,7 @@
       <p class="src-foot">Singapore-side approach speeds only — not immigration clearance time.</p>
     </section>
 
-    <!-- 2 · CIMB vs Wise — rates from the Cloudflare Worker only (server-side Wise + CIMB fetch, no CORS); if the Worker fails the rates show N/A. Latest rate pulled once on page open and never auto-refreshed after that — the refresh button (dim + disabled while fresh, lit + clickable once the rate is over 5 min old) is the only way to update it -->
+    <!-- 2 · CIMB vs Wise -->
     <section class="card" aria-labelledby="cmp-h">
       <div class="card-head">
         <div class="card-title">
@@ -279,7 +279,7 @@
         <p class="verdict" id="verdict"></p>
         <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">N/A</span></p>
         <div class="rate-refresh-row">
-          <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
+          <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
       <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
@@ -357,49 +357,7 @@
       <div class="hol-cols">
         <p class="note" style="margin:0 0 4px">Sunday holidays are replaced on Monday; lunar dates are subject to official announcement.</p>
         <ul class="hol hol-merged" id="holAll">
-          <li><time>1 Feb 2026</time><span class="hol-main">Thaipusam<span class="tag tag-my">MY</span><span class="hol-sub">Observed in Johor and other Malaysian states · fell on Sunday</span></span><span class="dow">Sun</span></li>
-          <li><time>2 Feb 2026</time><span class="hol-main">Thaipusam<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 1 Feb — Malaysia &amp; Johor</span></span><span class="dow">Mon</span></li>
-          <li><time>18 Feb 2026</time><span class="hol-main">Chinese New Year — Day 2<span class="tag tag-my">MY</span><span class="hol-sub">Malaysia nationwide, including Johor</span></span><span class="dow">Wed</span></li>
-          <li><time>19 Feb 2026</time><span class="hol-main">Awal Ramadan<span class="tag tag-my">MY</span><span class="hol-sub">Johor &amp; Kedah · Lunar-based — subject to official announcement</span></span><span class="dow">Thu</span></li>
-          <li><time>23 Mar 2026</time><span class="hol-main">Sultan of Johor's Birthday<span class="tag tag-only">Johor only</span></span><span class="dow">Mon</span></li>
-          <li><time>24 Mar 2026</time><span class="hol-main">Hari Raya Aidilfitri<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Johor replacement day — Mon 23 Mar is the Sultan of Johor's Birthday · Lunar-based — subject to official announcement</span></span><span class="dow">Tue</span></li>
-          <li><time>31 May 2026</time><span class="hol-main">Vesak Day / Wesak Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Same festival — Vesak in Singapore, Wesak in Malaysia · fell on Sunday</span></span><span class="dow">Sun</span></li>
-          <li><time>1 Jun 2026</time><span class="hol-main">Vesak Day<span class="tag tag-sg">SG</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Singapore replacement for Sun 31 May</span></span><span class="dow">Mon</span></li>
-          <li><time>2 Jun 2026</time><span class="hol-main">Wesak Day<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Malaysia replacement for Sun 31 May — Mon 1 Jun is already the Agong's Birthday</span></span><span class="dow">Tue</span></li>
-          <li><time>21 Jul 2026</time><span class="hol-main">Hari Hol Almarhum Sultan Iskandar<span class="tag tag-only">Johor only</span></span><span class="dow">Tue</span></li>
-          <li><time>9 Aug 2026</time><span class="hol-main">National Day<span class="tag tag-sg">SG</span><span class="hol-sub">Fell on Sunday</span></span><span class="dow">Sun</span></li>
-          <li><time>10 Aug 2026</time><span class="hol-main">National Day<span class="tag tag-sg">SG</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 9 Aug</span></span><span class="dow">Mon</span></li>
-          <li><time>8 Nov 2026</time><span class="hol-main">Deepavali<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Also observed in Johor · fell on Sunday</span></span><span class="dow">Sun</span></li>
-          <li><time>9 Nov 2026</time><span class="hol-main">Deepavali<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 8 Nov — Singapore, Malaysia &amp; Johor</span></span><span class="dow">Mon</span></li>
-          <li><time>25 Dec 2026</time><span class="hol-main">Christmas Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Fri</span></li>
-          <li><time>1 Jan 2027</time><span class="hol-main">New Year's Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Malaysia — not observed in Johor</span></span><span class="dow">Fri</span></li>
-          <li><time>22 Jan 2027</time><span class="hol-main">Thaipusam<span class="tag tag-my">MY</span><span class="hol-sub">Observed in Johor and other Malaysian states</span></span><span class="dow">Fri</span></li>
-          <li><time>6 Feb 2027</time><span class="hol-main">Chinese New Year<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Sat</span></li>
-          <li><time>7 Feb 2027</time><span class="hol-main">Chinese New Year — Day 2<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Falls on Sunday — replacements follow below</span></span><span class="dow">Sun</span></li>
-          <li><time>8 Feb 2027</time><span class="hol-main">Chinese New Year — Day 2<span class="tag tag-sg">SG</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Singapore replacement for Sun 7 Feb</span></span><span class="dow">Mon</span></li>
-          <li><time>8 Feb 2027</time><span class="hol-main">Chinese New Year in lieu<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Malaysia replacement for Sun 7 Feb — not observed in Johor</span></span><span class="dow">Mon</span></li>
-          <li><time>8 Feb 2027</time><span class="hol-main">Awal Ramadan<span class="tag tag-my">MY</span><span class="hol-sub">Johor &amp; Kedah · Lunar-based — subject to official announcement</span></span><span class="dow">Mon</span></li>
-          <li><time>9 Feb 2027</time><span class="hol-main">Chinese New Year in lieu<span class="tag tag-only">Johor only</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Johor replacement for Sun 7 Feb — Mon 8 Feb is already Awal Ramadan, so it moves to Tuesday</span></span><span class="dow">Tue</span></li>
-          <li><time>24 Feb 2027</time><span class="hol-main">Nuzul Al-Quran<span class="tag tag-my">MY</span><span class="hol-sub">Not observed in Johor · Lunar-based — subject to official announcement</span></span><span class="dow">Wed</span></li>
-          <li><time>10 Mar 2027</time><span class="hol-main">Hari Raya Puasa / Aidilfitri<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Hari Raya Puasa in Singapore, Hari Raya Aidilfitri in Malaysia · Lunar-based — subject to official announcement (moon-sighting)</span></span><span class="dow">Wed</span></li>
-          <li><time>11 Mar 2027</time><span class="hol-main">Hari Raya Aidilfitri — Day 2<span class="tag tag-my">MY</span><span class="hol-sub">Lunar-based — subject to official announcement</span></span><span class="dow">Thu</span></li>
-          <li><time>23 Mar 2027</time><span class="hol-main">Sultan of Johor's Birthday<span class="tag tag-only">Johor only</span></span><span class="dow">Tue</span></li>
-          <li><time>26 Mar 2027</time><span class="hol-main">Good Friday<span class="tag tag-sg">SG</span></span><span class="dow">Fri</span></li>
-          <li><time>1 May 2027</time><span class="hol-main">Labour Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Sat</span></li>
-          <li><time>17 May 2027</time><span class="hol-main">Hari Raya Haji<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Lunar-based — subject to official announcement (moon-sighting)</span></span><span class="dow">Mon</span></li>
-          <li><time>20 May 2027</time><span class="hol-main">Vesak Day / Wesak Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Same festival — Vesak in Singapore, Wesak in Malaysia</span></span><span class="dow">Thu</span></li>
-          <li><time>6 Jun 2027</time><span class="hol-main">Awal Muharram<span class="tag tag-my">MY</span><span class="hol-sub">Falls on Sunday · Lunar-based — subject to official announcement (moon-sighting)</span></span><span class="dow">Sun</span></li>
-          <li><time>7 Jun 2027</time><span class="hol-main">Agong's Birthday<span class="tag tag-my">MY</span></span><span class="dow">Mon</span></li>
-          <li><time>8 Jun 2027</time><span class="hol-main">Awal Muharram<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 6 Jun — Mon 7 Jun is already the Agong's Birthday</span></span><span class="dow">Tue</span></li>
-          <li><time>11 Jul 2027</time><span class="hol-main">Hari Hol Almarhum Sultan Iskandar<span class="tag tag-only">Johor only</span><span class="hol-sub">Falls on Sunday</span></span><span class="dow">Sun</span></li>
-          <li><time>12 Jul 2027</time><span class="hol-main">Hari Hol Almarhum Sultan Iskandar<span class="tag tag-only">Johor only</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 11 Jul</span></span><span class="dow">Mon</span></li>
-          <li><time>9 Aug 2027</time><span class="hol-main">National Day<span class="tag tag-sg">SG</span></span><span class="dow">Mon</span></li>
-          <li><time>15 Aug 2027</time><span class="hol-main">Prophet Muhammad's Birthday<span class="tag tag-my">MY</span><span class="hol-sub">Falls on Sunday</span></span><span class="dow">Sun</span></li>
-          <li><time>16 Aug 2027</time><span class="hol-main">Prophet Muhammad's Birthday<span class="tag tag-my">MY</span><span class="tag tag-replace">Replacement</span><span class="hol-sub">Replacement for Sun 15 Aug</span></span><span class="dow">Mon</span></li>
-          <li><time>31 Aug 2027</time><span class="hol-main">National Day<span class="tag tag-my">MY</span></span><span class="dow">Tue</span></li>
-          <li><time>16 Sep 2027</time><span class="hol-main">Malaysia Day<span class="tag tag-my">MY</span></span><span class="dow">Thu</span></li>
-          <li><time>28 Oct 2027</time><span class="hol-main">Deepavali<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span><span class="hol-sub">Malaysia — not observed in Sarawak</span></span><span class="dow">Thu</span></li>
-          <li><time>25 Dec 2027</time><span class="hol-main">Christmas Day<span class="tag tag-sg">SG</span><span class="tag tag-my">MY</span></span><span class="dow">Sat</span></li>
+          <li class="hol-empty">Enable JavaScript to load live holidays.</li>
         </ul>
       </div>
       <p class="src-foot">Singapore: MOM gazetted public holidays (press release 18 Jun 2026). Malaysia &amp; Johor: Cabinet list via FMM and <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a>, with Johor state holidays &amp; replacements cross-checked on <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info — Johor</a> and the official gazette at <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a>. Live national feed: <a href="https://date.nager.at/" target="_blank" rel="noopener">Nager.Date</a>.</p>
@@ -419,56 +377,27 @@
   function fmt(n){ return n.toLocaleString('en-SG',{minimumFractionDigits:2, maximumFractionDigits:2}); }
   function degC(s){ return String(s).replace(/(\d)C/g, '$1°C'); }   // Worker sends "26C" — render as "26°C"
   function $(id){ return document.getElementById(id); }
+  function setText(id, v){ var el = $(id); if(el) el.textContent = v; }   // no-op when the id is missing
   function fmtTime(v){
     if(!v) return null;
     var d = (typeof v==='number') ? new Date(v) : new Date(v);
-    if(isNaN(d.getTime())) return String(v);
+    if(isNaN(d.getTime())) return null;   // invalid date — callers show N/A, never the raw input
     try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).format(d).replace(',',''); }catch(e){ return d.toLocaleString('en-SG'); }
   }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 
-  /* ============ Refresh model ============
-     · Exchange rate: pulled once when the page opens — Cloudflare Worker only (it fetches
-       Wise and CIMB server-side, so there is no browser CORS block). If the Worker fails,
-       the rates show N/A — no fallback rate is shown. After that it NEVER refreshes on
-       its own; all further refreshing is handed to the user. Its refresh button is dim AND
-       disabled while the rate is fresh; once the rate is over 5 minutes old it lights up AND
-       becomes clickable, and tapping it runs the refresh immediately and re-locks the button.
-     · Checkpoints / Weather / PSI: auto-update every 30 minutes from the Worker.
-     · Holidays & long weekends: fresh on every page load, and re-checked at 12am (midnight,
-       Singapore time) if the page is left open. If the Worker data fetch fails,
-       the affected cards show N/A — no stale fallback is shown. ============ */
   var RATE_STALE_MS = 5 * 60 * 1000;        // 5 min — how old the rate must be before its refresh button lights up
   var DATA_REFRESH_MS = 30 * 60 * 1000;     // 30 min — checkpoints / weather / PSI auto-update interval
 
-  /* Cloudflare Worker URL — paste your deployed Worker URL here (e.g. 'https://sgmy-rates.<you>.workers.dev/').
-     FX rates come ONLY from this Worker. There is no rates.json fallback:
-     if the Worker is down or a rate is missing, that rate shows N/A.
-     The Worker fetches Wise + CIMB server-side (no CORS there) and returns one small JSON with
-     CORS open, in this shape (either rate may be omitted — that rate shows N/A):
-       { "wise": { "midRate": 3.17263 }, "cimb": { "rate": 3.1522 }, "updatedAt": 1760000000000 }
-     Minimal Worker (deploy on Cloudflare; no secrets or API keys needed):
-       export default { async fetch() {
-         const w = await (await fetch('https://wise.com/rates/live?source=SGD&target=MYR')).json().catch(function(){ return null; });
-         const html = await (await fetch('https://www.cimbclicks.com.sg/sgd-to-myr')).text().catch(function(){ return ''; });
-         const m = html.match(/rateList[^>]*value="([^"]+)"/);
-         const body = { wise: { midRate: Array.isArray(w) ? (w[0] && w[0].rate) : (w && w.rate) },
-                        cimb: { rate: m ? Number(m[1]) : null }, updatedAt: Date.now() };
-         return new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' } });
-       } }
-     Note: the CIMB page layout can change — if the Worker's CIMB scrape ever returns null,
-     the CIMB rate shows N/A (no fallback rate is shown).
-     The same Worker also serves the dashboard data at <WORKER_URL>/data
-     (checkpoints, weather, PSI, holidays) — the page fetches that instead of
-     data.json. It needs two secrets set in the Worker dashboard:
-     LTA_API_KEY (checkpoints) and OPENWEATHER_API_KEY (weather). */
+  // All live data comes only from this Cloudflare Worker — no fallback; if it fails, cards show N/A.
   var WORKER_URL = 'https://sgmy-fx-rates.alien-lim528.workers.dev/';
   var WORKER_DATA_URL = WORKER_URL.replace(/\/$/, '') + '/data';   // Worker /data endpoint
 
   /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
   var CIMB_RATE = null, MID_RATE = null;  // set only by the live Worker — never a stale fallback rate
+  // Wise fee, fitted from five Wise app screenshots (15–16 Nov 2026, bank-account funding).
   var WISE_FIXED = 0.54, WISE_PCT = 0.0025, WISE_VAT = 0.08;
-  var lastDataHash = '';
+  var lastDataGen = null;   // generatedAt of the last applied /data payload — skips re-applying unchanged data
   var currentCity = 'sg';
 
   var WX = {
@@ -476,6 +405,7 @@
     jb:  {temp:'30°', cond:'Light rain, clearing later', feels:'Feels like 35° · H 31° / L 25°', advice:'Showers ease by evening — okay for the drive across.', rain:'60%', hum:'81%', wind:'10 km/h', rainLabel:'60% — likely', bar:'60%'},
     muar:{temp:'30°', cond:'Partly cloudy, warm', feels:'Feels like 34° · H 31° / L 24°', advice:'Driest of the three today — good evening for Jalan Haji Abu.', rain:'30%', hum:'78%', wind:'9 km/h', rainLabel:'30% — possible', bar:'30%'}
   };
+  var WX_NA = {temp:'N/A', cond:'N/A', feels:'N/A', advice:'Weather unavailable.', rain:'N/A', hum:'N/A', wind:'N/A', rainLabel:'N/A', bar:'0%'};
 
   /* ============ Calculator ============ */
   var sendAmt = $('sendAmt');
@@ -489,7 +419,7 @@
     if(!sendAmt) return;
     var amt = parseFloat(sendAmt.value);
     var cimbRecvEl = $('cimbRecv'), wiseRecvEl = $('wiseRecv'), verdict = $('verdict');
-    if(isNaN(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent='Type an amount to compare CIMB and Wise.'; return; }
+    if(!isFinite(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent='Type an amount to compare CIMB and Wise.'; return; }
     // No live rate (Worker failed) — show N/A, never a stale fallback rate.
     var cimbOk = (CIMB_RATE != null && !isNaN(CIMB_RATE));
     var wiseOk = (MID_RATE != null && !isNaN(MID_RATE));
@@ -532,6 +462,7 @@
     $('cimbBox').classList.toggle('best', !wiseWins);
     var diff = Math.abs(wiseOut - cimbOut);
     var breakeven = amt - (cimbOut / MID_RATE);
+    // Verdict is built only from fmt() output (numbers) — never interpolate raw strings here.
     if(wiseWins){
       verdict.innerHTML = 'Wise nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Wise\'s fee is <strong>SGD ' + fmt(fee) + '</strong>, under the <strong>SGD ' + fmt(breakeven) + '</strong> break-even — so Wise wins.';
     } else {
@@ -545,14 +476,14 @@
   function setCity(key){
     var d = WX[key]; if(!d) return;
     currentCity = key;
-    $('wxTemp').textContent = degC(d.temp);
-    $('wxCond').textContent = d.cond;
-    $('wxFeels').textContent = degC(d.feels);
-    $('wxAdvice').textContent = d.advice;
-    $('wxRain').textContent = d.rain;
-    $('wxHum').textContent = d.hum;
-    $('wxWind').textContent = d.wind;
-    $('rainLabel').textContent = d.rainLabel;
+    setText('wxTemp', degC(d.temp));
+    setText('wxCond', d.cond);
+    setText('wxFeels', degC(d.feels));
+    setText('wxAdvice', d.advice);
+    setText('wxRain', d.rain);
+    setText('wxHum', d.hum);
+    setText('wxWind', d.wind);
+    setText('rainLabel', d.rainLabel);
     $('rainBar').style.width = d.bar;
     tabs.forEach(function(t){ t.setAttribute('aria-selected', t.getAttribute('data-city')===key ? 'true':'false'); });
   }
@@ -570,19 +501,29 @@
     return Math.max(1, Math.min(8, Math.ceil(s / 10) || 1));
   }
   function applyCheckpoints(cp){
-    if(!cp){ showCheckpointsNA(); return; }
+    if(!cp || typeof cp !== 'object'){ showCheckpointsNA(); return; }
     var dirs = cp.directions || cp;
-    if(!dirs || !Object.keys(dirs).length){ showCheckpointsNA(); return; }
-    Object.keys(dirs).forEach(function(key){
+    if(!dirs || typeof dirs !== 'object' || Array.isArray(dirs)){ showCheckpointsNA(); return; }
+    // Only directions that match a card on the page count — a payload with no
+    // matching direction is a failed fetch, not a partial update.
+    var keys = Object.keys(dirs).filter(function(k){ return document.querySelector('[data-cp="'+k+'"]'); });
+    if(!keys.length){ showCheckpointsNA(); return; }
+    keys.forEach(function(key){
       var el = document.querySelector('[data-cp="'+key+'"]');
       var d = dirs[key];
-      if(!el || !d) return;
+      if(!d) return;
       var speed = (typeof d==='number') ? d : (d.speedKmh != null ? d.speedKmh : d.speed);
       if(speed == null) return;
       speed = Number(speed);
-      var band = d.band || bandForSpeed(speed);
-      var st = d.status ? {label:d.status, cls:'st-'+String(d.status).toLowerCase(), bar:'on-'+String(d.status).toLowerCase()} : statusForSpeed(speed);
-      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = (Number(band) === 8) ? '70+ km/h' : speed + ' km/h';
+      if(!isFinite(speed) || speed < 0){ showDirectionNA(el); return; }
+      var band = Number(d.band);
+      if(!isFinite(band)) band = bandForSpeed(speed);
+      band = Math.max(1, Math.min(8, Math.round(band)));
+      var rawStatus = (d.status != null) ? String(d.status).toLowerCase() : '';
+      var st = (rawStatus === 'jammed' || rawStatus === 'busy' || rawStatus === 'moderate' || rawStatus === 'smooth')
+        ? {label: rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1), cls: 'st-' + rawStatus, bar: 'on-' + rawStatus}
+        : statusForSpeed(speed);   // unknown status — derive it from the speed, never build a class from it
+      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = (band === 8) ? '70+ km/h' : speed + ' km/h';
       var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = 'Band ' + band + ' of 8';
       var statusEl = el.querySelector('.status');
       if(statusEl){ statusEl.className = 'status ' + st.cls; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = st.label; }
@@ -609,43 +550,46 @@
     setIncident('cpIncidentTuas', 'cpIncidentTuasText',
       dirIncident(dirs.tuas_sg_jb) || dirIncident(dirs.tuas_jb_sg));
     var t = fmtTime(cp.updatedAt || cp.snapshotAt);
-    if(t) $('cpUpdated').textContent = t;
+    setText('cpUpdated', t || 'N/A');
   }
   function psiColor(v){ return v <= 50 ? '#12805c' : (v <= 100 ? '#d9930d' : '#d92d20'); }
-  function psiBandLabel(v){ return v <= 50 ? 'GOOD' : (v <= 100 ? 'MODERATE' : (v <= 200 ? 'UNHEALTHY' : 'VERY UNHEALTHY')); }
+  function psiBandLabel(v){ return v <= 50 ? 'GOOD' : (v <= 100 ? 'MODERATE' : (v <= 200 ? 'UNHEALTHY' : (v <= 300 ? 'VERY UNHEALTHY' : 'HAZARDOUS'))); }
   function applyPsi(psi){
-    if(!psi){ showPsiNA(); return; }
+    if(!psi || typeof psi !== 'object'){ showPsiNA(); return; }
     var regions = psi.regions || psi;
-    if(!regions || !Object.keys(regions).length){ showPsiNA(); return; }
-    var max = 0;
+    if(!regions || typeof regions !== 'object' || Array.isArray(regions) || !Object.keys(regions).length){ showPsiNA(); return; }
+    var max = 0, updated = 0;
     Object.keys(regions).forEach(function(r){
       var v = regions[r]; if(typeof v !== 'number') v = v && v.value;
       if(v == null) return;
+      v = Number(v);
+      if(!isFinite(v)) return;
       if(v > max) max = v;
       var row = document.querySelector('[data-region="'+r+'"]');
       if(!row) return;
+      updated++;
       var bar = row.querySelector('.bar i'); if(bar){ bar.style.width = Math.min(100,v) + '%'; bar.style.background = psiColor(v); }
       var val = row.querySelector('.psi-val'); if(val) val.textContent = v;
     });
-    var overall = psi.overall != null ? psi.overall : (max || null);
+    if(!updated){ showPsiNA(); return; }   // no region matched a row — nothing was applied
+    var overall = (psi.overall != null) ? Number(psi.overall) : (max || null);
+    if(overall != null && !isFinite(overall)) overall = (max || null);
     if(overall != null){
-      $('psiOverall').textContent = overall;
-      $('psiBand').textContent = psi.band || psiBandLabel(overall);
-      if(psi.advice) $('psiAdvice').textContent = psi.advice;
+      setText('psiOverall', overall);
+      setText('psiBand', psi.band || psiBandLabel(overall));
+      if(psi.advice) setText('psiAdvice', psi.advice);
       var east = regions.east != null ? (typeof regions.east==='number'?regions.east:regions.east.value) : null;
-      if(east != null) $('psiNote').textContent = '0–50 Good · 51–100 Moderate · 101–200 Unhealthy · East (Bedok): ' + east + ', ' + (east<=50?'Good':east<=100?'Moderate':'Unhealthy');
+      if(east != null) setText('psiNote', '0–50 Good · 51–100 Moderate · 101–200 Unhealthy · East (Bedok): ' + east + ', ' + (east<=50?'Good':east<=100?'Moderate':'Unhealthy'));
     }
-    var t = fmtTime(psi.updatedAt); if(t) $('psiUpdated').textContent = t;
+    setText('psiUpdated', fmtTime(psi.updatedAt) || 'N/A');
   }
   function applyWeather(w){
-    if(!w){ showWeatherNA(); return; }
-    var na = {temp:'N/A', cond:'N/A', feels:'N/A', advice:'Weather unavailable.', rain:'N/A', hum:'N/A', wind:'N/A', rainLabel:'N/A', bar:'0%'};
+    if(!w || typeof w !== 'object'){ showWeatherNA(); return; }
     ['sg','jb','muar'].forEach(function(k){
-      if(w[k]) WX[k] = Object.assign({}, WX[k], w[k]);
-      else WX[k] = Object.assign({}, na);   // city missing from the feed — N/A, not stale
+      if(w[k] && typeof w[k] === 'object') WX[k] = Object.assign({}, WX[k], w[k]);
+      else WX[k] = Object.assign({}, WX_NA);   // city missing from the feed — N/A, not stale
     });
-    if(w.updatedAt){ var t = fmtTime(w.updatedAt); if(t) $('wxUpdated').textContent = t; }
-    else { $('wxUpdated').textContent = 'N/A'; }
+    setText('wxUpdated', fmtTime(w.updatedAt) || 'N/A');
     setCity(currentCity);
   }
   /* ============ Holidays — upcoming only, split by year, rolls over on its own ============
@@ -697,6 +641,7 @@
     if(!ul) return;
     var today = todaySgISO(), curYear = today.slice(0,4);
     var list = flattenYearly(items).map(function(h){ return {h:h, iso:isoOf(h)}; })
+      .filter(function(x){ return x.h && typeof x.h === 'object'; })   // a non-object item can't render — drop it
       .filter(function(x){ return !x.iso || x.iso >= today; });   // upcoming only — past dates hidden
     list.sort(function(a,b){
       if(a.iso && b.iso) return a.iso < b.iso ? -1 : (a.iso > b.iso ? 1 : 0);
@@ -714,7 +659,7 @@
       var yr = x.iso ? x.iso.slice(0,4) : '';
       if(yr && yr !== lastYear){ html += yearSepHtml(yr, curYear); lastYear = yr; }
       var tags = '';
-      var scopes = h.scopes || (h.scope ? [h.scope] : []);
+      var scopes = Array.isArray(h.scopes) ? h.scopes : (h.scope ? [h.scope] : []);
       scopes.forEach(function(s){
         var k = String(s).toLowerCase();
         if(k === 'sg' || k === 'singapore') tags += '<span class="tag tag-sg">SG</span>';
@@ -733,11 +678,7 @@
     ul.innerHTML = html;
   }
   function applyHolidays(h){
-    if(!h){ showHolidaysNA(); return; }
-    if(h.nextLongWeekend){
-      if(h.nextLongWeekend.title) $('lwTitle').textContent = h.nextLongWeekend.title;
-      if(h.nextLongWeekend.detail) $('lwDetail').textContent = h.nextLongWeekend.detail;
-    }
+    if(!h || typeof h !== 'object'){ showHolidaysNA(); return; }
     var merged = h.all || h.merged || h.combined;
     if(merged && !Array.isArray(merged)) merged = flattenYearly(merged);
     if(!merged || !merged.length){
@@ -752,30 +693,12 @@
         merged.push(y);
       });
     }
-    if(merged.length) renderMergedList($('holAll'), merged);
-  }
-  function pruneBakedHolidays(){
-    // Same upcoming-only + year-separator treatment for the baked snapshot list
-    var ul = $('holAll'); if(!ul) return;
-    var today = todaySgISO(), curYear = today.slice(0,4);
-    var items = [];
-    Array.prototype.forEach.call(ul.querySelectorAll('li'), function(li){
-      var t = li.querySelector('time'); if(!t) return;
-      var iso = isoOf({date:t.textContent});
-      if(iso && iso < today) return;   // already passed — drop from the snapshot too
-      items.push({iso:iso, html:li.outerHTML});
-    });
-    if(!items.length){
-      ul.innerHTML = '<li class="hol-empty">No upcoming holidays to show yet.</li>';
-      return;
+    if(!merged.length){ showHolidaysNA(); return; }   // nothing to show — N/A, not the stale list
+    if(h.nextLongWeekend){
+      if(h.nextLongWeekend.title) setText('lwTitle', h.nextLongWeekend.title);
+      if(h.nextLongWeekend.detail) setText('lwDetail', h.nextLongWeekend.detail);
     }
-    var html = '', lastYear = '';
-    items.forEach(function(x){
-      var yr = x.iso ? x.iso.slice(0,4) : '';
-      if(yr && yr !== lastYear){ html += yearSepHtml(yr, curYear); lastYear = yr; }
-      html += x.html;
-    });
-    ul.innerHTML = html;
+    renderMergedList($('holAll'), merged);
   }
   function applyRates(r){
     // Worker-only: r comes from fetchWorkerRates(). A missing rate is
@@ -785,173 +708,156 @@
     var wise = r.wise || {};
     var cimbRate = (typeof cimb==='number') ? cimb : (cimb.rate != null ? cimb.rate : r.cimbRate);
     var midRate  = (typeof wise==='number') ? wise : (wise.midRate != null ? wise.midRate : (wise.rate != null ? wise.rate : r.midRate));
-    CIMB_RATE = (cimbRate != null && !isNaN(Number(cimbRate))) ? Number(cimbRate) : null;
-    MID_RATE = (midRate != null && !isNaN(Number(midRate))) ? Number(midRate) : null;
-    $('cimbRateVal').textContent = (CIMB_RATE != null) ? CIMB_RATE : 'N/A';
-    $('wiseRateVal').textContent = (MID_RATE != null) ? MID_RATE : 'N/A';
-    $('wiseRateFoot').textContent = (MID_RATE != null) ? MID_RATE : 'N/A';
-    var t = fmtTime(r.updatedAt || cimb.updatedAt || wise.updatedAt);
-    if(t){ $('ratesUpdatedAt').textContent = t; }
-    else { $('ratesUpdatedAt').textContent = 'N/A'; }
+    CIMB_RATE = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) > 0) ? Number(cimbRate) : null;
+    MID_RATE = (midRate != null && isFinite(Number(midRate)) && Number(midRate) > 0) ? Number(midRate) : null;
+    setText('cimbRateVal', (CIMB_RATE != null) ? CIMB_RATE : 'N/A');
+    setText('wiseRateVal', (MID_RATE != null) ? MID_RATE : 'N/A');
+    setText('wiseRateFoot', (MID_RATE != null) ? MID_RATE : 'N/A');
+    setText('ratesUpdatedAt', fmtTime(r.updatedAt || cimb.updatedAt || wise.updatedAt) || 'N/A');
     calcCmp();
   }
   function applyRatesNA(){
     // Worker failed — show N/A everywhere, no fallback rates.
     CIMB_RATE = null; MID_RATE = null;
-    $('cimbRateVal').textContent = 'N/A';
-    $('wiseRateVal').textContent = 'N/A';
-    $('wiseRateFoot').textContent = 'N/A';
-    $('ratesUpdatedAt').textContent = 'N/A';
+    setText('cimbRateVal', 'N/A');
+    setText('wiseRateVal', 'N/A');
+    setText('wiseRateFoot', 'N/A');
+    setText('ratesUpdatedAt', 'N/A');
     calcCmp();
   }
-  function applyData(data){
-    if(!data){ showDataNA(); return; }
-    if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA();
-    if(data.weather) applyWeather(data.weather); else showWeatherNA();
-    if(data.psi) applyPsi(data.psi); else showPsiNA();
-    if(data.holidays) applyHolidays(data.holidays); else showHolidaysNA();
-    if(data.generatedAt){
-      var t = fmtTime(data.generatedAt);
-      if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
+  // One apply path for the full load and the 30-min core refresh (coreOnly skips
+  // holidays). Each section degrades to its own N/A, so one bad section can't take the page down.
+  function applyData(data, coreOnly){
+    if(!data || typeof data !== 'object'){ if(coreOnly) showCoreNA(); else showDataNA(); return; }
+    try{ if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA(); }catch(e){ showCheckpointsNA(); }
+    try{ if(data.weather) applyWeather(data.weather); else showWeatherNA(); }catch(e){ showWeatherNA(); }
+    try{ if(data.psi) applyPsi(data.psi); else showPsiNA(); }catch(e){ showPsiNA(); }
+    if(!coreOnly){
+      try{ if(data.holidays) applyHolidays(data.holidays); else showHolidaysNA(); }catch(e){ showHolidaysNA(); }
     }
-  }
-  function applyCoreData(data){
-    // Checkpoints / weather / PSI only — the 30-min auto-update leaves holidays and rates alone
-    if(!data){ showCoreNA(); return; }
-    if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA();
-    if(data.weather) applyWeather(data.weather); else showWeatherNA();
-    if(data.psi) applyPsi(data.psi); else showPsiNA();
-    if(data.generatedAt){
-      var t = fmtTime(data.generatedAt);
-      if(t) $('footerSnapshot').textContent = 'Snapshot: ' + t + ', Singapore time.';
-    }
+    var t = fmtTime(data.generatedAt);
+    if(t) setText('footerSnapshot', 'Snapshot: ' + t + ', Singapore time.');
   }
 
   /* ============ Data N/A — when the Worker data fetch fails (or a section is
      missing), show N/A / unavailable for the affected cards instead of silently
      leaving the stale baked snapshot on screen. ============ */
+  function showDirectionNA(el){
+    if(!el) return;
+    var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = 'N/A';
+    var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = '—';
+    var statusEl = el.querySelector('.status');
+    if(statusEl){ statusEl.className = 'status'; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = 'Unavailable'; }
+    var barEl = el.querySelector('.bandbar');
+    if(barEl){ barEl.querySelectorAll('i').forEach(function(b){ b.className = ''; }); }
+  }
   function showCheckpointsNA(){
     ['woodlands_sg_jb','woodlands_jb_sg','tuas_sg_jb','tuas_jb_sg'].forEach(function(key){
-      var el = document.querySelector('[data-cp="'+key+'"]');
-      if(!el) return;
-      var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = 'N/A';
-      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = '—';
-      var statusEl = el.querySelector('.status');
-      if(statusEl){ statusEl.className = 'status'; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = 'Unavailable'; }
-      var barEl = el.querySelector('.bandbar');
-      if(barEl){ barEl.querySelectorAll('i').forEach(function(b){ b.className = ''; }); }
+      showDirectionNA(document.querySelector('[data-cp="'+key+'"]'));
     });
     var b1 = $('cpIncident'); if(b1) b1.style.display = 'none';
     var b2 = $('cpIncidentTuas'); if(b2) b2.style.display = 'none';
-    $('cpUpdated').textContent = 'N/A';
+    setText('cpUpdated', 'N/A');
   }
   function showWeatherNA(){
-    var na = {temp:'N/A', cond:'N/A', feels:'N/A', advice:'Weather unavailable.', rain:'N/A', hum:'N/A', wind:'N/A', rainLabel:'N/A', bar:'0%'};
-    ['sg','jb','muar'].forEach(function(k){ WX[k] = Object.assign({}, na); });
+    ['sg','jb','muar'].forEach(function(k){ WX[k] = Object.assign({}, WX_NA); });
     setCity(currentCity);
-    $('wxUpdated').textContent = 'N/A';
+    setText('wxUpdated', 'N/A');
   }
   function showPsiNA(){
-    $('psiOverall').textContent = 'N/A';
-    $('psiBand').textContent = 'N/A';
-    $('psiAdvice').textContent = 'PSI data unavailable.';
-    $('psiNote').textContent = 'PSI unavailable.';
+    setText('psiOverall', 'N/A');
+    setText('psiBand', 'N/A');
+    setText('psiAdvice', 'PSI data unavailable.');
+    setText('psiNote', 'PSI unavailable.');
     ['central','west','south','east','north'].forEach(function(r){
       var row = document.querySelector('[data-region="'+r+'"]');
       if(!row) return;
       var bar = row.querySelector('.bar i'); if(bar) bar.style.width = '0%';
       var val = row.querySelector('.psi-val'); if(val) val.textContent = 'N/A';
     });
-    $('psiUpdated').textContent = 'N/A';
+    setText('psiUpdated', 'N/A');
   }
   function showHolidaysNA(){
-    $('lwTitle').textContent = 'Holidays unavailable';
-    $('lwDetail').textContent = 'The live holiday data could not be loaded.';
+    setText('lwTitle', 'Holidays unavailable');
+    setText('lwDetail', 'The live holiday data could not be loaded.');
     var ul = $('holAll');
     if(ul) ul.innerHTML = '<li class="hol-empty">Holidays unavailable.</li>';
   }
   function showDataNA(){
     // Whole data fetch failed — every data card goes N/A.
     showCheckpointsNA(); showWeatherNA(); showPsiNA(); showHolidaysNA();
-    $('footerSnapshot').textContent = 'Data unavailable — the live data could not be loaded.';
+    setText('footerSnapshot', 'Data unavailable — the live data could not be loaded.');
   }
   function showCoreNA(){
     // 30-min refresh failed — checkpoints / weather / PSI go N/A, holidays untouched.
     showCheckpointsNA(); showWeatherNA(); showPsiNA();
   }
 
-  /* ============ Fetching — dashboard data comes from the Worker /data endpoint
-     (live on every call, 60s edge cache), never from data.json. ============ */
-  function fetchWorkerData(){
-    // Data from the Cloudflare Worker — it fetches LTA, OpenWeather, PSI and
-    // holidays server-side and serves one JSON with CORS open. Resolves to the
-    // data object or null when the Worker is down / it times out.
-    if(!WORKER_URL) return Promise.resolve(null);
-    var timeout = new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 10000); });
-    var attempt = fetch(WORKER_DATA_URL, {cache:'no-cache'}).then(function(res){
+  /* ============ Fetching ============ */
+  // Refresh model: FX once on load (refresh button re-locks for 5 min once fresh); checkpoints/weather/PSI every 30 min; holidays at midnight. Worker-only — a failed fetch shows N/A.
+  function fetchJson(url, timeoutMs){
+    // Fetch with a hard timeout: the request is aborted so a hung Worker can't linger.
+    var ctrl = new AbortController();
+    var timer = setTimeout(function(){ ctrl.abort(); }, timeoutMs);
+    return fetch(url, {signal: ctrl.signal}).then(function(res){
+      clearTimeout(timer);
       if(!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
-    }).then(function(d){
+    }).catch(function(){ clearTimeout(timer); return null; });
+  }
+  function fetchWorkerData(url){
+    // Dashboard data from the Worker /data endpoint — the data object, or null when the Worker is down / it times out.
+    if(!WORKER_URL) return Promise.resolve(null);
+    return fetchJson(url || WORKER_DATA_URL, 10000).then(function(d){
       if(!d || typeof d !== 'object') return null;
       return d;
-    }).catch(function(){ return null; });
-    return Promise.race([attempt, timeout]);
+    });
   }
-  function loadData(){
-    return fetchWorkerData().then(function(data){
-      if(!data){ showDataNA(); return null; }   // Worker failed — N/A, not the stale snapshot
-      var hash = JSON.stringify(data);
-      if(hash !== lastDataHash){ lastDataHash = hash; applyData(data); }
+  // One loader for the three data paths: the full load on open, the 30-min core
+  // refresh, and the midnight holidays re-check. sections picks the Worker slice
+  // (?sections=core / holidays; omitted = full). applyFn gets the data plus true
+  // when only the core sections should be applied.
+  var dataLoadInFlight = false;
+  function loadData(applyFn, naFn, sections){
+    if(dataLoadInFlight) return Promise.resolve(null);   // a refresh is already running
+    dataLoadInFlight = true;
+    var url = sections ? WORKER_DATA_URL + '?sections=' + sections : WORKER_DATA_URL;
+    return fetchWorkerData(url).then(function(data){
+      dataLoadInFlight = false;
+      if(!data){ naFn(); return null; }
+      if(sections !== 'holidays' && data.generatedAt && data.generatedAt === lastDataGen) return data;   // unchanged — skip re-applying
+      lastDataGen = data.generatedAt;
+      applyFn(data, sections === 'core');
       return data;
-    }).catch(function(){ showDataNA(); return null; });
+    }).catch(function(){ dataLoadInFlight = false; naFn(); return null; });
   }
-  function loadCoreData(){
-    // 30-min auto-update for checkpoints / weather / PSI
-    return fetchWorkerData().then(function(data){
-      if(!data){ showCoreNA(); return null; }
-      var hash = JSON.stringify(data);
-      if(hash !== lastDataHash){ lastDataHash = hash; applyCoreData(data); }
-      return data;
-    }).catch(function(){ showCoreNA(); return null; });
-  }
-  function loadHolidaysOnly(){
-    // Midnight re-check: refresh just the holidays & long-weekend section
-    return fetchWorkerData().then(function(data){
-      if(data && data.holidays){ applyHolidays(data.holidays); pruneBakedHolidays(); }
-      else { showHolidaysNA(); }   // Worker failed — N/A, and do NOT re-render the baked list
-      return data;
-    }).catch(function(){ showHolidaysNA(); return null; });
+  function applyHolidaysSection(data){
+    if(data && data.holidays) applyHolidays(data.holidays);
+    else showHolidaysNA();
   }
   function fetchWorkerRates(){
-    // Rates from the Cloudflare Worker — it fetches Wise and CIMB server-side (no CORS there)
-    // and serves one small JSON with CORS open. Resolves to { wiseRate, cimbRate, updatedAt }
-    // (either rate may be null) or null when WORKER_URL is unset / the Worker is down / it times out.
+    // Rates from the Worker — { wiseRate, cimbRate, updatedAt } (either rate may be
+    // null), or null when the Worker is down / it times out.
     if(!WORKER_URL) return Promise.resolve(null);
-    var timeout = new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 8000); });
-    var attempt = fetch(WORKER_URL, {cache:'no-cache'}).then(function(res){
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    }).then(function(j){
+    return fetchJson(WORKER_URL, 8000).then(function(j){
       if(!j || typeof j !== 'object') return null;
       var r = (j.rates && typeof j.rates === 'object') ? j.rates : j;
       var wise = r.wise, cimb = r.cimb;
       var wiseRate = (wise != null && typeof wise === 'object') ? (wise.midRate != null ? wise.midRate : wise.rate) : (typeof wise === 'number' ? wise : (r.midRate != null ? r.midRate : r.wiseRate));
       var cimbRate = (cimb != null && typeof cimb === 'object') ? cimb.rate : (typeof cimb === 'number' ? cimb : r.cimbRate);
-      wiseRate = (wiseRate != null && !isNaN(Number(wiseRate))) ? Number(wiseRate) : null;
-      cimbRate = (cimbRate != null && !isNaN(Number(cimbRate))) ? Number(cimbRate) : null;
+      wiseRate = (wiseRate != null && isFinite(Number(wiseRate)) && Number(wiseRate) > 0) ? Number(wiseRate) : null;
+      cimbRate = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) > 0) ? Number(cimbRate) : null;
       if(wiseRate == null && cimbRate == null) return null;
-      var t = r.updatedAt || (wise && wise.updatedAt) || (cimb && cimb.updatedAt) || Date.now();
+      var t = r.updatedAt || (wise && wise.updatedAt) || (cimb && cimb.updatedAt) || null;   // no timestamp from the Worker — leave it null, never invent one
       if(typeof t === 'number' && t < 1e11) t = t * 1000;   // epoch seconds → ms
       return { wiseRate: wiseRate, cimbRate: cimbRate, updatedAt: t };
-    }).catch(function(){ return null; });
-    return Promise.race([attempt, timeout]);
+    });
   }
   function loadRates(){
     // Worker-only: FX rates come live from the Cloudflare Worker.
-    // No rates.json / data.json fallback — if the Worker fails,
-    // the rates show N/A instead of a stale fallback rate.
+    // No fallback — if the Worker fails, the rates show N/A.
     return fetchWorkerRates().then(function(wk){
-      if(!wk){ applyRatesNA(); ratesFetchedAt = Date.now(); updateRateBtn(); return false; }
+      if(!wk){ applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; }   // failed — stay stale so the user can retry at once
       var merged = { updatedAt: wk.updatedAt };
       if(wk.wiseRate != null) merged.wise = { midRate: wk.wiseRate };
       if(wk.cimbRate != null) merged.cimb = { rate: wk.cimbRate };
@@ -959,23 +865,17 @@
       ratesFetchedAt = Date.now();   // rate is fresh again — restart the 5-min staleness clock
       updateRateBtn();
       return true;
-    }).catch(function(){ applyRatesNA(); ratesFetchedAt = Date.now(); updateRateBtn(); return false; });
+    }).catch(function(){ applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; });
   }
 
-  /* ============ Rate staleness — the refresh button is always shown on the rate card.
-     While the rate is fresh it is dimmed AND disabled (cannot be clicked); once the rate is
-     over 5 minutes old it lights up AND becomes clickable, and tapping it runs the refresh
-     code immediately and re-locks the button. There is no FX timer — after the one pull on
-     page open, this button is the only way the rate updates. ============ */
-  var ratesFetchedAt = Date.now();
+  var ratesFetchedAt = 0;   // 0 = never fetched (or last fetch failed) — the button stays clickable until a fetch succeeds
   var rateRefreshInFlight = false;
   function updateRateBtn(){
     var btn = $('rateRefreshBtn'); if(!btn) return;
     var stale = (Date.now() - ratesFetchedAt) >= RATE_STALE_MS;
     btn.classList.toggle('stale', stale);
     var locked = !stale || rateRefreshInFlight;   // dim = locked; lit up = clickable
-    btn.disabled = locked;
-    btn.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    btn.disabled = locked;   // disabled already conveys it
     var label = $('rateRefreshLabel');
     if(label && !rateRefreshInFlight) label.textContent = stale ? 'Refresh rate now' : 'Refresh rate';
   }
@@ -986,7 +886,6 @@
     rateRefreshInFlight = true;
     refreshBtn.classList.add('busy');
     refreshBtn.disabled = true;
-    refreshBtn.setAttribute('aria-disabled', 'true');
     if(label) label.textContent = 'Refreshing…';
     loadRates().then(function(){
       rateRefreshInFlight = false;
@@ -997,23 +896,21 @@
   setInterval(updateRateBtn, 15000);
 
   /* ============ Auto-refresh timers ============ */
-  // Exchange rate: NO timer — it is pulled once on page open (below) and afterwards only
-  // when the user taps the rate card's refresh button.
-  setInterval(loadCoreData, DATA_REFRESH_MS);   // checkpoints / weather / PSI — every 30 min
+  // No FX timer — the rate is pulled once on page open and afterwards only from its refresh button.
+  setInterval(function(){ loadData(applyData, showCoreNA, 'core'); }, DATA_REFRESH_MS);   // checkpoints / weather / PSI — every 30 min
   // Holidays — re-check at 12am (midnight, Singapore time) if the page is left open
   var lastHolidayDay = todaySgISO();
   setInterval(function(){
     var today = todaySgISO();
-    if(today !== lastHolidayDay){ lastHolidayDay = today; loadHolidaysOnly(); }
+    if(today !== lastHolidayDay){ lastHolidayDay = today; loadData(applyHolidaysSection, showHolidaysNA, 'holidays'); }
   }, 30000);
-  // When the user returns to the tab / comes back online: checkpoints / weather / PSI catch
-  // up, but the exchange rate is NOT fetched — it only lights up its refresh button if it is
-  // stale, leaving the refresh itself to the user.
+  // Back in the tab / back online: core data catches up, but the FX rate is left to its refresh button.
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) return;
     updateRateBtn();
+    loadData(applyData, showCoreNA, 'core');
   });
-  window.addEventListener('online', function(){ updateRateBtn(); loadCoreData(); });
+  window.addEventListener('online', function(){ updateRateBtn(); loadData(applyData, showCoreNA, 'core'); });
 
   /* ============ Initial load — fetch everything fresh, once ============ */
   // Loading screen: the page only appears once both the dashboard data and
@@ -1025,9 +922,8 @@
     var l = $('loader'); if(l) l.classList.add('done');
   }
   setTimeout(hideLoader, 12000);   // safety net — never block the page forever
-  Promise.all([loadData(), loadRates()]).then(hideLoader);
+  Promise.all([loadData(applyData, showDataNA), loadRates()]).then(hideLoader);
 
-  pruneBakedHolidays();
   calcCmp();
   setCity('sg');
 
