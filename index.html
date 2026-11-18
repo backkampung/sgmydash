@@ -848,7 +848,7 @@
       wiseRate = (wiseRate != null && isFinite(Number(wiseRate)) && Number(wiseRate) > 0) ? Number(wiseRate) : null;
       cimbRate = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) > 0) ? Number(cimbRate) : null;
       if(wiseRate == null && cimbRate == null) return null;
-      var t = r.updatedAt || (wise && wise.updatedAt) || (cimb && cimb.updatedAt) || null;   // no timestamp from the Worker — leave it null, never invent one
+      var t = r.updated_at || r.updatedAt || (wise && (wise.updated_at || wise.updatedAt)) || (cimb && (cimb.updated_at || cimb.updatedAt)) || null;   // no timestamp from the Worker — leave it null, never invent one
       if(typeof t === 'number' && t < 1e11) t = t * 1000;   // epoch seconds → ms
       return { wiseRate: wiseRate, cimbRate: cimbRate, updatedAt: t };
     });
