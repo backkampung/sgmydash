@@ -131,6 +131,12 @@
   @media(prefers-color-scheme:dark){.longweekend{border-color:#5a4718}}
   .longweekend strong{font-size:13.5px}
   .longweekend p{margin:3px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  /* Offline banner — shows only when the device itself has no connection,
+     e.g. signal dropping while crossing the Causeway. Hidden otherwise. */
+  .offline-banner{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--amber-soft);border:1px solid #ecd28a;border-radius:14px;padding:12px 13px;margin:14px 0 0;font-size:13px;line-height:1.5}
+  @media(prefers-color-scheme:dark){.offline-banner{border-color:#5a4718}}
+  .offline-banner[hidden]{display:none}
+  .offline-banner button{flex:0 0 auto;font:800 13px "Manrope",sans-serif;color:#fff;background:var(--accent);border:0;border-radius:999px;padding:8px 14px;cursor:pointer}
   .hol-cols h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 6px;display:flex;align-items:center;gap:8px}
   .hol-cols h3:first-child{margin-top:0}
   .flag{width:22px;height:15px;border-radius:3px;overflow:hidden;display:inline-block;flex:0 0 auto;border:1px solid var(--line)}
@@ -189,6 +195,11 @@
       <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
     </div>
   </header>
+
+  <div class="offline-banner" id="offlineBanner" role="alert" hidden>
+    <span><strong>No internet connection.</strong> Please check your device network, then refresh this page.</span>
+    <button type="button" id="offlineRefreshBtn">Refresh</button>
+  </div>
 
   <main class="stack">
 
@@ -905,7 +916,18 @@
     updateRateBtn();
     loadData(applyData, showCoreNA, 'core');
   });
-  window.addEventListener('online', function(){ updateRateBtn(); loadData(applyData, showCoreNA, 'core'); });
+  // Offline banner — the device itself lost its connection (common while
+  // crossing the Causeway). Driven by navigator.onLine, not by a failed
+  // fetch, so a server problem still shows the cards' own "unavailable".
+  function updateOfflineBanner(){
+    var b = $('offlineBanner'); if(!b) return;
+    b.hidden = navigator.onLine;
+  }
+  window.addEventListener('offline', updateOfflineBanner);
+  window.addEventListener('online', function(){ updateOfflineBanner(); updateRateBtn(); loadData(applyData, showCoreNA, 'core'); });
+  var offBtn = $('offlineRefreshBtn');
+  if(offBtn) offBtn.addEventListener('click', function(){ location.reload(); });
+  updateOfflineBanner();   // page opened while already offline — show it at once
 
   /* ============ Initial load — fetch everything fresh, once ============ */
   // Loading screen: the page only appears once both the dashboard data and
