@@ -385,7 +385,7 @@
   var DATA_REFRESH_MS = 30 * 60 * 1000;     // 30 min — checkpoints / weather / PSI auto-update interval
 
   // All live data comes only from this Cloudflare Worker — no fallback; if it fails, cards show N/A.
-  var WORKER_URL = 'https://sgmy-fx-rates.alien-lim528.workers.dev/';
+  var WORKER_URL = 'https://sgmy-dash-update.alien-lim528.workers.dev/';
   var WORKER_DATA_URL = WORKER_URL.replace(/\/$/, '') + '/data';   // Worker /data endpoint
 
   /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
