@@ -27,7 +27,7 @@ Singapore / Johor Bahru / Muar, Singapore PSI by region, and SG + Malaysia
 | Send SGD→MYR | CIMB Singapore board rate, scraped from the `rateList` field at cimbclicks.com.sg/sgd-to-myr (zero fees); Wise live mid-market rate from wise.com/rates/live, used unrounded. |
 | Weather | OpenWeather, Singapore / Johor Bahru / Muar. |
 | PSI | data.gov.sg `v1/environment/psi`, no key. |
-| Holidays | Nager.Date for Singapore (national only); Malaysia federal and Johor state holidays are curated files — Nager.Date does **not** cover Malaysia. |
+| Holidays | Singapore (MOM), Malaysia federal and Johor state holidays are all curated files. |
 
 ## A note on the Wise calculator
 
@@ -39,10 +39,11 @@ slightly. Check in the Wise app before sending.
 ```
 index.html                        the page (single static file)
 CNAME                             sgmydash.backkampung.com
+data/sg-holidays-2026.json        Singapore holidays, curated (MOM)
+data/sg-holidays-2027.json        Singapore holidays, curated (MOM)
 data/my-holidays-2026.json        Malaysia federal holidays, curated
 data/my-holidays-2027.json        (Prime Minister's Department schedule)
 data/johor-holidays.json          Johor state holidays, curated
-data/sg-replacements.json         Singapore observed-day holidays, curated
 ```
 
 ## Notes

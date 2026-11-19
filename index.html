@@ -373,7 +373,7 @@
 
   <footer>
     <span id="footerSnapshot">Snapshot: Sun 15 Nov 2026, Singapore time.</span><br>
-    Sources: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a> · <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg / NEA</a> · <a href="https://date.nager.at/" target="_blank" rel="noopener">Nager.Date</a> · <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a> · MOM · FMM · <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a> · <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info</a><br>
+    Sources: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a> · <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg / NEA</a> · <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a> · MOM · FMM · <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a> · <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info</a><br>
     © 2026 backkampung.com. All rights reserved.
   </footer>
 </div>
@@ -619,10 +619,10 @@
   }
   /* ============ Holidays — upcoming only, split by year, rolls over on its own ============
      Fetcher contract (Worker /data endpoint): always request the CURRENT year and the NEXT
-     year from Nager.Date, for SG and for MY, and read the curated Johor list per-year the same
+     year from the curated SG and MY files, and read the curated Johor list the same
      way. Years are derived from the run date — never hard-coded — so when a year ends the feed
      automatically carries the next pair (2026+2027 → 2027+2028) with no manual change. A
-     missing next-year Johor list is fine: that year is simply skipped. This page filters out
+     missing next-year list is fine: that year is simply skipped. This page filters out
      past dates and inserts a year separator, for the live feed and the baked snapshot alike. */
   var MONTHS = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
   function todaySgISO(){
