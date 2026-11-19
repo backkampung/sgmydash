@@ -276,22 +276,22 @@
         <div class="cmp-results">
           <div class="cmp-box" id="cimbBox">
             <h4>CIMB Singapore <span class="best-tag" id="cimbBest" hidden>Best</span></h4>
-            <dl><dt>Rate</dt><dd id="cimbRateVal">N/A</dd><dt>Fee</dt><dd>SGD 0.00</dd></dl>
-            <div class="recv"><span>Recipient gets</span><b id="cimbRecv">N/A</b></div>
+            <dl><dt>Rate</dt><dd id="cimbRateVal">—</dd><dt>Fee</dt><dd>SGD 0.00</dd></dl>
+            <div class="recv"><span>Recipient gets</span><b id="cimbRecv">—</b></div>
           </div>
           <div class="cmp-box" id="wiseBox">
             <h4>Wise <span class="best-tag" id="wiseBest" hidden>Best</span></h4>
-            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">N/A</dd><dt>Our fee</dt><dd id="wiseOurFee">N/A</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">N/A</dd><dt>Total fee</dt><dd id="wiseFeeOut">N/A</dd><dt>Converted</dt><dd id="wiseNet">N/A</dd></dl>
-            <div class="recv"><span>Recipient gets</span><b id="wiseRecv">N/A</b></div>
+            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">—</dd><dt>Our fee</dt><dd id="wiseOurFee">—</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">—</dd><dt>Total fee</dt><dd id="wiseFeeOut">—</dd><dt>Converted</dt><dd id="wiseNet">—</dd></dl>
+            <div class="recv"><span>Recipient gets</span><b id="wiseRecv">—</b></div>
           </div>
         </div>
         <p class="verdict" id="verdict"></p>
-        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">N/A</span></p>
+        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">—</span></p>
         <div class="rate-refresh-row">
           <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
-      <p class="src-foot">Wise rate <span id="wiseRateFoot">N/A</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
+      <p class="src-foot">Wise rate <span id="wiseRateFoot">—</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
     </section>
 
     <!-- 3 · Weather — Worker, auto-updates every 30 min -->
@@ -401,6 +401,7 @@
 
   /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
   var CIMB_RATE = null, MID_RATE = null;  // set only by the live Worker — never a stale fallback rate
+  var ratesSettled = false;  // true once a rates fetch has finished (ok or failed) — before that, show — not N/A
   // Wise fee, fitted from five Wise app screenshots (15–16 Nov 2026, bank-account funding).
   var WISE_FIXED = 0.54, WISE_PCT = 0.0025, WISE_VAT = 0.08;
   var lastDataGen = null;   // generatedAt of the last applied /data payload — skips re-applying unchanged data
@@ -426,28 +427,29 @@
     var amt = parseFloat(sendAmt.value);
     var cimbRecvEl = $('cimbRecv'), wiseRecvEl = $('wiseRecv'), verdict = $('verdict');
     if(!isFinite(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent='Type an amount to compare CIMB and Wise.'; return; }
-    // No live rate (Worker failed) — show N/A, never a stale fallback rate.
+    // No live rate — show — while still loading, N/A only once a fetch has really failed.
     var cimbOk = (CIMB_RATE != null && !isNaN(CIMB_RATE));
     var wiseOk = (MID_RATE != null && !isNaN(MID_RATE));
     if(!cimbOk || !wiseOk){
+      var na = ratesSettled ? 'N/A' : '—';
       if(!cimbOk){
-        $('cimbRateVal').textContent = 'N/A';
-        cimbRecvEl.textContent = 'N/A';
+        $('cimbRateVal').textContent = na;
+        cimbRecvEl.textContent = na;
       }
       if(!wiseOk){
-        $('wiseRateVal').textContent = 'N/A';
-        $('wiseOurFee').textContent = 'N/A';
-        $('wiseVat').textContent = 'N/A';
-        $('wiseFeeOut').textContent = 'N/A';
-        $('wiseNet').textContent = 'N/A';
-        wiseRecvEl.textContent = 'N/A';
-        $('wiseRateFoot').textContent = 'N/A';
+        $('wiseRateVal').textContent = na;
+        $('wiseOurFee').textContent = na;
+        $('wiseVat').textContent = na;
+        $('wiseFeeOut').textContent = na;
+        $('wiseNet').textContent = na;
+        wiseRecvEl.textContent = na;
+        $('wiseRateFoot').textContent = na;
       }
       $('cimbBest').hidden = true;
       $('wiseBest').hidden = true;
       $('cimbBox').classList.remove('best');
       $('wiseBox').classList.remove('best');
-      verdict.textContent = 'Rates unavailable — the live rate could not be loaded. Try refreshing.';
+      verdict.textContent = ratesSettled ? 'Rates unavailable — the live rate could not be loaded. Try refreshing.' : 'Loading rates…';
       return;
     }
     var wf = wiseFee(amt);
@@ -710,6 +712,7 @@
     // Worker-only: r comes from fetchWorkerRates(). A missing rate is
     // set to null (never keep a stale value) and displays as N/A.
     if(!r) { applyRatesNA(); return; }
+    ratesSettled = true;   // a fetch finished — from here, a missing rate is a real N/A
     var cimb = r.cimb || {};
     var wise = r.wise || {};
     var cimbRate = (typeof cimb==='number') ? cimb : (cimb.rate != null ? cimb.rate : r.cimbRate);
@@ -724,6 +727,7 @@
   }
   function applyRatesNA(){
     // Worker failed — show N/A everywhere, no fallback rates.
+    ratesSettled = true;
     CIMB_RATE = null; MID_RATE = null;
     setText('cimbRateVal', 'N/A');
     setText('wiseRateVal', 'N/A');
