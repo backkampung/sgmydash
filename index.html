@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- sgmydash page version: 2026-11-19.1 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -281,7 +282,7 @@
           </div>
           <div class="cmp-box" id="wiseBox">
             <h4>Wise <span class="best-tag" id="wiseBest" hidden>Best</span></h4>
-            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">—</dd><dt>Our fee</dt><dd id="wiseOurFee">—</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">—</dd><dt>Total fee</dt><dd id="wiseFeeOut">—</dd><dt>Converted</dt><dd id="wiseNet">—</dd></dl>
+            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">—</dd><dt>Our fee (estimate)</dt><dd id="wiseOurFee">—</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">—</dd><dt>Total fee</dt><dd id="wiseFeeOut">—</dd><dt>Converted</dt><dd id="wiseNet">—</dd></dl>
             <div class="recv"><span>Recipient gets</span><b id="wiseRecv">—</b></div>
           </div>
         </div>
@@ -291,7 +292,7 @@
           <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
-      <p class="src-foot">Wise rate <span id="wiseRateFoot">—</span> — full precision, used unrounded. Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
+      <p class="src-foot">Wise rate <span id="wiseRateFoot">—</span> — full precision, used unrounded. Wise fee is an estimate (bank-transfer funding, based on the Wise app, Nov 2026). Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
     </section>
 
     <!-- 3 · Weather — Worker, auto-updates every 30 min -->
@@ -519,9 +520,9 @@
     keys.forEach(function(key){
       var el = document.querySelector('[data-cp="'+key+'"]');
       var d = dirs[key];
-      if(!d) return;
+      if(!d){ showDirectionNA(el); return; }
       var speed = (typeof d==='number') ? d : (d.speedKmh != null ? d.speedKmh : d.speed);
-      if(speed == null) return;
+      if(speed == null){ showDirectionNA(el); return; }
       speed = Number(speed);
       if(!isFinite(speed) || speed < 0){ showDirectionNA(el); return; }
       var band = Number(d.band);
@@ -543,6 +544,11 @@
         var bars = barEl.querySelectorAll('i');
         bars.forEach(function(b,i){ b.className = (i < band) ? st.bar : ''; });
       }
+    });
+    // A known direction missing from the payload is a failed direction, not a
+    // stale value — N/A it so a baked speed is never shown as live.
+    ['woodlands_sg_jb','woodlands_jb_sg','tuas_sg_jb','tuas_jb_sg'].forEach(function(key){
+      if(keys.indexOf(key) === -1) showDirectionNA(document.querySelector('[data-cp="'+key+'"]'));
     });
     // Per-card LTA advisories, from each card's own directions.
     // A missing/null incident hides the box — the baked HTML must
@@ -569,17 +575,28 @@
     var regions = psi.regions || psi;
     if(!regions || typeof regions !== 'object' || Array.isArray(regions) || !Object.keys(regions).length){ showPsiNA(); return; }
     var max = 0, updated = 0;
+    // N/A one region row (missing or invalid value) — never leave a stale baked value.
+    function regionNA(r){
+      var row = document.querySelector('[data-region="'+r+'"]');
+      if(!row) return;
+      var bar = row.querySelector('.bar i'); if(bar) bar.style.width = '0%';
+      var val = row.querySelector('.psi-val'); if(val) val.textContent = 'N/A';
+    }
     Object.keys(regions).forEach(function(r){
       var v = regions[r]; if(typeof v !== 'number') v = v && v.value;
-      if(v == null) return;
+      if(v == null){ regionNA(r); return; }
       v = Number(v);
-      if(!isFinite(v)) return;
+      if(!isFinite(v)){ regionNA(r); return; }
       if(v > max) max = v;
       var row = document.querySelector('[data-region="'+r+'"]');
       if(!row) return;
       updated++;
       var bar = row.querySelector('.bar i'); if(bar){ bar.style.width = Math.min(100,v) + '%'; bar.style.background = psiColor(v); }
       var val = row.querySelector('.psi-val'); if(val) val.textContent = v;
+    });
+    // A known region missing from the payload is a failed region, not a stale value.
+    ['central','west','south','east','north'].forEach(function(r){
+      if(!Object.prototype.hasOwnProperty.call(regions, r)) regionNA(r);
     });
     if(!updated){ showPsiNA(); return; }   // no region matched a row — nothing was applied
     var overall = (psi.overall != null) ? Number(psi.overall) : (max || null);
@@ -746,7 +763,7 @@
       try{ if(data.holidays) applyHolidays(data.holidays); else showHolidaysNA(); }catch(e){ showHolidaysNA(); }
     }
     var t = fmtTime(data.generatedAt);
-    if(t) setText('footerSnapshot', 'Snapshot: ' + t + ', Singapore time.');
+    if(t) setText('footerSnapshot', 'Snapshot: ' + t + ', Singapore time.' + (data.stale ? ' Showing last available data — may be out of date.' : ''));
   }
 
   /* ============ Data N/A — when the Worker data fetch fails (or a section is
@@ -828,18 +845,18 @@
   // (?sections=core / holidays; omitted = full). applyFn gets the data plus true
   // when only the core sections should be applied.
   var dataLoadInFlight = false;
-  function loadData(applyFn, naFn, sections){
+  function loadData(applyFn, naFn, sections, quiet){
     if(dataLoadInFlight) return Promise.resolve(null);   // a refresh is already running
     dataLoadInFlight = true;
     var url = sections ? WORKER_DATA_URL + '?sections=' + sections : WORKER_DATA_URL;
     return fetchWorkerData(url).then(function(data){
       dataLoadInFlight = false;
-      if(!data){ naFn(); return null; }
+      if(!data){ if(!quiet) naFn(); return null; }
       if(sections !== 'holidays' && data.generatedAt && data.generatedAt === lastDataGen) return data;   // unchanged — skip re-applying
       lastDataGen = data.generatedAt;
       applyFn(data, sections === 'core');
       return data;
-    }).catch(function(){ dataLoadInFlight = false; naFn(); return null; });
+    }).catch(function(){ dataLoadInFlight = false; if(!quiet) naFn(); return null; });
   }
   function applyHolidaysSection(data){
     if(data && data.holidays) applyHolidays(data.holidays);
@@ -863,11 +880,11 @@
       return { wiseRate: wiseRate, cimbRate: cimbRate, updatedAt: t };
     });
   }
-  function loadRates(){
+  function loadRates(quiet){
     // Worker-only: FX rates come live from the Cloudflare Worker.
     // No fallback — if the Worker fails, the rates show N/A.
     return fetchWorkerRates().then(function(wk){
-      if(!wk){ applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; }   // failed — stay stale so the user can retry at once
+      if(!wk){ if(!quiet) applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; }   // failed — stay stale so the user can retry at once
       var merged = { updatedAt: wk.updatedAt };
       if(wk.wiseRate != null) merged.wise = { midRate: wk.wiseRate };
       if(wk.cimbRate != null) merged.cimb = { rate: wk.cimbRate };
@@ -875,7 +892,7 @@
       ratesFetchedAt = Date.now();   // rate is fresh again — restart the 5-min staleness clock
       updateRateBtn();
       return true;
-    }).catch(function(){ applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; });
+    }).catch(function(){ if(!quiet) applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; });
   }
 
   var ratesFetchedAt = 0;   // 0 = never fetched (or last fetch failed) — the button stays clickable until a fetch succeeds
@@ -943,7 +960,25 @@
     var l = $('loader'); if(l) l.classList.add('done');
   }
   setTimeout(hideLoader, 12000);   // safety net — never block the page forever
-  Promise.all([loadData(applyData, showDataNA), loadRates()]).then(hideLoader);
+  // One retry of the initial load (after 1.5s) before showing N/A — a single
+  // dropped packet should not leave a first-time visitor staring at N/A cards.
+  function loadDataRetry(applyFn, naFn, sections){
+    return loadData(applyFn, naFn, sections, true).then(function(data){
+      if(data) return data;
+      return new Promise(function(resolve){
+        setTimeout(function(){ loadData(applyFn, naFn, sections).then(resolve); }, 1500);
+      });
+    });
+  }
+  function loadRatesRetry(){
+    return loadRates(true).then(function(ok){
+      if(ok) return true;
+      return new Promise(function(resolve){
+        setTimeout(function(){ loadRates().then(resolve); }, 1500);
+      });
+    });
+  }
+  Promise.all([loadDataRetry(applyData, showDataNA), loadRatesRetry()]).then(hideLoader);
 
   calcCmp();
   setCity('sg');
