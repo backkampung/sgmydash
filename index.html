@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.3 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.4 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -13,11 +13,11 @@
     --bg:#eef0f8; --surface:#ffffff; --surface-2:#f4f5fb; --ink:#101828; --muted:#667085; --muted-2:#7a8598; --line:#e3e5f0;
     --accent:#444ce7; --accent-dark:#1e1b4b; --accent-soft:#eef4ff; --amber-soft:#fffaeb;
     --ok:#00a87e; --warn:#ec7e00; --bad:#e23b4a; --amber:#d9930d;
-    --shadow:none;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 4px 12px rgba(16,24,40,.05);
     --radius:18px;
   }
   @media (prefers-color-scheme: dark){
-    :root{ --bg:#0a0e1a; --surface:#121826; --surface-2:#1a2236; --ink:#f2f4f7; --muted:#a1a2b3; --muted-2:#8a8a94; --line:#232c42; --accent:#818cf8; --accent-soft:#1e1b4b; --amber-soft:#2a2113; --ok:#00a87e; --warn:#ec7e00; --bad:#e23b4a; --amber:#d9930d; --shadow:none; }
+    :root{ --bg:#0a0e1a; --surface:#1a2236; --surface-2:#232c42; --ink:#f2f4f7; --muted:#a1a2b3; --muted-2:#8a8a94; --line:#2e3a56; --accent:#818cf8; --accent-soft:#1e1b4b; --amber-soft:#2a2113; --ok:#00a87e; --warn:#ec7e00; --bad:#e23b4a; --amber:#d9930d; --shadow:0 1px 2px rgba(0,0,0,.5),0 6px 20px rgba(0,0,0,.35); }
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
