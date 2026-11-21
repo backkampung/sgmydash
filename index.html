@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.9 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.10 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -933,8 +933,8 @@
       (cp.incident != null ? cp.incident : cp.advisory));
     setIncident('cpIncidentTuas', 'cpIncidentTuasText',
       dirIncident(dirs.tuas_sg_jb) || dirIncident(dirs.tuas_jb_sg));
-    var t = fmtTime(cp.updatedAt || cp.snapshotAt);
-    setText('cpUpdated', t || 'N/A');
+    var updTime = fmtTime(cp.updatedAt || cp.snapshotAt);
+    setText('cpUpdated', updTime || 'N/A');
   }
   function psiColor(v){ return v <= 50 ? '#00a87e' : (v <= 100 ? '#d9930d' : (v <= 200 ? '#ec7e00' : (v <= 300 ? '#e23b4a' : '#991b1b'))); }
   function psiBandKey(v){ return v <= 50 ? 'good' : (v <= 100 ? 'moderate' : (v <= 200 ? 'unhealthy' : (v <= 300 ? 'vunhealthy' : 'hazardous'))); }
@@ -1166,8 +1166,8 @@
     if(!coreOnly){
       try{ if(data.holidays) applyHolidays(data.holidays); else showHolidaysNA(); }catch(e){ showHolidaysNA(); }
     }
-    var t = fmtTime(data.generatedAt);
-    if(t) setText('footerSnapshot', t('footer_snapshot') + ' ' + t + t('footer_sg_time') + (data.stale ? t('footer_stale') : ''));
+    var genTime = fmtTime(data.generatedAt);
+    if(genTime) setText('footerSnapshot', t('footer_snapshot') + ' ' + genTime + t('footer_sg_time') + (data.stale ? t('footer_stale') : ''));
   }
 
   /* ============ Data N/A — when the Worker data fetch fails (or a section is
