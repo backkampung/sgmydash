@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.4 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.5 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -25,9 +25,13 @@
   a{color:var(--accent)}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 32px}
   p{overflow-wrap:break-word}
-  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:20px 18px;border-radius:0 0 20px 20px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:center;text-align:center}
+  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 18px 20px;border-radius:0 0 20px 20px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:center;text-align:center}
   .topbar h1{font-size:21px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
   .topbar h1 span{color:#facc15}
+  .topbar-title{flex:0 0 100%}
+  .lang-toggle{display:flex;gap:4px;margin-left:auto}
+  .lang-toggle button{font:800 12px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 10px;cursor:pointer;min-height:28px}
+  .lang-toggle button.active{background:#fff;color:#1e1b4b;border-color:#fff}
   .date-line{font-size:12px;color:#c3c6f2;margin-top:3px}
   .live-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px;font-size:11px;color:#c3c6f2}
   .live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex:0 0 auto;animation:pulse 2s infinite}
@@ -207,21 +211,26 @@
 <body>
 <div class="loader" id="loader" role="status" aria-live="polite">
   <div class="spin" aria-hidden="true"></div>
-  <div class="loader-text">Loading live data…</div>
+  <div class="loader-text" data-i18n="loading">Loading live data…</div>
 </div>
 <div class="wrap">
-  <noscript><div style="background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:12px 13px;margin:14px 0 0;font-size:13px;line-height:1.5">Live data needs JavaScript — please enable it. The values below are from 15 Nov 2026.</div></noscript>
+  <noscript><div style="background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:12px 13px;margin:14px 0 0;font-size:13px;line-height:1.5" data-i18n="noscript">Live data needs JavaScript — please enable it. The values below are from 15 Nov 2026.</div></noscript>
 
   <header class="topbar">
-    <div>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="zh">中文</button>
+      <button type="button" data-lang="ms">BM</button>
+    </div>
+    <div class="topbar-title">
       <h1>SG ⇄ MY <span>Dashboard</span></h1>
       <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
     </div>
   </header>
 
   <div class="offline-banner" id="offlineBanner" role="alert" hidden>
-    <span><strong>No internet connection.</strong> Please check your device network, then refresh this page.</span>
-    <button type="button" id="offlineRefreshBtn">Refresh</button>
+    <span data-i18n-html="offline"><strong>No internet connection.</strong> Please check your device network, then refresh this page.</span>
+    <button type="button" id="offlineRefreshBtn" data-i18n="offline_refresh">Refresh</button>
   </div>
 
   <main class="stack">
@@ -231,15 +240,15 @@
       <div class="card-head">
         <div class="card-title">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17a6 6 0 0 1 12 0M12 11V7M12 7l3-2M9 21h6"/></svg></div>
-          <div><h2 id="cp-h">Causeway checkpoints</h2><p>Jam or smooth</p></div>
+          <div><h2 id="cp-h" data-i18n="cp_title">Causeway checkpoints</h2><p data-i18n="cp_sub">Jam or smooth</p></div>
         </div>
       </div>
-      <p class="updated">Updated <strong id="cpUpdated">15 Nov 2026, 11:45 pm</strong></p>
+      <p class="updated"><span data-i18n="updated">Updated</span> <strong id="cpUpdated">15 Nov 2026, 11:45 pm</strong></p>
       <div class="cp">
-        <h3>Woodlands</h3>
+        <h3 data-i18n="cp_woodlands">Woodlands</h3>
         <div class="cp-dir" data-cp="woodlands_sg_jb">
           <div class="cp-top">
-            <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">BKE towards Woodlands</div></div>
+            <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road" data-i18n="road_bke_to">BKE towards Woodlands</div></div>
             <div class="cp-speed"><span class="cp-speed-num">14 km/h</span><small class="cp-band">Band 2 of 8</small></div>
           </div>
           <span class="status st-jammed"><i></i><span class="status-label">Jammed</span></span>
@@ -247,7 +256,7 @@
         </div>
         <div class="cp-dir" data-cp="woodlands_jb_sg">
           <div class="cp-top">
-            <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">BKE from Woodlands</div></div>
+            <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road" data-i18n="road_bke_from">BKE from Woodlands</div></div>
             <div class="cp-speed"><span class="cp-speed-num">70+ km/h</span><small class="cp-band">Band 8 of 8</small></div>
           </div>
           <span class="status st-smooth"><i></i><span class="status-label">Smooth</span></span>
@@ -256,10 +265,10 @@
         <div class="incident" id="cpIncident" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentText"></span></div>
       </div>
       <div class="cp">
-        <h3>Tuas · Second Link</h3>
+        <h3 data-i18n="cp_tuas">Tuas · Second Link</h3>
         <div class="cp-dir" data-cp="tuas_sg_jb">
           <div class="cp-top">
-            <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road">AYE towards Tuas</div></div>
+            <div class="cp-dir-main"><div class="cp-dir-name">SG → JB</div><div class="cp-dir-road" data-i18n="road_aye_to">AYE towards Tuas</div></div>
             <div class="cp-speed"><span class="cp-speed-num">48 km/h</span><small class="cp-band">Band 6 of 8</small></div>
           </div>
           <span class="status st-moderate"><i></i><span class="status-label">Moderate</span></span>
@@ -267,7 +276,7 @@
         </div>
         <div class="cp-dir" data-cp="tuas_jb_sg">
           <div class="cp-top">
-            <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road">AYE from Tuas</div></div>
+            <div class="cp-dir-main"><div class="cp-dir-name">JB → SG</div><div class="cp-dir-road" data-i18n="road_aye_from">AYE from Tuas</div></div>
             <div class="cp-speed"><span class="cp-speed-num">31 km/h</span><small class="cp-band">Band 4 of 8</small></div>
           </div>
           <span class="status st-busy"><i></i><span class="status-label">Busy</span></span>
@@ -276,12 +285,12 @@
         <div class="incident" id="cpIncidentTuas" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3ZM12 10v4M12 17.5v.5"/></svg><span id="cpIncidentTuasText"></span></div>
       </div>
       <div class="legend" aria-label="How the status is decided">
-        <span><i style="background:#e23b4a"></i>Jammed &lt;20</span>
-        <span><i style="background:#ec7e00"></i>Busy 20–39</span>
-        <span><i style="background:#d9930d"></i>Moderate 40–59</span>
-        <span><i style="background:#00a87e"></i>Smooth 60+ km/h</span>
+        <span><i style="background:#e23b4a"></i><span data-i18n="leg_jammed">Jammed &lt;20</span></span>
+        <span><i style="background:#ec7e00"></i><span data-i18n="leg_busy">Busy 20–39</span></span>
+        <span><i style="background:#d9930d"></i><span data-i18n="leg_moderate">Moderate 40–59</span></span>
+        <span><i style="background:#00a87e"></i><span data-i18n="leg_smooth">Smooth 60+ km/h</span></span>
       </div>
-      <p class="src-foot">Singapore-side approach speeds only — not immigration clearance time.</p>
+      <p class="src-foot" data-i18n="cp_foot">Singapore-side approach speeds only — not immigration clearance time.</p>
     </section>
 
     <!-- 2 · CIMB vs Wise -->
@@ -289,32 +298,32 @@
       <div class="card-head">
         <div class="card-title">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13M17 7l-3-3M17 7l-3 3M20 17H7m0 0 3 3M7 17l3-3"/></svg></div>
-          <div><h2 id="cmp-h">Send SGD → MYR</h2><p>CIMB vs Wise — what the recipient gets</p></div>
+          <div><h2 id="cmp-h" data-i18n="fx_title">Send SGD → MYR</h2><p data-i18n="fx_sub">CIMB vs Wise — what the recipient gets</p></div>
         </div>
       </div>
 
       <div class="calc">
-        <h3>Compare on your amount</h3>
-        <div><label for="sendAmt">You send (SGD)</label><div class="field"><span>SGD</span><input id="sendAmt" type="number" inputmode="decimal" value="1000" min="0" step="any"></div></div>
+        <h3 data-i18n="fx_compare">Compare on your amount</h3>
+        <div><label for="sendAmt" data-i18n="fx_send">You send (SGD)</label><div class="field"><span>SGD</span><input id="sendAmt" type="number" inputmode="decimal" value="1000" min="0" step="any"></div></div>
         <div class="cmp-results">
           <div class="cmp-box" id="cimbBox">
-            <h4><span>CIMB Singapore <span class="rate-type">Bank rate</span></span> <span class="best-tag" id="cimbBest" hidden>Best</span></h4>
-            <dl><dt>Rate</dt><dd id="cimbRateVal">—</dd><dt>Fee</dt><dd>SGD 0.00</dd></dl>
-            <div class="recv"><span>Recipient gets</span><b id="cimbRecv">—</b></div>
+            <h4><span>CIMB Singapore <span class="rate-type" data-i18n="fx_bank_rate">Bank rate</span></span> <span class="best-tag" id="cimbBest" data-i18n="fx_best" hidden>Best</span></h4>
+            <dl><dt data-i18n="fx_rate">Rate</dt><dd id="cimbRateVal">—</dd><dt data-i18n="fx_fee">Fee</dt><dd>SGD 0.00</dd></dl>
+            <div class="recv"><span data-i18n="fx_recv">Recipient gets</span><b id="cimbRecv">—</b></div>
           </div>
           <div class="cmp-box" id="wiseBox">
-            <h4><span>Wise <span class="rate-type">Mid-market rate</span></span> <span class="best-tag" id="wiseBest" hidden>Best</span></h4>
-            <dl><dt>Mid-market rate</dt><dd id="wiseRateVal">—</dd><dt>Our fee (estimate)</dt><dd id="wiseOurFee">—</dd><dt>VAT (8% on fee)</dt><dd id="wiseVat">—</dd><dt>Total fee</dt><dd id="wiseFeeOut">—</dd><dt>Converted</dt><dd id="wiseNet">—</dd></dl>
-            <div class="recv"><span>Recipient gets</span><b id="wiseRecv">—</b></div>
+            <h4><span>Wise <span class="rate-type" data-i18n="fx_mid_rate">Mid-market rate</span></span> <span class="best-tag" id="wiseBest" data-i18n="fx_best" hidden>Best</span></h4>
+            <dl><dt data-i18n="fx_mid_rate">Mid-market rate</dt><dd id="wiseRateVal">—</dd><dt data-i18n="fx_our_fee">Our fee (estimate)</dt><dd id="wiseOurFee">—</dd><dt data-i18n="fx_vat">VAT (8% on fee)</dt><dd id="wiseVat">—</dd><dt data-i18n="fx_total_fee">Total fee</dt><dd id="wiseFeeOut">—</dd><dt data-i18n="fx_converted">Converted</dt><dd id="wiseNet">—</dd></dl>
+            <div class="recv"><span data-i18n="fx_recv">Recipient gets</span><b id="wiseRecv">—</b></div>
           </div>
         </div>
         <p class="verdict" id="verdict"></p>
-        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0">Rates updated <span id="ratesUpdatedAt">—</span></p>
+        <p class="fresh" id="ratesUpdated" style="margin:10px 0 0"><span data-i18n="fx_rates_updated">Rates updated</span> <span id="ratesUpdatedAt">—</span></p>
         <div class="rate-refresh-row">
           <button type="button" id="rateRefreshBtn" class="rate-refresh-btn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg><span id="rateRefreshLabel">Refresh rate</span></button>
         </div>
       </div>
-      <p class="src-foot">Wise rate <span id="wiseRateFoot">—</span> — full precision, used unrounded. Wise fee is an estimate (bank-transfer funding, based on the Wise app, Nov 2026). Sources: <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. Verify in the Wise app before sending.</p>
+      <p class="src-foot"><span data-i18n="fx_foot_a">Wise rate</span> <span id="wiseRateFoot">—</span> <span data-i18n="fx_foot_b">— full precision, used unrounded. Wise fee is an estimate (bank-transfer funding, based on the Wise app, Nov 2026). Sources:</span> <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a>. <span data-i18n="fx_foot_c">Verify in the Wise app before sending.</span></p>
     </section>
 
     <!-- 3 · Weather — Worker, auto-updates every 30 min -->
@@ -322,13 +331,13 @@
       <div class="card-head">
         <div class="card-title">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.5A4 4 0 0 0 7 19h10.5Z"/></svg></div>
-          <div><h2 id="wx-h">Weather</h2><p>Singapore · JB · Muar</p></div>
+          <div><h2 id="wx-h" data-i18n="wx_title">Weather</h2><p data-i18n="wx_sub">Singapore · JB · Muar</p></div>
         </div>
       </div>
       <div class="tabs" role="tablist" aria-label="Choose city">
-        <button type="button" role="tab" aria-selected="true" data-city="sg">Singapore</button>
-        <button type="button" role="tab" aria-selected="false" data-city="jb">Johor Bahru</button>
-        <button type="button" role="tab" aria-selected="false" data-city="muar">Muar</button>
+        <button type="button" role="tab" aria-selected="true" data-city="sg" data-i18n="wx_tab_sg">Singapore</button>
+        <button type="button" role="tab" aria-selected="false" data-city="jb" data-i18n="wx_tab_jb">Johor Bahru</button>
+        <button type="button" role="tab" aria-selected="false" data-city="muar" data-i18n="wx_tab_muar">Muar</button>
       </div>
       <div class="wx-main">
         <div class="wx-temp" id="wxTemp">31°</div>
@@ -339,13 +348,13 @@
         </div>
       </div>
       <div class="wx-grid">
-        <div class="wx-cell"><span>Rain chance</span><b id="wxRain">70%</b></div>
-        <div class="wx-cell"><span>Humidity</span><b id="wxHum">79%</b></div>
-        <div class="wx-cell"><span>Wind</span><b id="wxWind">12 km/h</b></div>
+        <div class="wx-cell"><span data-i18n="wx_rain">Rain chance</span><b id="wxRain">70%</b></div>
+        <div class="wx-cell"><span data-i18n="wx_hum">Humidity</span><b id="wxHum">79%</b></div>
+        <div class="wx-cell"><span data-i18n="wx_wind">Wind</span><b id="wxWind">12 km/h</b></div>
       </div>
       <div class="rainbar" aria-hidden="true"><i id="rainBar" style="width:70%"></i></div>
-      <div class="rain-label"><span>Chance of rain today</span><span id="rainLabel">70% — likely</span></div>
-      <p class="src-foot">Updated <span id="wxUpdated">15 Nov 2026</span> · Source: <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a></p>
+      <div class="rain-label"><span data-i18n="wx_rain_today">Chance of rain today</span><span id="rainLabel">70% — likely</span></div>
+      <p class="src-foot"><span data-i18n="updated">Updated</span> <span id="wxUpdated">15 Nov 2026</span> · <span data-i18n="wx_source">Source:</span> <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a></p>
     </section>
 
     <!-- 4 · PSI — Worker, auto-updates every 30 min -->
@@ -353,7 +362,7 @@
       <div class="card-head">
         <div class="card-title">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18M6 11c1.5-4 4-6 6-6s4.5 2 6 6M12 15v6M8 21h8"/></svg></div>
-          <div><h2 id="psi-h">Air quality — PSI</h2><p>Singapore, 24-hour by region</p></div>
+          <div><h2 id="psi-h" data-i18n="psi_title">Air quality — PSI</h2><p data-i18n="psi_sub">Singapore, 24-hour by region</p></div>
         </div>
       </div>
       <div class="psi-hero">
@@ -369,17 +378,17 @@
           <i style="width:25%;background:#991b1b"></i>
         </div>
         <b class="psi-marker" id="psiMarker" style="left:13%"></b>
-        <div class="psi-scale-labels"><span>Good</span><span>Moderate</span><span>Unhealthy</span><span>Very Unhealthy</span><span>Hazardous</span></div>
+        <div class="psi-scale-labels"><span data-i18n="psi_good">Good</span><span data-i18n="psi_moderate">Moderate</span><span data-i18n="psi_unhealthy">Unhealthy</span><span data-i18n="psi_vunhealthy">Very Unhealthy</span><span data-i18n="psi_hazardous">Hazardous</span></div>
       </div>
       <div id="psiList">
-        <div class="psi-row" data-region="central"><span>Central</span><div class="bar"><i style="width:52%;background:#d9930d"></i></div><span class="psi-val">52</span></div>
-        <div class="psi-row" data-region="west"><span>West</span><div class="bar"><i style="width:55%;background:#d9930d"></i></div><span class="psi-val">55</span></div>
-        <div class="psi-row" data-region="south"><span>South</span><div class="bar"><i style="width:51%;background:#d9930d"></i></div><span class="psi-val">51</span></div>
-        <div class="psi-row" data-region="east"><span>East</span><div class="bar"><i style="width:48%;background:#00a87e"></i></div><span class="psi-val">48</span></div>
-        <div class="psi-row" data-region="north"><span>North</span><div class="bar"><i style="width:44%;background:#00a87e"></i></div><span class="psi-val">44</span></div>
+        <div class="psi-row" data-region="central"><span data-i18n="psi_region_central">Central</span><div class="bar"><i style="width:52%;background:#d9930d"></i></div><span class="psi-val">52</span></div>
+        <div class="psi-row" data-region="west"><span data-i18n="psi_region_west">West</span><div class="bar"><i style="width:55%;background:#d9930d"></i></div><span class="psi-val">55</span></div>
+        <div class="psi-row" data-region="south"><span data-i18n="psi_region_south">South</span><div class="bar"><i style="width:51%;background:#d9930d"></i></div><span class="psi-val">51</span></div>
+        <div class="psi-row" data-region="east"><span data-i18n="psi_region_east">East</span><div class="bar"><i style="width:48%;background:#00a87e"></i></div><span class="psi-val">48</span></div>
+        <div class="psi-row" data-region="north"><span data-i18n="psi_region_north">North</span><div class="bar"><i style="width:44%;background:#00a87e"></i></div><span class="psi-val">44</span></div>
       </div>
-      <p class="note" id="psiNote">0–50 Good · 51–100 Moderate · 101–200 Unhealthy · 201–300 Very Unhealthy · 301+ Hazardous</p>
-      <p class="src-foot">Updated <span id="psiUpdated">15 Nov 2026</span> · Source: <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg</a> · <a href="https://www.nea.gov.sg/" target="_blank" rel="noopener">NEA</a></p>
+      <p class="note" id="psiNote" data-i18n="psi_note">0–50 Good · 51–100 Moderate · 101–200 Unhealthy · 201–300 Very Unhealthy · 301+ Hazardous</p>
+      <p class="src-foot"><span data-i18n="updated">Updated</span> <span id="psiUpdated">15 Nov 2026</span> · <span data-i18n="wx_source">Source:</span> <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg</a> · <a href="https://www.nea.gov.sg/" target="_blank" rel="noopener">NEA</a></p>
     </section>
 
     <!-- 5 · Holidays — Worker, fresh on every load, re-checked daily at 12am -->
@@ -387,7 +396,7 @@
       <div class="card-head">
         <div class="card-title">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></div>
-          <div><h2 id="hol-h">Holidays &amp; long weekends</h2><p>Singapore · Malaysia · Johor — upcoming only, in date order</p></div>
+          <div><h2 id="hol-h" data-i18n="hol_title">Holidays &amp; long weekends</h2><p data-i18n="hol_sub">Singapore · Malaysia · Johor — upcoming only, in date order</p></div>
         </div>
       </div>
       <div class="longweekend">
@@ -395,9 +404,9 @@
         <div><strong id="lwTitle">Next long weekend: Christmas — Fri 25 to Sun 27 Dec 2026</strong><p id="lwDetail">Both countries off Fri 25 Dec. Add Mon 28 Dec leave for 4 days.</p></div>
       </div>
       <div class="hol-cols">
-        <p class="note" style="margin:0 0 4px">Sunday holidays are replaced on Monday; lunar dates are subject to official announcement.</p>
+        <p class="note" style="margin:0 0 4px" data-i18n="hol_note">Sunday holidays are replaced on Monday; lunar dates are subject to official announcement.</p>
         <ul class="hol hol-merged" id="holAll">
-          <li class="hol-empty">Enable JavaScript to load live holidays.</li>
+          <li class="hol-empty" data-i18n="hol_empty">Enable JavaScript to load live holidays.</li>
         </ul>
       </div>
     </section>
@@ -406,8 +415,8 @@
 
   <footer>
     <span id="footerSnapshot">Snapshot: Sun 15 Nov 2026, Singapore time.</span><br>
-    Sources: <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a> · <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg / NEA</a> · <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a> · MOM · FMM · <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a> · <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info</a><br>
-    © 2026 backkampung.com. All rights reserved. · <a href="terms.html">Terms &amp; Disclaimer</a>
+    <span data-i18n="footer_sources">Sources:</span> <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a> · <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg / NEA</a> · <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a> · MOM · FMM · <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a> · <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info</a><br>
+    © 2026 backkampung.com. <span data-i18n="footer_rights">All rights reserved.</span> · <a href="terms.html" data-i18n="footer_terms">Terms &amp; Disclaimer</a>
   </footer>
 </div>
 
@@ -424,7 +433,7 @@
     if(!v) return null;
     var d = (typeof v==='number') ? new Date(v) : new Date(v);
     if(isNaN(d.getTime())) return null;   // invalid date — callers show N/A, never the raw input
-    try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).format(d).replace(',',''); }catch(e){ return d.toLocaleString('en-SG'); }
+    try{ return new Intl.DateTimeFormat(loc(),{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).format(d).replace(',',''); }catch(e){ return d.toLocaleString(loc()); }
   }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 
@@ -441,6 +450,7 @@
   // Wise fee, fitted from five Wise app screenshots (15–16 Nov 2026, bank-account funding).
   var WISE_FIXED = 0.54, WISE_PCT = 0.0025, WISE_VAT = 0.08;
   var lastDataGen = null;   // generatedAt of the last applied /data payload — skips re-applying unchanged data
+  var lastData = null;      // last applied /data payload — re-applied on a language switch, no new fetch
   var currentCity = 'sg';
 
   var WX = {
@@ -449,6 +459,310 @@
     muar:{temp:'30°', cond:'Partly cloudy, warm', feels:'Feels like 34° · H 31° / L 24°', advice:'Driest of the three today — good evening for Jalan Haji Abu.', rain:'30%', hum:'78%', wind:'9 km/h', rainLabel:'30% — possible', bar:'30%'}
   };
   var WX_NA = {temp:'N/A', cond:'N/A', feels:'N/A', advice:'Weather unavailable.', rain:'N/A', hum:'N/A', wind:'N/A', rainLabel:'N/A', bar:'0%'};
+
+  /* ============ i18n — English / 中文 / Bahasa Malaysia ============ */
+  var LOCALE = {en:'en-SG', zh:'zh-SG', ms:'ms-SG'};
+  var LANG = 'en';
+  try{ var _sl = localStorage.getItem('sgmydash-lang'); if(_sl==='zh'||_sl==='ms'||_sl==='en') LANG = _sl; }catch(e){}
+  function loc(){ return LOCALE[LANG] || 'en-SG'; }
+  function t(k){ var d = STR[LANG] || STR.en; if(d && d[k] != null) return d[k]; return (STR.en[k] != null) ? STR.en[k] : k; }
+  function trMap(map, en){ if(!en) return en; var m = map[en]; if(!m) return en; return m[LANG] || en; }
+  var STR = {
+  en: {
+    offline: "<strong>No internet connection.</strong> Please check your device network, then refresh this page.",
+    offline_refresh: "Refresh",
+    loading: "Loading live data…",
+    noscript: "Live data needs JavaScript — please enable it. The values below are from 15 Nov 2026.",
+    cp_title: "Causeway checkpoints", cp_sub: "Jam or smooth", updated: "Updated",
+    na_label: "Unavailable",
+    cp_woodlands: "Woodlands", cp_tuas: "Tuas · Second Link",
+    road_bke_to: "BKE towards Woodlands", road_bke_from: "BKE from Woodlands",
+    road_aye_to: "AYE towards Tuas", road_aye_from: "AYE from Tuas",
+    band_of: "Band {n} of 8",
+    st_jammed: "Jammed", st_busy: "Busy", st_moderate: "Moderate", st_smooth: "Smooth",
+    leg_jammed: "Jammed <20", leg_busy: "Busy 20–39", leg_moderate: "Moderate 40–59", leg_smooth: "Smooth 60+ km/h",
+    cp_foot: "Singapore-side approach speeds only — not immigration clearance time.",
+    fx_title: "Send SGD → MYR", fx_sub: "CIMB vs Wise — what the recipient gets",
+    fx_compare: "Compare on your amount", fx_send: "You send (SGD)",
+    fx_bank_rate: "Bank rate", fx_mid_rate: "Mid-market rate",
+    fx_rate: "Rate", fx_fee: "Fee", fx_our_fee: "Our fee (estimate)", fx_vat: "VAT (8% on fee)",
+    fx_total_fee: "Total fee", fx_converted: "Converted", fx_recv: "Recipient gets", fx_best: "Best",
+    verdict_wise: "Wise nets about <strong>MYR {diff} more</strong> on SGD {amt}. Wise's fee is <strong>SGD {fee}</strong>, under the <strong>SGD {breakeven}</strong> break-even — so Wise wins.",
+    verdict_cimb: "CIMB nets about <strong>MYR {diff} more</strong> on SGD {amt}. Wise would need a fee under <strong>SGD {breakeven}</strong> to win.",
+    verdict_loading: "Loading rates…",
+    verdict_na: "Rates unavailable — the live rate could not be loaded. Try refreshing.",
+    verdict_type: "Type an amount to compare CIMB and Wise.",
+    fx_rates_updated: "Rates updated", fx_refresh: "Refresh rate", fx_refresh_now: "Refresh rate now",
+    fx_foot_a: "Wise rate",
+    fx_foot_b: "— full precision, used unrounded. Wise fee is an estimate (bank-transfer funding, based on the Wise app, Nov 2026). Sources:",
+    fx_foot_c: "Verify in the Wise app before sending.",
+    wx_title: "Weather", wx_sub: "Singapore · JB · Muar",
+    wx_tab_sg: "Singapore", wx_tab_jb: "Johor Bahru", wx_tab_muar: "Muar",
+    wx_rain: "Rain chance", wx_hum: "Humidity", wx_wind: "Wind",
+    wx_rain_today: "Chance of rain today", wx_source: "Source:",
+    wx_warm_humid: "warm and humid",
+    psi_title: "Air quality — PSI", psi_sub: "Singapore, 24-hour by region",
+    psi_region_central: "Central", psi_region_west: "West", psi_region_south: "South",
+    psi_region_east: "East", psi_region_north: "North",
+    psi_good: "Good", psi_moderate: "Moderate", psi_unhealthy: "Unhealthy",
+    psi_vunhealthy: "Very Unhealthy", psi_hazardous: "Hazardous",
+    psi_note: "0–50 Good · 51–100 Moderate · 101–200 Unhealthy · 201–300 Very Unhealthy · 301+ Hazardous",
+    psi_na: "PSI unavailable.", psi_advice_na: "PSI data unavailable.",
+    hol_title: "Holidays & long weekends", hol_sub: "Singapore · Malaysia · Johor — upcoming only, in date order",
+    hol_note: "Sunday holidays are replaced on Monday; lunar dates are subject to official announcement.",
+    hol_empty: "Enable JavaScript to load live holidays.",
+    hol_unavailable: "Holidays unavailable.", hol_lw_na: "Holidays unavailable",
+    hol_lw_na_detail: "The live holiday data could not be loaded.",
+    hol_none: "No upcoming holidays to show yet.",
+    hol_lw_suffix: "long weekend",
+    hol_days: "{n} days", hol_day1: "1 day",
+    hol_replacement_for: "Replacement for {name}",
+    hol_tag_johor: "Johor only", hol_tag_replace: "Replacement",
+    footer_snapshot: "Snapshot:", footer_sg_time: ", Singapore time.",
+    footer_stale: " Showing last available data — may be out of date.",
+    footer_data_na: "Data unavailable — the live data could not be loaded.",
+    footer_sources: "Sources:", footer_rights: "All rights reserved.", footer_terms: "Terms & Disclaimer",
+    header_place: "Singapore / Malaysia (UTC+8)",
+    rain_likely: "likely", rain_possible: "possible", rain_unlikely: "unlikely",
+    feels_like: "Feels like {f}°C, H {h}°C / L {l}°C",
+    wx_advice_na: "Weather unavailable."
+  },
+  zh: {
+    offline: "<strong>没有网络连接。</strong>请检查您的设备网络，然后刷新此页面。",
+    offline_refresh: "刷新",
+    loading: "正在加载实时数据…",
+    noscript: "实时数据需要 JavaScript — 请启用它。以下数值为 2026 年 11 月 15 日的数据。",
+    cp_title: "新柔关卡", cp_sub: "堵还是顺", updated: "更新于",
+    na_label: "不可用",
+    cp_woodlands: "兀兰", cp_tuas: "大士 · 第二通道",
+    road_bke_to: "BKE 前往兀兰", road_bke_from: "BKE 来自兀兰",
+    road_aye_to: "AYE 前往大士", road_aye_from: "AYE 来自大士",
+    band_of: "第 {n} 级，共 8 级",
+    st_jammed: "严重拥堵", st_busy: "拥堵", st_moderate: "一般", st_smooth: "顺畅",
+    leg_jammed: "严重拥堵 <20", leg_busy: "拥堵 20–39", leg_moderate: "一般 40–59", leg_smooth: "顺畅 60+ km/h",
+    cp_foot: "仅为新加坡一侧的接近路段车速 — 不是通关时间。",
+    fx_title: "汇款 新元 → 马币", fx_sub: "CIMB 对比 Wise — 收款人实际到手",
+    fx_compare: "按您的金额比较", fx_send: "您汇出 (新元)",
+    fx_bank_rate: "银行汇率", fx_mid_rate: "中间市场汇率",
+    fx_rate: "汇率", fx_fee: "手续费", fx_our_fee: "我们的费用 (预估)", fx_vat: "增值税 (费用 8%)",
+    fx_total_fee: "总费用", fx_converted: "兑换后", fx_recv: "收款人到手", fx_best: "最优",
+    verdict_wise: "Wise 到手约多 <strong>MYR {diff}</strong>（汇 SGD {amt}）。Wise 费用为 <strong>SGD {fee}</strong>，低于 <strong>SGD {breakeven}</strong> 的盈亏平衡点 — 所以 Wise 更划算。",
+    verdict_cimb: "CIMB 到手约多 <strong>MYR {diff}</strong>（汇 SGD {amt}）。Wise 费用需低于 <strong>SGD {breakeven}</strong> 才能获胜。",
+    verdict_loading: "正在加载汇率…",
+    verdict_na: "汇率不可用 — 无法加载实时汇率。请尝试刷新。",
+    verdict_type: "请输入金额以比较 CIMB 和 Wise。",
+    fx_rates_updated: "汇率更新于", fx_refresh: "刷新汇率", fx_refresh_now: "立即刷新汇率",
+    fx_foot_a: "Wise 汇率",
+    fx_foot_b: "— 完整精度，未四舍五入使用。Wise 费用为预估（银行转账方式，根据 2026 年 11 月 Wise 应用）。来源：",
+    fx_foot_c: "汇款前请在 Wise 应用内确认。",
+    wx_title: "天气", wx_sub: "新加坡 · 新山 · 麻坡",
+    wx_tab_sg: "新加坡", wx_tab_jb: "新山", wx_tab_muar: "麻坡",
+    wx_rain: "降雨概率", wx_hum: "湿度", wx_wind: "风速",
+    wx_rain_today: "今日降雨概率", wx_source: "来源：",
+    wx_warm_humid: "温暖潮湿",
+    psi_title: "空气质量 — PSI", psi_sub: "新加坡，24 小时分地区",
+    psi_region_central: "中部", psi_region_west: "西部", psi_region_south: "南部",
+    psi_region_east: "东部", psi_region_north: "北部",
+    psi_good: "良好", psi_moderate: "中等", psi_unhealthy: "不健康",
+    psi_vunhealthy: "非常不健康", psi_hazardous: "有害",
+    psi_note: "0–50 良好 · 51–100 中等 · 101–200 不健康 · 201–300 非常不健康 · 301+ 有害",
+    psi_na: "PSI 不可用。", psi_advice_na: "PSI 数据不可用。",
+    hol_title: "假期与长周末", hol_sub: "新加坡 · 马来西亚 · 柔佛 — 仅显示即将到来的假期，按日期排序",
+    hol_note: "星期日的假期顺延至星期一补假；农历日期以官方公布为准。",
+    hol_empty: "请启用 JavaScript 以加载实时假期。",
+    hol_unavailable: "假期不可用。", hol_lw_na: "假期不可用",
+    hol_lw_na_detail: "无法加载实时假期数据。",
+    hol_none: "暂无即将到来的假期。",
+    hol_lw_suffix: "长周末",
+    hol_days: "{n} 天", hol_day1: "1 天",
+    hol_replacement_for: "{name}的补假",
+    hol_tag_johor: "仅柔佛", hol_tag_replace: "补假",
+    footer_snapshot: "快照：", footer_sg_time: "，新加坡时间。",
+    footer_stale: " 显示的是最后可用数据 — 可能已过期。",
+    footer_data_na: "数据不可用 — 无法加载实时数据。",
+    footer_sources: "来源：", footer_rights: "版权所有。", footer_terms: "条款与免责声明",
+    header_place: "新加坡 / 马来西亚 (UTC+8)",
+    rain_likely: "很可能", rain_possible: "可能", rain_unlikely: "不太可能",
+    feels_like: "体感 {f}° · 最高 {h}° / 最低 {l}°",
+    wx_advice_na: "天气不可用。"
+  },
+  ms: {
+    offline: "<strong>Tiada sambungan internet.</strong> Sila semak rangkaian peranti anda, kemudian muat semula halaman ini.",
+    offline_refresh: "Muat Semula",
+    loading: "Memuatkan data langsung…",
+    noscript: "Data langsung memerlukan JavaScript — sila dayakannya. Nilai di bawah adalah dari 15 Nov 2026.",
+    cp_title: "Pusat Pemeriksaan Causeway", cp_sub: "Sesak atau lancar", updated: "Dikemas kini",
+    na_label: "Tidak tersedia",
+    cp_woodlands: "Woodlands", cp_tuas: "Tuas · Second Link",
+    road_bke_to: "BKE ke Woodlands", road_bke_from: "BKE dari Woodlands",
+    road_aye_to: "AYE ke Tuas", road_aye_from: "AYE dari Tuas",
+    band_of: "Jalur {n} daripada 8",
+    st_jammed: "Sesak Teruk", st_busy: "Sesak", st_moderate: "Sederhana", st_smooth: "Lancar",
+    leg_jammed: "Sesak Teruk <20", leg_busy: "Sesak 20–39", leg_moderate: "Sederhana 40–59", leg_smooth: "Lancar 60+ km/h",
+    cp_foot: "Hanya kelajuan pendekatan di sebelah Singapura — bukan masa pelepasan imigresen.",
+    fx_title: "Hantar SGD → MYR", fx_sub: "CIMB lawan Wise — jumlah yang diterima",
+    fx_compare: "Bandingkan dengan jumlah anda", fx_send: "Anda hantar (SGD)",
+    fx_bank_rate: "Kadar bank", fx_mid_rate: "Kadar pasaran tengah",
+    fx_rate: "Kadar", fx_fee: "Yuran", fx_our_fee: "Yuran kami (anggaran)", fx_vat: "VAT (8% atas yuran)",
+    fx_total_fee: "Jumlah yuran", fx_converted: "Ditukar", fx_recv: "Penerima menerima", fx_best: "Terbaik",
+    verdict_wise: "Wise memberi kira-kira <strong>MYR {diff} lebih</strong> untuk SGD {amt}. Yuran Wise ialah <strong>SGD {fee}</strong>, di bawah titik pulang modal <strong>SGD {breakeven}</strong> — jadi Wise menang.",
+    verdict_cimb: "CIMB memberi kira-kira <strong>MYR {diff} lebih</strong> untuk SGD {amt}. Wise memerlukan yuran di bawah <strong>SGD {breakeven}</strong> untuk menang.",
+    verdict_loading: "Memuatkan kadar…",
+    verdict_na: "Kadar tidak tersedia — kadar langsung tidak dapat dimuatkan. Cuba muat semula.",
+    verdict_type: "Taip jumlah untuk membandingkan CIMB dan Wise.",
+    fx_rates_updated: "Kadar dikemas kini", fx_refresh: "Muat semula kadar", fx_refresh_now: "Muat semula kadar sekarang",
+    fx_foot_a: "Kadar Wise",
+    fx_foot_b: "— ketepatan penuh, digunakan tanpa pembundaran. Yuran Wise adalah anggaran (pembiayaan pindahan bank, berdasarkan aplikasi Wise, Nov 2026). Sumber:",
+    fx_foot_c: "Sahkan dalam aplikasi Wise sebelum menghantar.",
+    wx_title: "Cuaca", wx_sub: "Singapura · JB · Muar",
+    wx_tab_sg: "Singapura", wx_tab_jb: "Johor Bahru", wx_tab_muar: "Muar",
+    wx_rain: "Peluang hujan", wx_hum: "Kelembapan", wx_wind: "Angin",
+    wx_rain_today: "Peluang hujan hari ini", wx_source: "Sumber:",
+    wx_warm_humid: "panas dan lembap",
+    psi_title: "Kualiti udara — PSI", psi_sub: "Singapura, 24 jam mengikut kawasan",
+    psi_region_central: "Tengah", psi_region_west: "Barat", psi_region_south: "Selatan",
+    psi_region_east: "Timur", psi_region_north: "Utara",
+    psi_good: "Baik", psi_moderate: "Sederhana", psi_unhealthy: "Tidak sihat",
+    psi_vunhealthy: "Sangat tidak sihat", psi_hazardous: "Berbahaya",
+    psi_note: "0–50 Baik · 51–100 Sederhana · 101–200 Tidak sihat · 201–300 Sangat tidak sihat · 301+ Berbahaya",
+    psi_na: "PSI tidak tersedia.", psi_advice_na: "Data PSI tidak tersedia.",
+    hol_title: "Cuti & hujung minggu panjang", hol_sub: "Singapura · Malaysia · Johor — hanya yang akan datang, mengikut tarikh",
+    hol_note: "Cuti hari Ahad diganti pada hari Isnin; tarikh lunar tertakluk kepada pengumuman rasmi.",
+    hol_empty: "Dayakan JavaScript untuk memuatkan cuti langsung.",
+    hol_unavailable: "Cuti tidak tersedia.", hol_lw_na: "Cuti tidak tersedia",
+    hol_lw_na_detail: "Data cuti langsung tidak dapat dimuatkan.",
+    hol_none: "Tiada cuti akan datang untuk ditunjukkan.",
+    hol_lw_suffix: "hujung minggu panjang",
+    hol_days: "{n} hari", hol_day1: "1 hari",
+    hol_replacement_for: "Cuti gantian untuk {name}",
+    hol_tag_johor: "Johor sahaja", hol_tag_replace: "Gantian",
+    footer_snapshot: "Syot kilat:", footer_sg_time: ", waktu Singapura.",
+    footer_stale: " Menunjukkan data terakhir yang tersedia — mungkin sudah lapuk.",
+    footer_data_na: "Data tidak tersedia — data langsung tidak dapat dimuatkan.",
+    footer_sources: "Sumber:", footer_rights: "Hak cipta terpelihara.", footer_terms: "Terma & Penafian",
+    header_place: "Singapura / Malaysia (UTC+8)",
+    rain_likely: "kemungkinan besar", rain_possible: "mungkin", rain_unlikely: "tidak mungkin",
+    feels_like: "Terasa seperti {f}° · Tertinggi {h}° / Terendah {l}°",
+    wx_advice_na: "Cuaca tidak tersedia."
+  }
+  };
+  /* Data-name lookups — English source string -> {zh, ms}. Unmapped names fall back to English. */
+  var HOLIDAY_NAMES = {
+    "Additional public holiday for Hari Raya Aidilfitri": {zh:"开斋节额外公共假期", ms:"Cuti umum tambahan untuk Hari Raya Aidilfitri"},
+    "Awal Muharram": {zh:"回历新年", ms:"Awal Muharram"},
+    "Awal Muharram (Replacement)": {zh:"回历新年（补假）", ms:"Awal Muharram (Gantian)"},
+    "Awal Ramadan": {zh:"斋月开始", ms:"Awal Ramadan"},
+    "Birthday of the Prophet Muhammad": {zh:"先知穆罕默德诞辰", ms:"Maulidur Rasul"},
+    "Birthday of the Prophet Muhammad (Replacement)": {zh:"先知穆罕默德诞辰（补假）", ms:"Maulidur Rasul (Gantian)"},
+    "Birthday of the Sultan of Johor": {zh:"柔佛苏丹诞辰", ms:"Hari Keputeraan Sultan Johor"},
+    "Birthday of the Yang di-Pertuan Agong": {zh:"最高元首诞辰", ms:"Hari Keputeraan Yang di-Pertuan Agong"},
+    "Chinese New Year": {zh:"农历新年", ms:"Tahun Baru Cina"},
+    "Chinese New Year (Replacement)": {zh:"农历新年（补假）", ms:"Tahun Baru Cina (Gantian)"},
+    "Chinese New Year (Second Day)": {zh:"农历新年初二", ms:"Tahun Baru Cina (Hari Kedua)"},
+    "Christmas Day": {zh:"圣诞节", ms:"Hari Krismas"},
+    "Deepavali": {zh:"屠妖节", ms:"Deepavali"},
+    "Good Friday": {zh:"耶稣受难日", ms:"Jumaat Agung"},
+    "Hari Hol Almarhum Sultan Iskandar": {zh:"已故苏丹依斯干达纪念日", ms:"Hari Hol Almarhum Sultan Iskandar"},
+    "Hari Hol Almarhum Sultan Iskandar (Replacement)": {zh:"已故苏丹依斯干达纪念日（补假）", ms:"Hari Hol Almarhum Sultan Iskandar (Gantian)"},
+    "Hari Raya Aidiladha": {zh:"哈芝节", ms:"Hari Raya Aidiladha"},
+    "Hari Raya Aidiladha (Second Day)": {zh:"哈芝节第二天", ms:"Hari Raya Aidiladha (Hari Kedua)"},
+    "Hari Raya Aidilfitri": {zh:"开斋节", ms:"Hari Raya Aidilfitri"},
+    "Hari Raya Aidilfitri (Replacement)": {zh:"开斋节（补假）", ms:"Hari Raya Aidilfitri (Gantian)"},
+    "Hari Raya Aidilfitri (Second Day)": {zh:"开斋节第二天", ms:"Hari Raya Aidilfitri (Hari Kedua)"},
+    "Hari Raya Haji": {zh:"哈芝节", ms:"Hari Raya Haji"},
+    "Hari Raya Puasa": {zh:"开斋节", ms:"Hari Raya Puasa"},
+    "Labour Day": {zh:"劳动节", ms:"Hari Pekerja"},
+    "Malaysia Day": {zh:"马来西亚日", ms:"Hari Malaysia"},
+    "National Day": {zh:"国庆日", ms:"Hari Kebangsaan"},
+    "New Year's Day": {zh:"元旦", ms:"Hari Tahun Baru"},
+    "Nuzul Al-Quran": {zh:"古兰经降示日", ms:"Nuzul Al-Quran"},
+    "Substitute holiday for Deepavali": {zh:"屠妖节补假", ms:"Cuti gantian Deepavali"},
+    "Substitute holiday for Hari Raya Aidilfitri (Second Day)": {zh:"开斋节第二天补假", ms:"Cuti gantian Hari Raya Aidilfitri (Hari Kedua)"},
+    "Substitute holiday for Wesak Day": {zh:"卫塞节补假", ms:"Cuti gantian Hari Wesak"},
+    "Thaipusam": {zh:"大宝森节", ms:"Thaipusam"},
+    "Thaipusam (Replacement)": {zh:"大宝森节（补假）", ms:"Thaipusam (Gantian)"},
+    "Vesak Day": {zh:"卫塞节", ms:"Hari Wesak"},
+    "Wesak Day": {zh:"卫塞节", ms:"Hari Wesak"}
+  };
+  var WEATHER_COND = {
+    "Clear sky": {zh:"晴空", ms:"Langit cerah"},
+    "Few clouds": {zh:"少云", ms:"Sedikit awan"},
+    "Scattered clouds": {zh:"多云", ms:"Awan bertaburan"},
+    "Broken clouds": {zh:"多云", ms:"Awan berpecah"},
+    "Overcast clouds": {zh:"阴天", ms:"Mendung"},
+    "Mist": {zh:"薄雾", ms:"Kabut nipis"},
+    "Haze": {zh:"霾", ms:"Jerebu"},
+    "Fog": {zh:"雾", ms:"Kabut"},
+    "Smoke": {zh:"烟雾", ms:"Asap"},
+    "Sand": {zh:"沙尘", ms:"Pasir"},
+    "Dust": {zh:"尘土", ms:"Debu"},
+    "Squalls": {zh:"飑", ms:"Angin kencang"},
+    "Tornado": {zh:"龙卷风", ms:"Puting beliung"},
+    "Light rain": {zh:"小雨", ms:"Hujan renyai"},
+    "Moderate rain": {zh:"中雨", ms:"Hujan sederhana"},
+    "Heavy intensity rain": {zh:"大雨", ms:"Hujan lebat"},
+    "Very heavy rain": {zh:"暴雨", ms:"Hujan sangat lebat"},
+    "Extreme rain": {zh:"特大暴雨", ms:"Hujan ekstrem"},
+    "Light intensity shower rain": {zh:"阵雨", ms:"Hujan sekejap"},
+    "Shower rain": {zh:"阵雨", ms:"Hujan sekejap"},
+    "Heavy intensity shower rain": {zh:"大阵雨", ms:"Hujan sekejap lebat"},
+    "Ragged shower rain": {zh:"阵雨", ms:"Hujan sekejap"},
+    "Light intensity drizzle": {zh:"毛毛雨", ms:"Gerimis ringan"},
+    "Drizzle": {zh:"毛毛雨", ms:"Gerimis"},
+    "Heavy intensity drizzle": {zh:"大毛毛雨", ms:"Gerimis lebat"},
+    "Light intensity drizzle rain": {zh:"毛毛雨", ms:"Gerimis ringan"},
+    "Drizzle rain": {zh:"毛毛雨", ms:"Gerimis"},
+    "Heavy intensity drizzle rain": {zh:"毛毛雨", ms:"Gerimis lebat"},
+    "Shower rain and drizzle": {zh:"阵雨夹毛毛雨", ms:"Hujan sekejap dan gerimis"},
+    "Heavy shower rain and drizzle": {zh:"大阵雨夹毛毛雨", ms:"Hujan sekejap lebat dan gerimis"},
+    "Shower drizzle": {zh:"毛毛雨", ms:"Gerimis"},
+    "Thunderstorm": {zh:"雷暴", ms:"Ribut petir"},
+    "Thunderstorm with light rain": {zh:"雷阵雨", ms:"Ribut petir dengan hujan renyai"},
+    "Thunderstorm with rain": {zh:"雷阵雨", ms:"Ribut petir dengan hujan"},
+    "Thunderstorm with heavy rain": {zh:"强雷阵雨", ms:"Ribut petir dengan hujan lebat"},
+    "Light thunderstorm": {zh:"轻微雷暴", ms:"Ribut petir ringan"},
+    "Heavy thunderstorm": {zh:"强雷暴", ms:"Ribut petir kuat"},
+    "Thunderstorm with light drizzle": {zh:"雷阵雨", ms:"Ribut petir dengan gerimis ringan"},
+    "Thunderstorm with drizzle": {zh:"雷阵雨", ms:"Ribut petir dengan gerimis"},
+    "Thunderstorm with heavy drizzle": {zh:"强雷阵雨", ms:"Ribut petir dengan gerimis lebat"}
+  };
+  var PSI_ADVICE = {
+    good: {en:"Air quality is good - fine for outdoor activities.", zh:"空气质量良好 — 适合户外活动。", ms:"Kualiti udara baik — sesuai untuk aktiviti luar."},
+    moderate: {en:"Air quality is acceptable.", zh:"空气质量可以接受。", ms:"Kualiti udara boleh diterima."},
+    unhealthy: {en:"Unhealthy air - reduce prolonged outdoor exertion.", zh:"空气不健康 — 减少长时间户外活动。", ms:"Udara tidak sihat — kurangkan aktiviti luar yang berpanjangan."},
+    vunhealthy: {en:"Avoid outdoor activities.", zh:"避免户外活动。", ms:"Elakkan aktiviti luar."},
+    hazardous: {en:"Stay indoors.", zh:"请留在室内。", ms:"Kekal di dalam rumah."}
+  };
+  var WX_ADVICE = {
+    "Thunderstorms - stay indoors if you can.": {zh:"雷暴 — 如可以请留在室内。", ms:"Ribut petir — kekal di dalam rumah jika boleh."},
+    "Rain expected - bring an umbrella.": {zh:"预计有雨 — 请带伞。", ms:"Hujan dijangka — bawa payung."},
+    "Clear skies - hot and sunny, stay hydrated.": {zh:"晴空万里 — 炎热晴朗，请多喝水。", ms:"Langit cerah — panas dan cerah, kekal terhidrat."},
+    "Cloudy - warm and humid.": {zh:"多云 — 温暖潮湿。", ms:"Berawan — panas dan lembap."}
+  };
+  /* Translate a Worker-formatted string at render time (source English is kept in state). */
+  function trCond(s){ return trMap(WEATHER_COND, s); }
+  function trHoliday(s){ return trMap(HOLIDAY_NAMES, s); }
+  function trFeels(s){
+    var m = String(s || '').match(/Feels like\s+(\d+).*?H\s+(\d+).*?L\s+(\d+)/);
+    if(!m) return degC(s);
+    return t('feels_like').replace('{f}', m[1]).replace('{h}', m[2]).replace('{l}', m[3]);
+  }
+  function trRainLabel(s){
+    var m = String(s || '').match(/^(\d+)%\s*[-—]\s*(likely|possible|unlikely)\s*$/);
+    if(!m) return s;
+    var k = m[2] === 'likely' ? 'rain_likely' : (m[2] === 'possible' ? 'rain_possible' : 'rain_unlikely');
+    return m[1] + '% — ' + t(k);
+  }
+  function trWxAdvice(s){
+    if(!s) return s;
+    if(s === 'Weather unavailable.') return t('wx_advice_na');
+    var m = WX_ADVICE[s];
+    if(m) return m[LANG] || s;
+    var tail = ' - warm and humid.';
+    if(s.slice(-tail.length) === tail){ var c = trCond(s.slice(0, -tail.length)); var end = (LANG === 'zh') ? '。' : '.'; return c + ' - ' + t('wx_warm_humid') + end; }
+    return s;
+  }
+  function trPsiAdvice(key){ var a = PSI_ADVICE[key]; return a ? (a[LANG] || a.en) : ''; }
 
   /* ============ Calculator ============ */
   var sendAmt = $('sendAmt');
@@ -462,7 +776,7 @@
     if(!sendAmt) return;
     var amt = parseFloat(sendAmt.value);
     var cimbRecvEl = $('cimbRecv'), wiseRecvEl = $('wiseRecv'), verdict = $('verdict');
-    if(!isFinite(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent='Type an amount to compare CIMB and Wise.'; return; }
+    if(!isFinite(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent=t('verdict_type'); return; }
     // No live rate — show — while still loading, N/A only once a fetch has really failed.
     var cimbOk = (CIMB_RATE != null && !isNaN(CIMB_RATE));
     var wiseOk = (MID_RATE != null && !isNaN(MID_RATE));
@@ -485,7 +799,7 @@
       $('wiseBest').hidden = true;
       $('cimbBox').classList.remove('best');
       $('wiseBox').classList.remove('best');
-      verdict.textContent = ratesSettled ? 'Rates unavailable — the live rate could not be loaded. Try refreshing.' : 'Loading rates…';
+      verdict.textContent = ratesSettled ? t('verdict_na') : t('verdict_loading');
       return;
     }
     var wf = wiseFee(amt);
@@ -507,10 +821,11 @@
     var diff = Math.abs(wiseOut - cimbOut);
     var breakeven = amt - (cimbOut / MID_RATE);
     // Verdict is built only from fmt() output (numbers) — never interpolate raw strings here.
+    function fillTpl(s){ return s.replace('{diff}', fmt(diff)).replace('{amt}', fmt(amt)).replace('{fee}', fmt(fee)).replace('{breakeven}', fmt(breakeven)); }
     if(wiseWins){
-      verdict.innerHTML = 'Wise nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Wise\'s fee is <strong>SGD ' + fmt(fee) + '</strong>, under the <strong>SGD ' + fmt(breakeven) + '</strong> break-even — so Wise wins.';
+      verdict.innerHTML = fillTpl(t('verdict_wise'));
     } else {
-      verdict.innerHTML = 'CIMB nets about <strong>MYR ' + fmt(diff) + ' more</strong> on SGD ' + fmt(amt) + '. Wise would need a fee under <strong>SGD ' + fmt(breakeven) + '</strong> to win.';
+      verdict.innerHTML = fillTpl(t('verdict_cimb'));
     }
   }
   if(sendAmt) sendAmt.addEventListener('input', calcCmp);
@@ -521,13 +836,13 @@
     var d = WX[key]; if(!d) return;
     currentCity = key;
     setText('wxTemp', degC(d.temp));
-    setText('wxCond', d.cond);
-    setText('wxFeels', degC(d.feels));
-    setText('wxAdvice', d.advice);
+    setText('wxCond', trCond(d.cond));
+    setText('wxFeels', trFeels(d.feels));
+    setText('wxAdvice', trWxAdvice(d.advice));
     setText('wxRain', d.rain);
     setText('wxHum', d.hum);
     setText('wxWind', d.wind);
-    setText('rainLabel', d.rainLabel);
+    setText('rainLabel', trRainLabel(d.rainLabel));
     $('rainBar').style.width = d.bar;
     tabs.forEach(function(t){ t.setAttribute('aria-selected', t.getAttribute('data-city')===key ? 'true':'false'); });
   }
@@ -535,10 +850,10 @@
 
   /* ============ Apply helpers — update DOM in place, no reload ============ */
   function statusForSpeed(s){
-    if(s < 20) return {label:'Jammed', cls:'st-jammed', bar:'on-jammed'};
-    if(s < 40) return {label:'Busy', cls:'st-busy', bar:'on-busy'};
-    if(s < 60) return {label:'Moderate', cls:'st-moderate', bar:'on-moderate'};
-    return {label:'Smooth', cls:'st-smooth', bar:'on-smooth'};
+    if(s < 20) return {label:t('st_jammed'), cls:'st-jammed', bar:'on-jammed'};
+    if(s < 40) return {label:t('st_busy'), cls:'st-busy', bar:'on-busy'};
+    if(s < 60) return {label:t('st_moderate'), cls:'st-moderate', bar:'on-moderate'};
+    return {label:t('st_smooth'), cls:'st-smooth', bar:'on-smooth'};
   }
   function bandForSpeed(s){
     // LTA-style 8 bands, ~10 km/h each, capped at 8
@@ -564,11 +879,12 @@
       if(!isFinite(band)) band = bandForSpeed(speed);
       band = Math.max(1, Math.min(8, Math.round(band)));
       var rawStatus = (d.status != null) ? String(d.status).toLowerCase() : '';
-      var st = (rawStatus === 'jammed' || rawStatus === 'busy' || rawStatus === 'moderate' || rawStatus === 'smooth')
-        ? {label: rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1), cls: 'st-' + rawStatus, bar: 'on-' + rawStatus}
+      var stMap = {jammed:'st_jammed', busy:'st_busy', moderate:'st_moderate', smooth:'st_smooth'};
+      var st = stMap[rawStatus]
+        ? {label: t(stMap[rawStatus]), cls: 'st-' + rawStatus, bar: 'on-' + rawStatus}
         : statusForSpeed(speed);   // unknown status — derive it from the speed, never build a class from it
       var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = (band === 8) ? '70+ km/h' : speed + ' km/h';
-      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = 'Band ' + band + ' of 8';
+      var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = t('band_of').replace('{n}', band);
       var statusEl = el.querySelector('.status');
       if(statusEl){ statusEl.className = 'status ' + st.cls; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = st.label; }
       // Road name stays as baked ("BKE towards Woodlands") — the live
@@ -605,7 +921,7 @@
   }
   function psiColor(v){ return v <= 50 ? '#00a87e' : (v <= 100 ? '#d9930d' : (v <= 200 ? '#ec7e00' : (v <= 300 ? '#e23b4a' : '#991b1b'))); }
   function psiBandKey(v){ return v <= 50 ? 'good' : (v <= 100 ? 'moderate' : (v <= 200 ? 'unhealthy' : (v <= 300 ? 'vunhealthy' : 'hazardous'))); }
-  function psiBandLabel(v){ return v <= 50 ? 'GOOD' : (v <= 100 ? 'MODERATE' : (v <= 200 ? 'UNHEALTHY' : (v <= 300 ? 'VERY UNHEALTHY' : 'HAZARDOUS'))); }
+  function psiBandLabel(v){ var lbl = t('psi_' + psiBandKey(v)); return LANG === 'en' ? lbl.toUpperCase() : lbl; }
   function applyPsi(psi){
     if(!psi || typeof psi !== 'object'){ showPsiNA(); return; }
     var regions = psi.regions || psi;
@@ -639,10 +955,10 @@
     if(overall != null && !isFinite(overall)) overall = (max || null);
     if(overall != null){
       setText('psiOverall', overall);
-      setText('psiBand', psi.band || psiBandLabel(overall));
+      setText('psiBand', psiBandLabel(overall));
       var bandEl = $('psiBand'); if(bandEl) bandEl.className = 'band band-' + psiBandKey(overall);
       var mk = $('psiMarker'); if(mk){ mk.style.display = ''; mk.style.left = Math.min(98, Math.max(2, overall / 4)) + '%'; }
-      if(psi.advice) setText('psiAdvice', psi.advice);
+      setText('psiAdvice', trPsiAdvice(psiBandKey(overall)));
     }
     setText('psiUpdated', fmtTime(psi.updatedAt) || 'N/A');
   }
@@ -684,10 +1000,10 @@
     return '';
   }
   function fmtHolDate(iso){
-    try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric'}).format(new Date(iso + 'T12:00:00+08:00')); }catch(e){ return iso; }
+    try{ return new Intl.DateTimeFormat(loc(),{timeZone:'Asia/Singapore',day:'numeric',month:'short',year:'numeric'}).format(new Date(iso + 'T12:00:00+08:00')); }catch(e){ return iso; }
   }
   function dowOf(iso){
-    try{ return new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',weekday:'short'}).format(new Date(iso + 'T12:00:00+08:00')); }catch(e){ return ''; }
+    try{ return new Intl.DateTimeFormat(loc(),{timeZone:'Asia/Singapore',weekday:'short'}).format(new Date(iso + 'T12:00:00+08:00')); }catch(e){ return ''; }
   }
   function yearSepHtml(year, curYear){
     return '<li class="hol-year"><span>' + year + (year === curYear ? ' · remaining' : '') + '</span></li>';
@@ -713,7 +1029,7 @@
       return 0;
     });
     if(!list.length){
-      ul.innerHTML = '<li class="hol-empty">No upcoming holidays to show yet.</li>';
+      ul.innerHTML = '<li class="hol-empty">' + esc(t('hol_none')) + '</li>';
       return;
     }
     var html = '', lastYear = '';
@@ -727,18 +1043,48 @@
         var k = String(s).toLowerCase();
         if(k === 'sg' || k === 'singapore') tags += '<span class="tag tag-sg">SG</span>';
         else if(k === 'my' || k === 'malaysia') tags += '<span class="tag tag-my">MY</span>';
-        else if(k === 'johor-only' || k === 'johor only') tags += '<span class="tag tag-only">Johor only</span>';
+        else if(k === 'johor-only' || k === 'johor only') tags += '<span class="tag tag-only">' + esc(t('hol_tag_johor')) + '</span>';
       });
-      if(h.johorOnly && tags.indexOf('Johor only') === -1) tags += '<span class="tag tag-only">Johor only</span>';
-      if(h.replacement) tags += '<span class="tag tag-replace">Replacement</span>';
-      var sub = h.sub || h.note || (h.replacementFor ? 'Replacement for ' + h.replacementFor : '');
+      if(h.johorOnly && tags.indexOf(t('hol_tag_johor')) === -1) tags += '<span class="tag tag-only">' + esc(t('hol_tag_johor')) + '</span>';
+      if(h.replacement) tags += '<span class="tag tag-replace">' + esc(t('hol_tag_replace')) + '</span>';
+      var sub = h.sub || h.note || (h.replacementFor ? t('hol_replacement_for').replace('{name}', trHoliday(h.replacementFor)) : '');
       var subHtml = sub ? '<span class="hol-sub">'+esc(sub)+'</span>' : '';
       var dateLabel = h.date || '';
       if(!dateLabel || /^\d{4}-\d{2}-\d{2}/.test(String(dateLabel))) dateLabel = x.iso ? fmtHolDate(x.iso) : dateLabel;
       var dow = h.dow || (x.iso ? dowOf(x.iso) : '');
-      html += '<li><time>'+esc(dateLabel)+'</time><span class="hol-main">'+esc(h.name||h.label)+tags+subHtml+'</span><span class="dow">'+esc(dow)+'</span></li>';
+      html += '<li><time>'+esc(dateLabel)+'</time><span class="hol-main">'+esc(trHoliday(h.name||h.label))+tags+subHtml+'</span><span class="dow">'+esc(dow)+'</span></li>';
     });
     ul.innerHTML = html;
+  }
+  function parseEnShortDate(s){
+    var m = String(s || '').match(/^\w{3} (\d{1,2}) (\w{3})$/);
+    if(!m || !MONTHS[m[2]]) return null;
+    var y = new Date().getFullYear();
+    var d = new Date(Date.UTC(y, MONTHS[m[2]] - 1, parseInt(m[1], 10), 12));
+    // A long weekend starts at most 2 days before its holiday, and the holiday is upcoming — if this year's date is well past, it is next year's.
+    if(d.getTime() < Date.now() - 3 * 86400000) d = new Date(Date.UTC(y + 1, MONTHS[m[2]] - 1, parseInt(m[1], 10), 12));
+    return d;
+  }
+  function trLongWeekend(title, detail){
+    var out = {title: title, detail: detail};
+    var tm = String(title || '').match(/^(.*) long weekend$/);
+    if(tm){
+      var names = tm[1].split(' + ').map(function(n){ return trHoliday(n.trim()); });
+      out.title = names.join(' + ') + ' ' + t('hol_lw_suffix');
+    }
+    var dm = String(detail || '').match(/^(\w{3} \d{1,2} \w{3}) - (\w{3} \d{1,2} \w{3}), (\d+) days?$/);
+    if(dm && LANG !== 'en'){   // English already matches the Worker's format — only reformat for other languages
+      var s = parseEnShortDate(dm[1]), e = parseEnShortDate(dm[2]);
+      var n = parseInt(dm[3], 10);
+      if(s && e && isFinite(n)){
+        try{
+          var f = function(d){ return new Intl.DateTimeFormat(loc(), {timeZone:'Asia/Singapore', weekday:'short', day:'numeric', month:'short'}).format(d); };
+          var days = (n === 1) ? t('hol_day1') : t('hol_days').replace('{n}', n);
+          out.detail = f(s) + ' - ' + f(e) + ', ' + days;
+        }catch(x){}
+      }
+    }
+    return out;
   }
   function applyHolidays(h){
     if(!h || typeof h !== 'object'){ showHolidaysNA(); return; }
@@ -758,8 +1104,9 @@
     }
     if(!merged.length){ showHolidaysNA(); return; }   // nothing to show — N/A, not the stale list
     if(h.nextLongWeekend){
-      if(h.nextLongWeekend.title) setText('lwTitle', h.nextLongWeekend.title);
-      if(h.nextLongWeekend.detail) setText('lwDetail', h.nextLongWeekend.detail);
+      var lw = trLongWeekend(h.nextLongWeekend.title, h.nextLongWeekend.detail);
+      if(lw.title) setText('lwTitle', lw.title);
+      if(lw.detail) setText('lwDetail', lw.detail);
     }
     renderMergedList($('holAll'), merged);
   }
@@ -794,6 +1141,7 @@
   // holidays). Each section degrades to its own N/A, so one bad section can't take the page down.
   function applyData(data, coreOnly){
     if(!data || typeof data !== 'object'){ if(coreOnly) showCoreNA(); else showDataNA(); return; }
+    lastData = data;   // kept so a language switch can re-render the same data without a new fetch
     try{ if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA(); }catch(e){ showCheckpointsNA(); }
     try{ if(data.weather) applyWeather(data.weather); else showWeatherNA(); }catch(e){ showWeatherNA(); }
     try{ if(data.psi) applyPsi(data.psi); else showPsiNA(); }catch(e){ showPsiNA(); }
@@ -801,7 +1149,7 @@
       try{ if(data.holidays) applyHolidays(data.holidays); else showHolidaysNA(); }catch(e){ showHolidaysNA(); }
     }
     var t = fmtTime(data.generatedAt);
-    if(t) setText('footerSnapshot', 'Snapshot: ' + t + ', Singapore time.' + (data.stale ? ' Showing last available data — may be out of date.' : ''));
+    if(t) setText('footerSnapshot', t('footer_snapshot') + ' ' + t + t('footer_sg_time') + (data.stale ? t('footer_stale') : ''));
   }
 
   /* ============ Data N/A — when the Worker data fetch fails (or a section is
@@ -812,7 +1160,7 @@
     var numEl = el.querySelector('.cp-speed-num'); if(numEl) numEl.textContent = 'N/A';
     var bandEl = el.querySelector('.cp-band'); if(bandEl) bandEl.textContent = '—';
     var statusEl = el.querySelector('.status');
-    if(statusEl){ statusEl.className = 'status'; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = 'Unavailable'; }
+    if(statusEl){ statusEl.className = 'status'; var lab = statusEl.querySelector('.status-label'); if(lab) lab.textContent = t('na_label'); }
     var barEl = el.querySelector('.bandbar');
     if(barEl){ barEl.querySelectorAll('i').forEach(function(b){ b.className = ''; }); }
   }
@@ -834,8 +1182,8 @@
     setText('psiBand', 'N/A');
     var bandEl = $('psiBand'); if(bandEl) bandEl.className = 'band';
     var mk = $('psiMarker'); if(mk) mk.style.display = 'none';
-    setText('psiAdvice', 'PSI data unavailable.');
-    setText('psiNote', 'PSI unavailable.');
+    setText('psiAdvice', t('psi_advice_na'));
+    setText('psiNote', t('psi_na'));
     ['central','west','south','east','north'].forEach(function(r){
       var row = document.querySelector('[data-region="'+r+'"]');
       if(!row) return;
@@ -845,15 +1193,15 @@
     setText('psiUpdated', 'N/A');
   }
   function showHolidaysNA(){
-    setText('lwTitle', 'Holidays unavailable');
-    setText('lwDetail', 'The live holiday data could not be loaded.');
+    setText('lwTitle', t('hol_lw_na'));
+    setText('lwDetail', t('hol_lw_na_detail'));
     var ul = $('holAll');
-    if(ul) ul.innerHTML = '<li class="hol-empty">Holidays unavailable.</li>';
+    if(ul) ul.innerHTML = '<li class="hol-empty">' + esc(t('hol_unavailable')) + '</li>';
   }
   function showDataNA(){
     // Whole data fetch failed — every data card goes N/A.
     showCheckpointsNA(); showWeatherNA(); showPsiNA(); showHolidaysNA();
-    setText('footerSnapshot', 'Data unavailable — the live data could not be loaded.');
+    setText('footerSnapshot', t('footer_data_na'));
   }
   function showCoreNA(){
     // 30-min refresh failed — checkpoints / weather / PSI go N/A, holidays untouched.
@@ -944,7 +1292,7 @@
     var locked = !stale || rateRefreshInFlight;   // dim = locked; lit up = clickable
     btn.disabled = locked;   // disabled already conveys it
     var label = $('rateRefreshLabel');
-    if(label && !rateRefreshInFlight) label.textContent = stale ? 'Refresh rate now' : 'Refresh rate';
+    if(label && !rateRefreshInFlight) label.textContent = stale ? t('fx_refresh_now') : t('fx_refresh');
   }
   var refreshBtn = $('rateRefreshBtn');
   if(refreshBtn) refreshBtn.addEventListener('click', function(){
@@ -990,6 +1338,27 @@
   if(offBtn) offBtn.addEventListener('click', function(){ location.reload(); });
   updateOfflineBanner();   // page opened while already offline — show it at once
 
+  /* ============ Language — EN / 中文 / BM, persisted per device ============ */
+  function setLang(l, save){
+    if(l !== 'zh' && l !== 'ms') l = 'en';
+    LANG = l;
+    try{ document.documentElement.lang = (l === 'zh') ? 'zh-CN' : (l === 'ms' ? 'ms' : 'en'); }catch(e){}
+    document.querySelectorAll('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.getAttribute('data-i18n-html')); });
+    document.querySelectorAll('.lang-toggle button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang') === l); });
+    if(save !== false){ try{ localStorage.setItem('sgmydash-lang', l); }catch(e){} }
+    // Re-render everything dynamic in the new language (same data, no new fetch).
+    calcCmp();
+    setCity(currentCity);
+    updateRateBtn();
+    setHeaderDate();
+    if(lastData) applyData(lastData, false);
+  }
+  document.querySelectorAll('.lang-toggle button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+  setLang(LANG, false);   // apply the saved language (or English) before the first data paint
+
   /* ============ Initial load — fetch everything fresh, once ============ */
   // Loading screen: the page only appears once both the dashboard data and
   // the FX rates have loaded (or the 12s safety timeout fires), so the first
@@ -1024,7 +1393,7 @@
   setCity('sg');
 
   /* Header date (live, Asia/Singapore) — no live clock */
-  function setHeaderDate(){ try{ $('headerDate').textContent = new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore', weekday:'short', day:'numeric', month:'short', year:'numeric'}).format(new Date()) + ' · Singapore / Malaysia (UTC+8)'; }catch(e){} }
+  function setHeaderDate(){ try{ $('headerDate').textContent = new Intl.DateTimeFormat(loc(),{timeZone:'Asia/Singapore', weekday:'short', day:'numeric', month:'short', year:'numeric'}).format(new Date()) + ' · ' + t('header_place'); }catch(e){} }
   setHeaderDate(); setInterval(setHeaderDate, 30000);
 })();
 </script>
