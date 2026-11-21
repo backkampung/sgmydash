@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.7 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.8 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -25,14 +25,14 @@
   a{color:var(--accent)}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 32px}
   p{overflow-wrap:break-word}
-  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 14px 16px;border-radius:0 0 20px 20px;display:flex;flex-direction:column;gap:2px}
-  .topbar-row{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  .topbar h1{font-size:20px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
+  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 14px 16px;border-radius:0 0 20px 20px;display:flex;flex-direction:column;gap:2px;position:relative}
+  .topbar-row{display:flex;gap:8px;align-items:center;justify-content:center}
+  .topbar h1{font-size:18px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
   .topbar h1 span{color:#facc15}
   .topbar-title{flex:1;text-align:center;min-width:0}
   .date-line{text-align:center}
-  .lang-toggle{display:flex;gap:3px;flex:0 0 auto}
-  .lang-toggle button{font:800 11px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:4px 8px;cursor:pointer;min-height:26px}
+  .lang-toggle{display:flex;gap:2px;flex:0 0 auto;position:absolute;top:12px;right:12px}
+  .lang-toggle button{font:800 10px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 6px;cursor:pointer;min-height:24px}
   .lang-toggle button.active{background:#fff;color:#1e1b4b;border-color:#fff}
   .date-line{font-size:12px;color:#c3c6f2;margin-top:3px}
   .live-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px;font-size:11px;color:#c3c6f2}
@@ -223,13 +223,13 @@
       <div class="topbar-title">
         <h1>SG ⇄ MY <span>Dashboard</span></h1>
       </div>
-      <div class="lang-toggle" role="group" aria-label="Language">
-        <button type="button" data-lang="en" class="active">EN</button>
-        <button type="button" data-lang="zh">中文</button>
-        <button type="button" data-lang="ms">BM</button>
-      </div>
     </div>
     <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="zh">中文</button>
+      <button type="button" data-lang="ms">BM</button>
+    </div>
   </header>
 
   <div class="offline-banner" id="offlineBanner" role="alert" hidden>
@@ -467,7 +467,19 @@
 
   /* ============ i18n — English / 中文 / Bahasa Malaysia ============ */
   var LOCALE = {en:'en-SG', zh:'zh-SG', ms:'ms-SG'};
-  var LANG = 'en';
+  // Default language follows the device: Chinese device -> Chinese, Malay
+  // device -> Bahasa Malaysia, anything else -> English. A saved choice
+  // (from the toggle) always wins over the device language.
+  function detectLang(){
+    try{
+      var nav = (navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage || 'en';
+      nav = String(nav).toLowerCase();
+      if(nav.indexOf('zh') === 0) return 'zh';
+      if(nav.indexOf('ms') === 0) return 'ms';
+    }catch(e){}
+    return 'en';
+  }
+  var LANG = detectLang();
   try{ var _sl = localStorage.getItem('sgmydash-lang'); if(_sl==='zh'||_sl==='ms'||_sl==='en') LANG = _sl; }catch(e){}
   function loc(){ return LOCALE[LANG] || 'en-SG'; }
   function t(k){ var d = STR[LANG] || STR.en; if(d && d[k] != null) return d[k]; return (STR.en[k] != null) ? STR.en[k] : k; }
