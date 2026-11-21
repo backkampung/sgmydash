@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.6 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.7 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -25,10 +25,12 @@
   a{color:var(--accent)}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 32px}
   p{overflow-wrap:break-word}
-  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:16px 14px 18px;border-radius:0 0 20px 20px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 14px 16px;border-radius:0 0 20px 20px;display:flex;flex-direction:column;gap:2px}
+  .topbar-row{display:flex;gap:8px;align-items:center;justify-content:space-between}
   .topbar h1{font-size:20px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
   .topbar h1 span{color:#facc15}
   .topbar-title{flex:1;text-align:center;min-width:0}
+  .date-line{text-align:center}
   .lang-toggle{display:flex;gap:3px;flex:0 0 auto}
   .lang-toggle button{font:800 11px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:4px 8px;cursor:pointer;min-height:26px}
   .lang-toggle button.active{background:#fff;color:#1e1b4b;border-color:#fff}
@@ -217,15 +219,17 @@
   <noscript><div style="background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:12px 13px;margin:14px 0 0;font-size:13px;line-height:1.5" data-i18n="noscript">Live data needs JavaScript — please enable it. The values below are from 15 Nov 2026.</div></noscript>
 
   <header class="topbar">
-    <div class="topbar-title">
-      <h1>SG ⇄ MY <span>Dashboard</span></h1>
-      <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
+    <div class="topbar-row">
+      <div class="topbar-title">
+        <h1>SG ⇄ MY <span>Dashboard</span></h1>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="zh">中文</button>
+        <button type="button" data-lang="ms">BM</button>
+      </div>
     </div>
-    <div class="lang-toggle" role="group" aria-label="Language">
-      <button type="button" data-lang="en" class="active">EN</button>
-      <button type="button" data-lang="zh">中文</button>
-      <button type="button" data-lang="ms">BM</button>
-    </div>
+    <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
   </header>
 
   <div class="offline-banner" id="offlineBanner" role="alert" hidden>
@@ -1235,13 +1239,22 @@
   // (?sections=core / holidays; omitted = full). applyFn gets the data plus true
   // when only the core sections should be applied.
   var dataLoadInFlight = false;
-  function loadData(applyFn, naFn, sections, quiet){
+  function loadData(applyFn, naFn, sections, quiet, _retried){
     if(dataLoadInFlight) return Promise.resolve(null);   // a refresh is already running
     dataLoadInFlight = true;
     var url = sections ? WORKER_DATA_URL + '?sections=' + sections : WORKER_DATA_URL;
     return fetchWorkerData(url).then(function(data){
       dataLoadInFlight = false;
       if(!data){ if(!quiet) naFn(); return null; }
+      // Checkpoints missing (a transient LTA hiccup in the Worker) — retry
+      // once before showing N/A, so a single failed LTA run doesn't blank
+      // the card until the next 30-min refresh.
+      var hasCp = data.checkpoints && data.checkpoints.directions && Object.keys(data.checkpoints.directions).length > 0;
+      if(!_retried && sections !== 'holidays' && !hasCp){
+        return new Promise(function(resolve){
+          setTimeout(function(){ loadData(applyFn, naFn, sections, quiet, true).then(resolve); }, 3000);
+        });
+      }
       if(sections !== 'holidays' && data.generatedAt && data.generatedAt === lastDataGen) return data;   // unchanged — skip re-applying
       lastDataGen = data.generatedAt;
       applyFn(data, sections === 'core');
