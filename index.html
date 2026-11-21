@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.11 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.12 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -25,15 +25,18 @@
   a{color:var(--accent)}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 32px}
   p{overflow-wrap:break-word}
-  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 14px 16px;border-radius:0 0 20px 20px;display:flex;flex-direction:column;gap:2px;position:relative}
+  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 14px 16px;border-radius:0 0 20px 20px;display:flex;flex-direction:column;gap:2px;position:relative;z-index:30}
   .topbar-row{display:flex;gap:8px;align-items:center;justify-content:center}
   .topbar h1{font-size:18px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
   .topbar h1 span{color:#facc15}
   .topbar-title{flex:1;text-align:center;min-width:0}
   .date-line{text-align:center}
-  .lang-toggle{display:flex;gap:2px;flex:0 0 auto;position:absolute;top:12px;right:12px}
-  .lang-toggle button{font:800 10px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 6px;cursor:pointer;min-height:24px}
-  .lang-toggle button.active{background:#fff;color:#1e1b4b;border-color:#fff}
+  .lang-toggle{position:absolute;top:12px;right:12px}
+  #langBtn{font:800 11px "Manrope",sans-serif;color:#1e1b4b;background:#fff;border:1px solid #fff;border-radius:999px;padding:4px 10px;cursor:pointer;min-height:26px}
+  .lang-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:92px;background:#1e1b4b;border:1px solid rgba(255,255,255,.28);border-radius:10px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:20}
+  .lang-menu button{display:block;width:100%;text-align:left;font:800 11px "Manrope",sans-serif;color:#c3c6f2;background:none;border:0;border-radius:6px;padding:7px 10px;cursor:pointer}
+  .lang-menu button:hover{background:rgba(255,255,255,.12);color:#fff}
+  .lang-menu button.active{background:#fff;color:#1e1b4b}
   .date-line{font-size:12px;color:#c3c6f2;margin-top:3px}
   .live-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px;font-size:11px;color:#c3c6f2}
   .live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex:0 0 auto;animation:pulse 2s infinite}
@@ -225,10 +228,13 @@
       </div>
     </div>
     <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
-    <div class="lang-toggle" role="group" aria-label="Language">
-      <button type="button" data-lang="en" class="active">EN</button>
-      <button type="button" data-lang="zh">中文</button>
-      <button type="button" data-lang="ms">BM</button>
+    <div class="lang-toggle">
+      <button type="button" id="langBtn" aria-haspopup="true" aria-expanded="false">EN ▾</button>
+      <div class="lang-menu" id="langMenu" role="menu" hidden>
+        <button type="button" data-lang="en" role="menuitem">EN</button>
+        <button type="button" data-lang="zh" role="menuitem">中文</button>
+        <button type="button" data-lang="ms" role="menuitem">BM</button>
+      </div>
     </div>
   </header>
 
@@ -1372,7 +1378,9 @@
     try{ document.documentElement.lang = (l === 'zh') ? 'zh-CN' : (l === 'ms' ? 'ms' : 'en'); }catch(e){}
     document.querySelectorAll('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
     document.querySelectorAll('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.getAttribute('data-i18n-html')); });
-    document.querySelectorAll('.lang-toggle button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang') === l); });
+    var langBtn = document.getElementById('langBtn');
+    if(langBtn) langBtn.textContent = ({en:'EN', zh:'中文', ms:'BM'})[l] + ' ▾';
+    document.querySelectorAll('.lang-menu button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang') === l); });
     if(save !== false){ try{ localStorage.setItem('sgmydash-lang', l); }catch(e){} }
     // Re-render everything dynamic in the new language (same data, no new fetch).
     calcCmp();
@@ -1382,9 +1390,27 @@
     if(lastRatesAt) setText('ratesUpdatedAt', fmtTime(lastRatesAt) || 'N/A');
     if(lastData) applyData(lastData, false);
   }
-  document.querySelectorAll('.lang-toggle button').forEach(function(b){
-    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
-  });
+  var langBtnEl = document.getElementById('langBtn');
+  var langMenuEl = document.getElementById('langMenu');
+  function closeLangMenu(){
+    if(langMenuEl) langMenuEl.hidden = true;
+    if(langBtnEl) langBtnEl.setAttribute('aria-expanded', 'false');
+  }
+  if(langBtnEl && langMenuEl){
+    langBtnEl.addEventListener('click', function(e){
+      e.stopPropagation();
+      var open = langMenuEl.hidden;
+      langMenuEl.hidden = !open;
+      langBtnEl.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    langMenuEl.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); closeLangMenu(); });
+    });
+    document.addEventListener('click', function(e){
+      if(!langMenuEl.hidden && !langMenuEl.contains(e.target) && e.target !== langBtnEl) closeLangMenu();
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLangMenu(); });
+  }
   setLang(LANG, false);   // apply the saved language (or English) before the first data paint
 
   /* ============ Initial load — fetch everything fresh, once ============ */
