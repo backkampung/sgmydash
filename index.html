@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.8 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.9 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -445,7 +445,7 @@
   var DATA_REFRESH_MS = 30 * 60 * 1000;     // 30 min — checkpoints / weather / PSI auto-update interval
 
   // All live data comes only from this Cloudflare Worker — no fallback; if it fails, cards show N/A.
-  var WORKER_URL = 'https://sgmy-dash-update.alien-lim528.workers.dev/';
+  var WORKER_URL = 'https://api.sgmydash.backkampung.com/';
   var WORKER_DATA_URL = WORKER_URL.replace(/\/$/, '') + '/data';   // Worker /data endpoint
 
   /* ============ State (baked snapshot = fallback if JSON not found, e.g. in preview) ============ */
