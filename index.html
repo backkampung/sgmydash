@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.5 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.6 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -25,12 +25,12 @@
   a{color:var(--accent)}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 32px}
   p{overflow-wrap:break-word}
-  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:14px 18px 20px;border-radius:0 0 20px 20px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:center;text-align:center}
-  .topbar h1{font-size:21px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
+  .topbar{background:var(--accent-dark);color:#eafff8;margin:0 -16px;padding:16px 14px 18px;border-radius:0 0 20px 20px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .topbar h1{font-size:20px;line-height:1.15;letter-spacing:-.02em;margin:0;font-weight:800}
   .topbar h1 span{color:#facc15}
-  .topbar-title{flex:0 0 100%}
-  .lang-toggle{display:flex;gap:4px;margin-left:auto}
-  .lang-toggle button{font:800 12px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 10px;cursor:pointer;min-height:28px}
+  .topbar-title{flex:1;text-align:center;min-width:0}
+  .lang-toggle{display:flex;gap:3px;flex:0 0 auto}
+  .lang-toggle button{font:800 11px "Manrope",sans-serif;color:#c3c6f2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:4px 8px;cursor:pointer;min-height:26px}
   .lang-toggle button.active{background:#fff;color:#1e1b4b;border-color:#fff}
   .date-line{font-size:12px;color:#c3c6f2;margin-top:3px}
   .live-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:4px;font-size:11px;color:#c3c6f2}
@@ -217,14 +217,14 @@
   <noscript><div style="background:var(--amber-soft);border:1px solid #ecd28a;border-radius:12px;padding:12px 13px;margin:14px 0 0;font-size:13px;line-height:1.5" data-i18n="noscript">Live data needs JavaScript — please enable it. The values below are from 15 Nov 2026.</div></noscript>
 
   <header class="topbar">
+    <div class="topbar-title">
+      <h1>SG ⇄ MY <span>Dashboard</span></h1>
+      <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
+    </div>
     <div class="lang-toggle" role="group" aria-label="Language">
       <button type="button" data-lang="en" class="active">EN</button>
       <button type="button" data-lang="zh">中文</button>
       <button type="button" data-lang="ms">BM</button>
-    </div>
-    <div class="topbar-title">
-      <h1>SG ⇄ MY <span>Dashboard</span></h1>
-      <div class="date-line" id="headerDate">Sun 15 Nov 2026 · Singapore / Malaysia (UTC+8)</div>
     </div>
   </header>
 
@@ -451,6 +451,7 @@
   var WISE_FIXED = 0.54, WISE_PCT = 0.0025, WISE_VAT = 0.08;
   var lastDataGen = null;   // generatedAt of the last applied /data payload — skips re-applying unchanged data
   var lastData = null;      // last applied /data payload — re-applied on a language switch, no new fetch
+  var lastRatesAt = null;   // raw updatedAt of the last FX rates — re-formatted on a language switch
   var currentCity = 'sg';
 
   var WX = {
@@ -1124,7 +1125,8 @@
     setText('cimbRateVal', (CIMB_RATE != null) ? CIMB_RATE : 'N/A');
     setText('wiseRateVal', (MID_RATE != null) ? MID_RATE : 'N/A');
     setText('wiseRateFoot', (MID_RATE != null) ? MID_RATE : 'N/A');
-    setText('ratesUpdatedAt', fmtTime(r.updatedAt || cimb.updatedAt || wise.updatedAt) || 'N/A');
+    lastRatesAt = r.updatedAt || cimb.updatedAt || wise.updatedAt || null;
+    setText('ratesUpdatedAt', fmtTime(lastRatesAt) || 'N/A');
     calcCmp();
   }
   function applyRatesNA(){
@@ -1352,6 +1354,7 @@
     setCity(currentCity);
     updateRateBtn();
     setHeaderDate();
+    if(lastRatesAt) setText('ratesUpdatedAt', fmtTime(lastRatesAt) || 'N/A');
     if(lastData) applyData(lastData, false);
   }
   document.querySelectorAll('.lang-toggle button').forEach(function(b){
