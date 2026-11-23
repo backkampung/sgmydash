@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.14 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.15 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -1273,11 +1273,15 @@
     return fetchWorkerData(url).then(function(data){
       dataLoadInFlight = false;
       if(!data){ if(!quiet) naFn(); return null; }
-      // Checkpoints missing (a transient LTA hiccup in the Worker) — retry
-      // once before showing N/A, so a single failed LTA run doesn't blank
-      // the card until the next 30-min refresh.
+      // A section missing (a transient upstream hiccup in the Worker) — retry
+      // once before showing N/A, so a single failed run doesn't blank a card
+      // until the next refresh. Checkpoints are expected on a full load and
+      // on a core load; holidays on a full load and on a holidays-only load.
       var hasCp = data.checkpoints && data.checkpoints.directions && Object.keys(data.checkpoints.directions).length > 0;
-      if(!_retried && sections !== 'holidays' && !hasCp){
+      var hasHol = data.holidays && data.holidays.all && data.holidays.all.length > 0;
+      var wantCp = sections !== 'holidays';
+      var wantHol = sections !== 'core';
+      if(!_retried && ((wantCp && !hasCp) || (wantHol && !hasHol))){
         return new Promise(function(resolve){
           setTimeout(function(){ loadData(applyFn, naFn, sections, quiet, true).then(resolve); }, 3000);
         });
