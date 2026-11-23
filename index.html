@@ -1,12 +1,21 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.12 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-21.13 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
-<link rel="icon" href="data:," />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e1b4b'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='%23facc15' font-family='Arial,sans-serif' font-weight='bold'%3E%E2%87%84%3C/text%3E%3C/svg%3E" />
 <title>SG–MY Cross-Border Dashboard</title>
+<meta name="description" content="Live Causeway checkpoint speeds, CIMB vs Wise SGD to MYR rates, Singapore/JB/Muar weather, PSI and holidays — in English, 中文 and Bahasa Malaysia." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://sgmydash.backkampung.com/" />
+<meta property="og:title" content="SG–MY Cross-Border Dashboard" />
+<meta property="og:description" content="Live Causeway checkpoint speeds, CIMB vs Wise SGD to MYR rates, Singapore/JB/Muar weather, PSI and holidays." />
+<meta property="og:site_name" content="SG–MY Dashboard" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="SG–MY Cross-Border Dashboard" />
+<meta name="twitter:description" content="Live Causeway checkpoint speeds, CIMB vs Wise SGD to MYR rates, Singapore/JB/Muar weather, PSI and holidays." />
 <link rel="stylesheet" href="fonts.css">
 <style>
   :root{
@@ -426,7 +435,7 @@
   <footer>
     <span id="footerSnapshot">Snapshot: Sun 15 Nov 2026, Singapore time.</span><br>
     <span data-i18n="footer_sources">Sources:</span> <a href="https://datamall.lta.gov.sg/content/datamall/en.html" target="_blank" rel="noopener">LTA DataMall</a> · <a href="https://www.cimbclicks.com.sg/sgd-to-myr" target="_blank" rel="noopener">CIMB Clicks SG</a> · <a href="https://wise.com/" target="_blank" rel="noopener">Wise</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a> · <a href="https://data.gov.sg/" target="_blank" rel="noopener">data.gov.sg / NEA</a> · <a href="https://www.johor.gov.my/" target="_blank" rel="noopener">johor.gov.my</a> · MOM · FMM · <a href="https://www.bilanakcuti.com/" target="_blank" rel="noopener">bilanakcuti.com</a> · <a href="https://publicholidays.info/malaysia/johor/" target="_blank" rel="noopener">publicholidays.info</a><br>
-    © 2026 backkampung.com. <span data-i18n="footer_rights">All rights reserved.</span> · <a href="terms.html" data-i18n="footer_terms">Terms &amp; Disclaimer</a>
+    © 2026 backkampung.com. <span data-i18n="footer_rights">All rights reserved.</span> · <a href="terms.html" data-i18n="footer_terms">Terms &amp; Disclaimer</a> · <a href="https://github.com/backkampung/sgmydash/issues" target="_blank" rel="noopener" data-i18n="footer_feedback">Report a problem</a>
   </footer>
 </div>
 
@@ -544,7 +553,7 @@
     footer_snapshot: "Snapshot:", footer_sg_time: ", Singapore time.",
     footer_stale: " Showing last available data — may be out of date.",
     footer_data_na: "Data unavailable — the live data could not be loaded.",
-    footer_sources: "Sources:", footer_rights: "All rights reserved.", footer_terms: "Terms & Disclaimer",
+    footer_sources: "Sources:", footer_rights: "All rights reserved.", footer_terms: "Terms & Disclaimer", footer_feedback: "Report a problem",
     header_place: "Singapore / Malaysia (UTC+8)",
     rain_likely: "likely", rain_possible: "possible", rain_unlikely: "unlikely",
     feels_like: "Feels like {f}°C, H {h}°C / L {l}°C",
@@ -603,7 +612,7 @@
     footer_snapshot: "快照：", footer_sg_time: "，新加坡时间。",
     footer_stale: " 显示的是最后可用数据 — 可能已过期。",
     footer_data_na: "数据不可用 — 无法加载实时数据。",
-    footer_sources: "来源：", footer_rights: "版权所有。", footer_terms: "条款与免责声明",
+    footer_sources: "来源：", footer_rights: "版权所有。", footer_terms: "条款与免责声明", footer_feedback: "反馈问题",
     header_place: "新加坡 / 马来西亚 (UTC+8)",
     rain_likely: "很可能", rain_possible: "可能", rain_unlikely: "不太可能",
     feels_like: "体感 {f}° · 最高 {h}° / 最低 {l}°",
@@ -662,7 +671,7 @@
     footer_snapshot: "Syot kilat:", footer_sg_time: ", waktu Singapura.",
     footer_stale: " Menunjukkan data terakhir yang tersedia — mungkin sudah lapuk.",
     footer_data_na: "Data tidak tersedia — data langsung tidak dapat dimuatkan.",
-    footer_sources: "Sumber:", footer_rights: "Hak cipta terpelihara.", footer_terms: "Terma & Penafian",
+    footer_sources: "Sumber:", footer_rights: "Hak cipta terpelihara.", footer_terms: "Terma & Penafian", footer_feedback: "Laporkan masalah",
     header_place: "Singapura / Malaysia (UTC+8)",
     rain_likely: "kemungkinan besar", rain_possible: "mungkin", rain_unlikely: "tidak mungkin",
     feels_like: "Terasa seperti {f}° · Tertinggi {h}° / Terendah {l}°",
