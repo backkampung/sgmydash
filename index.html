@@ -1,10 +1,11 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-21.15 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-23.1 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src https://api.sgmydash.backkampung.com; img-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'none'" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e1b4b'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='%23facc15' font-family='Arial,sans-serif' font-weight='bold'%3E%E2%87%84%3C/text%3E%3C/svg%3E" />
 <title>SG–MY Cross-Border Dashboard</title>
 <meta name="description" content="Live Causeway checkpoint speeds, CIMB vs Wise SGD to MYR rates, Singapore/JB/Muar weather, PSI and holidays — in English, 中文 and Bahasa Malaysia." />
@@ -442,12 +443,14 @@
 <script>
 (function(){
   'use strict';
-  function fmt(n){ return n.toLocaleString('en-SG',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function fmt(n){ n = Number(n); return isFinite(n) ? n.toLocaleString('en-SG',{minimumFractionDigits:2, maximumFractionDigits:2}) : 'N/A'; }   // null / Infinity / NaN render as N/A, never throw or print ∞
   // Recipient amount with the cents muted (XE-style) — the whole MYR stands out, the cents stay readable.
   function fmtRecv(v){ var s = fmt(v); var i = s.lastIndexOf('.'); if(i < 0) return 'MYR ' + s; return 'MYR ' + s.slice(0,i) + '<span class="trail">' + s.slice(i) + '</span>'; }
   function degC(s){ return String(s).replace(/(\d)C/g, '$1°C'); }   // Worker sends "26C" — render as "26°C"
   function $(id){ return document.getElementById(id); }
   function setText(id, v){ var el = $(id); if(el) el.textContent = v; }   // no-op when the id is missing
+  function setHidden(id, v){ var el = $(id); if(el) el.hidden = v; }   // no-op when the id is missing
+  function toggleBest(id, on){ var el = $(id); if(el) el.classList.toggle('best', on); }   // no-op when the id is missing
   function fmtTime(v){
     if(!v) return null;
     var d = (typeof v==='number') ? new Date(v) : new Date(v);
@@ -786,6 +789,7 @@
     return m[1] + '% — ' + t(k);
   }
   function trWxAdvice(s){
+    s = String(s == null ? '' : s);   // a wrong-typed advice (e.g. a number) must not throw on .slice
     if(!s) return s;
     if(s === 'Weather unavailable.') return t('wx_advice_na');
     var m = WX_ADVICE[s];
@@ -808,6 +812,7 @@
     if(!sendAmt) return;
     var amt = parseFloat(sendAmt.value);
     var cimbRecvEl = $('cimbRecv'), wiseRecvEl = $('wiseRecv'), verdict = $('verdict');
+    if(!cimbRecvEl || !wiseRecvEl || !verdict) return;   // a missing id must not abort setLang / applyRates mid-way
     if(!isFinite(amt) || amt < 0){ cimbRecvEl.textContent='—'; wiseRecvEl.textContent='—'; verdict.textContent=t('verdict_type'); return; }
     // No live rate — show — while still loading, N/A only once a fetch has really failed.
     var cimbOk = (CIMB_RATE != null && !isNaN(CIMB_RATE));
@@ -815,22 +820,22 @@
     if(!cimbOk || !wiseOk){
       var na = ratesSettled ? 'N/A' : '—';
       if(!cimbOk){
-        $('cimbRateVal').textContent = na;
+        setText('cimbRateVal', na);
         cimbRecvEl.textContent = na;
       }
       if(!wiseOk){
-        $('wiseRateVal').textContent = na;
-        $('wiseOurFee').textContent = na;
-        $('wiseVat').textContent = na;
-        $('wiseFeeOut').textContent = na;
-        $('wiseNet').textContent = na;
+        setText('wiseRateVal', na);
+        setText('wiseOurFee', na);
+        setText('wiseVat', na);
+        setText('wiseFeeOut', na);
+        setText('wiseNet', na);
         wiseRecvEl.textContent = na;
-        $('wiseRateFoot').textContent = na;
+        setText('wiseRateFoot', na);
       }
-      $('cimbBest').hidden = true;
-      $('wiseBest').hidden = true;
-      $('cimbBox').classList.remove('best');
-      $('wiseBox').classList.remove('best');
+      setHidden('cimbBest', true);
+      setHidden('wiseBest', true);
+      toggleBest('cimbBox', false);
+      toggleBest('wiseBox', false);
       verdict.textContent = ratesSettled ? t('verdict_na') : t('verdict_loading');
       return;
     }
@@ -841,15 +846,15 @@
     var wiseOut = net * MID_RATE;
     cimbRecvEl.innerHTML = fmtRecv(cimbOut);
     wiseRecvEl.innerHTML = fmtRecv(wiseOut);
-    $('wiseOurFee').textContent = 'SGD ' + fmt(wf.ourFee);
-    $('wiseVat').textContent = 'SGD ' + fmt(wf.vat);
-    $('wiseFeeOut').textContent = 'SGD ' + fmt(fee);
-    $('wiseNet').textContent = 'SGD ' + fmt(net);
+    setText('wiseOurFee', 'SGD ' + fmt(wf.ourFee));
+    setText('wiseVat', 'SGD ' + fmt(wf.vat));
+    setText('wiseFeeOut', 'SGD ' + fmt(fee));
+    setText('wiseNet', 'SGD ' + fmt(net));
     var wiseWins = wiseOut >= cimbOut;
-    $('wiseBest').hidden = !wiseWins;
-    $('cimbBest').hidden = wiseWins;
-    $('wiseBox').classList.toggle('best', wiseWins);
-    $('cimbBox').classList.toggle('best', !wiseWins);
+    setHidden('wiseBest', !wiseWins);
+    setHidden('cimbBest', wiseWins);
+    toggleBest('wiseBox', wiseWins);
+    toggleBest('cimbBox', !wiseWins);
     var diff = Math.abs(wiseOut - cimbOut);
     var breakeven = amt - (cimbOut / MID_RATE);
     // Verdict is built only from fmt() output (numbers) — never interpolate raw strings here.
@@ -875,10 +880,10 @@
     setText('wxHum', d.hum);
     setText('wxWind', d.wind);
     setText('rainLabel', trRainLabel(d.rainLabel));
-    $('rainBar').style.width = d.bar;
-    tabs.forEach(function(t){ t.setAttribute('aria-selected', t.getAttribute('data-city')===key ? 'true':'false'); });
+    var rb = $('rainBar'); if(rb) rb.style.width = d.bar;
+    tabs.forEach(function(tab){ tab.setAttribute('aria-selected', tab.getAttribute('data-city')===key ? 'true':'false'); });
   }
-  tabs.forEach(function(t){ t.addEventListener('click', function(){ setCity(t.getAttribute('data-city')); }); });
+  tabs.forEach(function(tab){ tab.addEventListener('click', function(){ setCity(tab.getAttribute('data-city')); }); });
 
   /* ============ Apply helpers — update DOM in place, no reload ============ */
   function statusForSpeed(s){
@@ -907,6 +912,7 @@
       if(speed == null){ showDirectionNA(el); return; }
       speed = Number(speed);
       if(!isFinite(speed) || speed < 0){ showDirectionNA(el); return; }
+      if(speed > 120) speed = 120;   // clamp — an implausible speed is a bad upstream value, not a real reading
       var band = Number(d.band);
       if(!isFinite(band)) band = bandForSpeed(speed);
       band = Math.max(1, Math.min(8, Math.round(band)));
@@ -971,6 +977,7 @@
       if(v == null){ regionNA(r); return; }
       v = Number(v);
       if(!isFinite(v)){ regionNA(r); return; }
+      v = Math.max(0, Math.min(500, v));   // clamp — an implausible PSI is a bad upstream value, not a real reading
       if(v > max) max = v;
       var row = document.querySelector('[data-region="'+r+'"]');
       if(!row) return;
@@ -985,6 +992,7 @@
     if(!updated){ showPsiNA(); return; }   // no region matched a row — nothing was applied
     var overall = (psi.overall != null) ? Number(psi.overall) : (max || null);
     if(overall != null && !isFinite(overall)) overall = (max || null);
+    if(overall != null) overall = Math.max(0, Math.min(500, overall));   // clamp to the plausible PSI range
     if(overall != null){
       setText('psiOverall', overall);
       setText('psiBand', psiBandLabel(overall));
@@ -992,12 +1000,23 @@
       var mk = $('psiMarker'); if(mk){ mk.style.display = ''; mk.style.left = Math.min(98, Math.max(2, overall / 4)) + '%'; }
       setText('psiAdvice', trPsiAdvice(psiBandKey(overall)));
     }
+    setText('psiNote', t('psi_note'));   // restore the band legend — a transient failure must not leave "PSI unavailable." there after recovery
     setText('psiUpdated', fmtTime(psi.updatedAt) || 'N/A');
   }
   function applyWeather(w){
     if(!w || typeof w !== 'object'){ showWeatherNA(); return; }
+    // Merge over the N/A template (not the previous state) and keep only
+    // string fields — a partial city object shows N/A for its missing fields
+    // instead of stale values, and a wrong-typed field can't poison the state.
+    function pickWx(src){
+      var out = {};
+      ['temp','cond','feels','advice','rain','hum','wind','rainLabel','bar'].forEach(function(k){
+        if(src && typeof src[k] === 'string') out[k] = src[k];
+      });
+      return out;
+    }
     ['sg','jb','muar'].forEach(function(k){
-      if(w[k] && typeof w[k] === 'object') WX[k] = Object.assign({}, WX[k], w[k]);
+      if(w[k] && typeof w[k] === 'object') WX[k] = Object.assign({}, WX_NA, pickWx(w[k]));
       else WX[k] = Object.assign({}, WX_NA);   // city missing from the feed — N/A, not stale
     });
     setText('wxUpdated', fmtTime(w.updatedAt) || 'N/A');
@@ -1022,6 +1041,7 @@
     return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
   }
   function isoOf(h){
+    if(!h || typeof h !== 'object') return '';   // a null / non-object item can't render — drop it instead of throwing
     var v = h.iso || h.dateISO || h.dateIso || '';
     if(/^\d{4}-\d{2}-\d{2}/.test(String(v))) return String(v).slice(0,10);
     var raw = String(h.date || '');
@@ -1139,6 +1159,11 @@
       var lw = trLongWeekend(h.nextLongWeekend.title, h.nextLongWeekend.detail);
       if(lw.title) setText('lwTitle', lw.title);
       if(lw.detail) setText('lwDetail', lw.detail);
+    } else {
+      // No long weekend in range — clear any stale "unavailable" title left
+      // by an earlier failed load, so it doesn't sit above a healthy list.
+      setText('lwTitle', '');
+      setText('lwDetail', '');
     }
     renderMergedList($('holAll'), merged);
   }
@@ -1151,8 +1176,11 @@
     var wise = r.wise || {};
     var cimbRate = (typeof cimb==='number') ? cimb : (cimb.rate != null ? cimb.rate : r.cimbRate);
     var midRate  = (typeof wise==='number') ? wise : (wise.midRate != null ? wise.midRate : (wise.rate != null ? wise.rate : r.midRate));
-    CIMB_RATE = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) > 0) ? Number(cimbRate) : null;
-    MID_RATE = (midRate != null && isFinite(Number(midRate)) && Number(midRate) > 0) ? Number(midRate) : null;
+    // Sanity band for SGD→MYR — a decimal slip (31.7) or a wrong pair from a
+    // redesigned source page is rejected, so a bad rate shows N/A instead of
+    // driving a money decision.
+    CIMB_RATE = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) >= 1 && Number(cimbRate) <= 10) ? Number(cimbRate) : null;
+    MID_RATE = (midRate != null && isFinite(Number(midRate)) && Number(midRate) >= 1 && Number(midRate) <= 10) ? Number(midRate) : null;
     setText('cimbRateVal', (CIMB_RATE != null) ? CIMB_RATE : 'N/A');
     setText('wiseRateVal', (MID_RATE != null) ? MID_RATE : 'N/A');
     setText('wiseRateFoot', (MID_RATE != null) ? MID_RATE : 'N/A');
@@ -1174,7 +1202,7 @@
   // holidays). Each section degrades to its own N/A, so one bad section can't take the page down.
   function applyData(data, coreOnly){
     if(!data || typeof data !== 'object'){ if(coreOnly) showCoreNA(); else showDataNA(); return; }
-    lastData = data;   // kept so a language switch can re-render the same data without a new fetch
+    if(!coreOnly) lastData = data;   // only a full payload is safe to re-render on a language switch — a core-only refresh carries no holidays, and caching it would blank the holidays card on the next language switch
     try{ if(data.checkpoints) applyCheckpoints(data.checkpoints); else showCheckpointsNA(); }catch(e){ showCheckpointsNA(); }
     try{ if(data.weather) applyWeather(data.weather); else showWeatherNA(); }catch(e){ showWeatherNA(); }
     try{ if(data.psi) applyPsi(data.psi); else showPsiNA(); }catch(e){ showPsiNA(); }
@@ -1183,6 +1211,7 @@
     }
     var genTime = fmtTime(data.generatedAt);
     if(genTime) setText('footerSnapshot', t('footer_snapshot') + ' ' + genTime + t('footer_sg_time') + (data.stale ? t('footer_stale') : ''));
+    else setText('footerSnapshot', t('footer_snapshot') + t('footer_stale'));   // no valid timestamp — never leave the baked date on screen as if it were current
   }
 
   /* ============ Data N/A — when the Worker data fetch fails (or a section is
@@ -1256,7 +1285,7 @@
   function fetchWorkerData(url){
     // Dashboard data from the Worker /data endpoint — the data object, or null when the Worker is down / it times out.
     if(!WORKER_URL) return Promise.resolve(null);
-    return fetchJson(url || WORKER_DATA_URL, 10000).then(function(d){
+    return fetchJson(url || WORKER_DATA_URL, 20000).then(function(d){
       if(!d || typeof d !== 'object') return null;
       return d;
     });
@@ -1266,31 +1295,51 @@
   // (?sections=core / holidays; omitted = full). applyFn gets the data plus true
   // when only the core sections should be applied.
   var dataLoadInFlight = false;
+  var hasAppliedData = false;   // true once any payload has been applied — a failed background refresh must not wipe good data to N/A
   function loadData(applyFn, naFn, sections, quiet, _retried){
     if(dataLoadInFlight) return Promise.resolve(null);   // a refresh is already running
     dataLoadInFlight = true;
     var url = sections ? WORKER_DATA_URL + '?sections=' + sections : WORKER_DATA_URL;
     return fetchWorkerData(url).then(function(data){
       dataLoadInFlight = false;
-      if(!data){ if(!quiet) naFn(); return null; }
+      if(!data){
+        // Total fetch failure — retry once (a transient blip, e.g. signal
+        // dropping while crossing the Causeway), then only blank the cards
+        // if nothing has ever loaded; otherwise keep the last good data
+        // on screen and let the next refresh try again. The internal retry
+        // runs only for background refreshes (not quiet) — the initial load
+        // already gets its own retry via loadDataRetry.
+        if(!_retried && !quiet){
+          return new Promise(function(resolve){
+            setTimeout(function(){ loadData(applyFn, naFn, sections, quiet, true).then(resolve); }, 3000);
+          });
+        }
+        if(!quiet && !hasAppliedData) naFn();
+        return null;
+      }
       // A section missing (a transient upstream hiccup in the Worker) — retry
       // once before showing N/A, so a single failed run doesn't blank a card
-      // until the next refresh. Checkpoints are expected on a full load and
-      // on a core load; holidays on a full load and on a holidays-only load.
+      // until the next refresh. Checkpoints / weather / PSI are expected on a
+      // full load and on a core load; holidays on a full load and on a
+      // holidays-only load.
       var hasCp = data.checkpoints && data.checkpoints.directions && Object.keys(data.checkpoints.directions).length > 0;
       var hasHol = data.holidays && data.holidays.all && data.holidays.all.length > 0;
-      var wantCp = sections !== 'holidays';
+      var hasWx = data.weather && (data.weather.sg || data.weather.jb || data.weather.muar);
+      var hasPsi = data.psi && data.psi.overall != null;
+      var wantCpWxPsi = sections !== 'holidays';
       var wantHol = sections !== 'core';
-      if(!_retried && ((wantCp && !hasCp) || (wantHol && !hasHol))){
+      if(!_retried && ((wantCpWxPsi && (!hasCp || !hasWx || !hasPsi)) || (wantHol && !hasHol))){
         return new Promise(function(resolve){
           setTimeout(function(){ loadData(applyFn, naFn, sections, quiet, true).then(resolve); }, 3000);
         });
       }
       if(sections !== 'holidays' && data.generatedAt && data.generatedAt === lastDataGen) return data;   // unchanged — skip re-applying
+      if(sections !== 'holidays' && lastDataGen && data.generatedAt && data.generatedAt < lastDataGen) return data;   // a slow retry must not overwrite fresher data
       lastDataGen = data.generatedAt;
+      hasAppliedData = true;
       applyFn(data, sections === 'core');
       return data;
-    }).catch(function(){ dataLoadInFlight = false; if(!quiet) naFn(); return null; });
+    }).catch(function(){ dataLoadInFlight = false; if(!quiet && !hasAppliedData) naFn(); return null; });
   }
   function applyHolidaysSection(data){
     if(data && data.holidays) applyHolidays(data.holidays);
@@ -1300,18 +1349,18 @@
     // Rates from the Worker — { wiseRate, cimbRate, updatedAt } (either rate may be
     // null), or null when the Worker is down / it times out.
     if(!WORKER_URL) return Promise.resolve(null);
-    return fetchJson(WORKER_URL, 8000).then(function(j){
+    return fetchJson(WORKER_URL, 15000).then(function(j){
       if(!j || typeof j !== 'object') return null;
       var r = (j.rates && typeof j.rates === 'object') ? j.rates : j;
       var wise = r.wise, cimb = r.cimb;
       var wiseRate = (wise != null && typeof wise === 'object') ? (wise.midRate != null ? wise.midRate : wise.rate) : (typeof wise === 'number' ? wise : (r.midRate != null ? r.midRate : r.wiseRate));
       var cimbRate = (cimb != null && typeof cimb === 'object') ? cimb.rate : (typeof cimb === 'number' ? cimb : r.cimbRate);
-      wiseRate = (wiseRate != null && isFinite(Number(wiseRate)) && Number(wiseRate) > 0) ? Number(wiseRate) : null;
-      cimbRate = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) > 0) ? Number(cimbRate) : null;
+      wiseRate = (wiseRate != null && isFinite(Number(wiseRate)) && Number(wiseRate) >= 1 && Number(wiseRate) <= 10) ? Number(wiseRate) : null;
+      cimbRate = (cimbRate != null && isFinite(Number(cimbRate)) && Number(cimbRate) >= 1 && Number(cimbRate) <= 10) ? Number(cimbRate) : null;
       if(wiseRate == null && cimbRate == null) return null;
-      var t = r.updated_at || r.updatedAt || (wise && (wise.updated_at || wise.updatedAt)) || (cimb && (cimb.updated_at || cimb.updatedAt)) || null;   // no timestamp from the Worker — leave it null, never invent one
-      if(typeof t === 'number' && t < 1e11) t = t * 1000;   // epoch seconds → ms
-      return { wiseRate: wiseRate, cimbRate: cimbRate, updatedAt: t };
+      var updTs = r.updated_at || r.updatedAt || (wise && (wise.updated_at || wise.updatedAt)) || (cimb && (cimb.updated_at || cimb.updatedAt)) || null;   // no timestamp from the Worker — leave it null, never invent one
+      if(typeof updTs === 'number' && updTs < 1e11) updTs = updTs * 1000;   // epoch seconds → ms
+      return { wiseRate: wiseRate, cimbRate: cimbRate, updatedAt: updTs };
     });
   }
   function loadRates(quiet){
@@ -1323,7 +1372,10 @@
       if(wk.wiseRate != null) merged.wise = { midRate: wk.wiseRate };
       if(wk.cimbRate != null) merged.cimb = { rate: wk.cimbRate };
       applyRates(merged);
-      ratesFetchedAt = Date.now();   // rate is fresh again — restart the 5-min staleness clock
+      // Only restart the 5-min staleness clock when BOTH rates are present —
+      // a partial success (one rate N/A) leaves the button live so the user
+      // can retry at once instead of waiting 5 minutes.
+      ratesFetchedAt = (CIMB_RATE != null && MID_RATE != null) ? Date.now() : 0;
       updateRateBtn();
       return true;
     }).catch(function(){ if(!quiet) applyRatesNA(); ratesFetchedAt = 0; updateRateBtn(); return false; });
@@ -1454,7 +1506,7 @@
       });
     });
   }
-  Promise.all([loadDataRetry(applyData, showDataNA), loadRatesRetry()]).then(hideLoader);
+  Promise.all([loadDataRetry(applyData, showDataNA), loadRatesRetry()]).then(hideLoader, hideLoader);   // hide the loader even if a promise rejects — never block the page forever
 
   calcCmp();
   setCity('sg');
