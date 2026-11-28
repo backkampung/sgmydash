@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-28.2 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-28.3 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -538,7 +538,7 @@
     wx_title: "Weather", wx_sub: "Singapore · JB · Muar",
     wx_tab_sg: "Singapore", wx_tab_jb: "Johor Bahru", wx_tab_muar: "Muar",
     wx_rain: "Rain chance", wx_hum: "Humidity", wx_wind: "Wind",
-    wx_rain_today: "Chance of rain today", wx_source: "Source:", wx_rain_areas: "Rain in the next 2 hours:", wx_rain_more: "and {n} more",
+    wx_rain_today: "Chance of rain today", wx_source: "Source:", wx_rain_areas: "Rain expected:", wx_rain_more: "and {n} more",
     wx_warm_humid: "warm and humid",
     psi_title: "Air quality — PSI", psi_sub: "Singapore, 24-hour by region",
     psi_region_central: "Central", psi_region_west: "West", psi_region_south: "South",
@@ -597,7 +597,7 @@
     wx_title: "天气", wx_sub: "新加坡 · 新山 · 麻坡",
     wx_tab_sg: "新加坡", wx_tab_jb: "新山", wx_tab_muar: "麻坡",
     wx_rain: "降雨概率", wx_hum: "湿度", wx_wind: "风速",
-    wx_rain_today: "今日降雨概率", wx_source: "来源：", wx_rain_areas: "未来 2 小时有雨：", wx_rain_more: "等 {n} 个地区",
+    wx_rain_today: "今日降雨概率", wx_source: "来源：", wx_rain_areas: "预计有雨：", wx_rain_more: "等 {n} 个地区",
     wx_warm_humid: "温暖潮湿",
     psi_title: "空气质量 — PSI", psi_sub: "新加坡，24 小时分地区",
     psi_region_central: "中部", psi_region_west: "西部", psi_region_south: "南部",
@@ -656,7 +656,7 @@
     wx_title: "Cuaca", wx_sub: "Singapura · JB · Muar",
     wx_tab_sg: "Singapura", wx_tab_jb: "Johor Bahru", wx_tab_muar: "Muar",
     wx_rain: "Peluang hujan", wx_hum: "Kelembapan", wx_wind: "Angin",
-    wx_rain_today: "Peluang hujan hari ini", wx_source: "Sumber:", wx_rain_areas: "Hujan dalam 2 jam akan datang:", wx_rain_more: "dan {n} lagi",
+    wx_rain_today: "Peluang hujan hari ini", wx_source: "Sumber:", wx_rain_areas: "Hujan dijangka:", wx_rain_more: "dan {n} lagi",
     wx_warm_humid: "panas dan lembap",
     psi_title: "Kualiti udara — PSI", psi_sub: "Singapura, 24 jam mengikut kawasan",
     psi_region_central: "Tengah", psi_region_west: "Barat", psi_region_south: "Selatan",
@@ -885,12 +885,13 @@
     setText('wxWind', d.wind);
     setText('rainLabel', trRainLabel(d.rainLabel));
     var rb = $('rainBar'); if(rb) rb.style.width = d.bar;
-    // Rain areas (SG only, from NEA): list where the rain is so the single %
-    // never hides local variation. Hidden when dry or on the JB/Muar tabs.
+    // Rain areas (SG from NEA, JB from OpenWeather multi-point): list where
+    // the rain is so the single % never hides local variation. Hidden when
+    // dry, on the Muar tab (single point, no list), or when data is missing.
     // Cap at 10 names, then "+N more".
     var raBox = $('wxRainAreas'), raTxt = $('wxRainAreasText');
     if(raBox && raTxt){
-      var areas = (key === 'sg' && Array.isArray(d.rainAreas)) ? d.rainAreas : [];
+      var areas = ((key === 'sg' || key === 'jb') && Array.isArray(d.rainAreas)) ? d.rainAreas : [];
       if(areas.length){
         var shown = areas.slice(0, 10);
         var s = t('wx_rain_areas') + ' ' + shown.join(' · ');
