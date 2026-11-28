@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- sgmydash page version: 2026-11-28.1 — bump on every deploy so the live version can be confirmed from the served HTML -->
+<!-- sgmydash page version: 2026-11-28.2 — bump on every deploy so the live version can be confirmed from the served HTML -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -91,6 +91,9 @@
   .incident{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:#fdecea;border:1px solid #f5b5ae;border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:#7a271a}
   @media(prefers-color-scheme:dark){.incident{background:#2a1512;border-color:#5a2a22;color:#fda29b}}
   .incident svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
+  .wx-rain-areas{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:#e8f4fd;border:1px solid #bae0f7;border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:#0c4a6e}
+  @media(prefers-color-scheme:dark){.wx-rain-areas{background:#0c2d42;border-color:#1d4e6b;color:#a5d8f5}}
+  .wx-rain-areas svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
   .legend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:12px;font-size:11.5px;color:var(--muted)}
   .legend span{display:inline-flex;align-items:center;gap:5px}
   .legend i{width:8px;height:8px;border-radius:50%}
@@ -374,6 +377,7 @@
       </div>
       <div class="rainbar" aria-hidden="true"><i id="rainBar" style="width:70%"></i></div>
       <div class="rain-label"><span data-i18n="wx_rain_today">Chance of rain today</span><span id="rainLabel">70% — likely</span></div>
+      <div class="wx-rain-areas" id="wxRainAreas" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7s6.5 7 6.5 11.3a6.5 6.5 0 0 1-13 0C5.5 9.7 12 2.7 12 2.7Z"/></svg><span id="wxRainAreasText"></span></div>
       <p class="src-foot"><span data-i18n="updated">Updated</span> <span id="wxUpdated">15 Nov 2026</span> · <span data-i18n="wx_source">Source:</span> <a href="https://www.nea.gov.sg/" target="_blank" rel="noopener">NEA</a> · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a></p>
     </section>
 
@@ -534,7 +538,7 @@
     wx_title: "Weather", wx_sub: "Singapore · JB · Muar",
     wx_tab_sg: "Singapore", wx_tab_jb: "Johor Bahru", wx_tab_muar: "Muar",
     wx_rain: "Rain chance", wx_hum: "Humidity", wx_wind: "Wind",
-    wx_rain_today: "Chance of rain today", wx_source: "Source:",
+    wx_rain_today: "Chance of rain today", wx_source: "Source:", wx_rain_areas: "Rain in the next 2 hours:", wx_rain_more: "and {n} more",
     wx_warm_humid: "warm and humid",
     psi_title: "Air quality — PSI", psi_sub: "Singapore, 24-hour by region",
     psi_region_central: "Central", psi_region_west: "West", psi_region_south: "South",
@@ -593,7 +597,7 @@
     wx_title: "天气", wx_sub: "新加坡 · 新山 · 麻坡",
     wx_tab_sg: "新加坡", wx_tab_jb: "新山", wx_tab_muar: "麻坡",
     wx_rain: "降雨概率", wx_hum: "湿度", wx_wind: "风速",
-    wx_rain_today: "今日降雨概率", wx_source: "来源：",
+    wx_rain_today: "今日降雨概率", wx_source: "来源：", wx_rain_areas: "未来 2 小时有雨：", wx_rain_more: "等 {n} 个地区",
     wx_warm_humid: "温暖潮湿",
     psi_title: "空气质量 — PSI", psi_sub: "新加坡，24 小时分地区",
     psi_region_central: "中部", psi_region_west: "西部", psi_region_south: "南部",
@@ -652,7 +656,7 @@
     wx_title: "Cuaca", wx_sub: "Singapura · JB · Muar",
     wx_tab_sg: "Singapura", wx_tab_jb: "Johor Bahru", wx_tab_muar: "Muar",
     wx_rain: "Peluang hujan", wx_hum: "Kelembapan", wx_wind: "Angin",
-    wx_rain_today: "Peluang hujan hari ini", wx_source: "Sumber:",
+    wx_rain_today: "Peluang hujan hari ini", wx_source: "Sumber:", wx_rain_areas: "Hujan dalam 2 jam akan datang:", wx_rain_more: "dan {n} lagi",
     wx_warm_humid: "panas dan lembap",
     psi_title: "Kualiti udara — PSI", psi_sub: "Singapura, 24 jam mengikut kawasan",
     psi_region_central: "Tengah", psi_region_west: "Barat", psi_region_south: "Selatan",
@@ -881,6 +885,22 @@
     setText('wxWind', d.wind);
     setText('rainLabel', trRainLabel(d.rainLabel));
     var rb = $('rainBar'); if(rb) rb.style.width = d.bar;
+    // Rain areas (SG only, from NEA): list where the rain is so the single %
+    // never hides local variation. Hidden when dry or on the JB/Muar tabs.
+    // Cap at 10 names, then "+N more".
+    var raBox = $('wxRainAreas'), raTxt = $('wxRainAreasText');
+    if(raBox && raTxt){
+      var areas = (key === 'sg' && Array.isArray(d.rainAreas)) ? d.rainAreas : [];
+      if(areas.length){
+        var shown = areas.slice(0, 10);
+        var s = t('wx_rain_areas') + ' ' + shown.join(' · ');
+        if(areas.length > 10) s += ' ' + t('wx_rain_more').replace('{n}', areas.length - 10);
+        raTxt.textContent = s;
+        raBox.style.display = '';
+      } else {
+        raBox.style.display = 'none';
+      }
+    }
     tabs.forEach(function(tab){ tab.setAttribute('aria-selected', tab.getAttribute('data-city')===key ? 'true':'false'); });
   }
   tabs.forEach(function(tab){ tab.addEventListener('click', function(){ setCity(tab.getAttribute('data-city')); }); });
@@ -1016,7 +1036,13 @@
       return out;
     }
     ['sg','jb','muar'].forEach(function(k){
-      if(w[k] && typeof w[k] === 'object') WX[k] = Object.assign({}, WX_NA, pickWx(w[k]));
+      if(w[k] && typeof w[k] === 'object'){
+        WX[k] = Object.assign({}, WX_NA, pickWx(w[k]));
+        // rainAreas is an array of area names (SG only, from NEA) — keep it
+        // only when it is a clean string array, else leave it absent (box hides).
+        if(Array.isArray(w[k].rainAreas) && w[k].rainAreas.every(function(a){ return typeof a === 'string'; }))
+          WX[k].rainAreas = w[k].rainAreas;
+      }
       else WX[k] = Object.assign({}, WX_NA);   // city missing from the feed — N/A, not stale
     });
     setText('wxUpdated', fmtTime(w.updatedAt) || 'N/A');
